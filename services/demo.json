@@ -1,0 +1,111 @@
+{
+    "LifestyleHabits": [
+      {
+        "question": "How many hours do you sleep on average each night?",
+        "option": ["Less than 4", "4-6", "6-8", "More than 8"],
+        "answer": "6-8"
+      },
+      {
+        "question": "How often do you exercise per week?",
+        "option": ["Never", "1-2 times", "3-4 times", "5 or more times"],
+        "answer": "3-4 times"
+      },
+      {
+        "question": "Do you smoke?",
+        "option": ["Yes", "No", "Occasionally"],
+        "answer": "No"
+      },
+      {
+        "question": "Do you consume alcohol?",
+        "option": ["Never", "Occasionally", "Weekly", "Daily"],
+        "answer": "Occasionally"
+      },
+      {
+        "question": "How would you describe your stress levels?",
+        "option": ["Low", "Moderate", "High", "Extreme"],
+        "answer": "Moderate"
+      }
+    ],
+    "DietaryHabits": [
+      {
+        "question": "How many servings of fruits do you eat daily?",
+        "option": ["None", "1-2", "3-4", "5 or more"],
+        "answer": "3-4"
+      },
+      {
+        "question": "How many servings of vegetables do you eat daily?",
+        "option": ["None", "1-2", "3-4", "5 or more"],
+        "answer": "3-4"
+      },
+      {
+        "question": "How often do you eat fast food?",
+        "option": ["Never", "Once a week", "2-3 times a week", "Daily"],
+        "answer": "Once a week"
+      },
+      {
+        "question": "Do you consume sugary drinks (soda, juice, etc.)?",
+        "option": ["Never", "Occasionally", "Daily", "Multiple times a day"],
+        "answer": "Occasionally"
+      },
+      {
+        "question": "Do you take dietary supplements?",
+        "option": ["Yes", "No"],
+        "answer": "Yes"
+      }
+    ],
+    "EnvironmentalExposure": [
+      {
+        "question": "Do you live in an urban or rural area?",
+        "option": ["Urban", "Rural", "Suburban"],
+        "answer": "Urban"
+      },
+      {
+        "question": "Are you exposed to air pollution frequently?",
+        "option": ["Yes", "No", "Occasionally"],
+        "answer": "Occasionally"
+      },
+      {
+        "question": "Do you work in an environment with chemical exposure?",
+        "option": ["Yes", "No", "Sometimes"],
+        "answer": "No"
+      },
+      {
+        "question": "Do you live near an industrial area?",
+        "option": ["Yes", "No"],
+        "answer": "No"
+      },
+      {
+        "question": "Is your drinking water filtered?",
+        "option": ["Yes", "No"],
+        "answer": "Yes"
+      }
+    ],
+    "HealthMonitoring": [
+      {
+        "question": "How often do you get a full body checkup?",
+        "option": ["Never", "Every year", "Every 2 years", "More than 2 years"],
+        "answer": "Every year"
+      },
+      {
+        "question": "Do you monitor your blood pressure?",
+        "option": ["Yes", "No", "Occasionally"],
+        "answer": "Occasionally"
+      },
+      {
+        "question": "Do you monitor your blood sugar?",
+        "option": ["Yes", "No", "Occasionally"],
+        "answer": "No"
+      },
+      {
+        "question": "Are your vaccinations up to date?",
+        "option": ["Yes", "No", "Not sure"],
+        "answer": "Yes"
+      },
+      {
+        "question": "Do you take prescribed medications regularly?",
+        "option": ["Yes", "No", "Occasionally"],
+        "answer": "No"
+      }
+    ]
+  }
+  

@@ -1,0 +1,70 @@
+name: Deploy Backend (Development)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate environment variables
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          BACKEND_DIR: ${{ vars.BACKEND_DIR }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "Validating environment variables..."
+          [ -n "$SERVER_IP" ] || { echo "Error: SERVER_IP is not set"; exit 1; }
+          [ -n "$SERVER_USER" ] || { echo "Error: SERVER_USER is not set"; exit 1; }
+          [ -n "$BACKEND_DIR" ] || { echo "Error: BACKEND_DIR is not set"; exit 1; }
+          [ -n "$SSH_PRIVATE_KEY" ] || { echo "Error: SSH_PRIVATE_KEY is not set"; exit 1; }
+
+      - name: Setup SSH & Known Hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+
+      - name: Rsync Code to Server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          BACKEND_DIR: ${{ vars.BACKEND_DIR }}
+        run: |
+          echo "Syncing files to $SERVER_USER@$SERVER_IP:$BACKEND_DIR"
+          rsync -avz --delete \
+            --exclude=".git" \
+            --exclude="node_modules" \
+            --exclude=".env" \
+            -e "ssh -i ~/.ssh/id_rsa" \
+            ./ "$SERVER_USER@$SERVER_IP:$BACKEND_DIR"
+
+      - name: Install Dependencies & Restart Backend
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          BACKEND_DIR: ${{ vars.BACKEND_DIR }}
+        run: |
+          echo "Running post-deploy steps..."
+          ssh -i ~/.ssh/id_rsa "$SERVER_USER@$SERVER_IP" << EOF
+            cd "$BACKEND_DIR" || exit 1
+            npm install || exit 1
+            pm2 restart remlyo_backend || pm2 start npm --name "remlyo_backend" -- run start
+            pm2 save
+          EOF
+
+      - name: Cleanup SSH
+        run: |
+          echo "Cleaning up SSH keys..."
+          rm -rf ~/.ssh
