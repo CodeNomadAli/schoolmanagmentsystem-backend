@@ -14,6 +14,7 @@ import {
   socialAuth,
   validatedEmailToken,
   verifyAuth,
+  staffLogin
 } from "../controllers/auth.controller.js";
 
 const authRouter = express.Router();
@@ -22,6 +23,8 @@ const authRouter = express.Router();
 authRouter.post("/register", register);
 // user login route ⬇️
 authRouter.post("/login", login);
+//staff login  route
+authRouter.post("/staff-login",staffLogin)
 //logout route
 authRouter.post("/logout", auth, logout);
 // forget password route 
