@@ -1,0 +1,45 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Install dependencies (example for Node.js)
+      run: |
+        npm ci
+      if: env.PROJECT_TYPE == 'nodejs' # Adjust based on your project
+
+    - name: Build project (example for Node.js)
+      run: |
+        npm run build
+      if: env.PROJECT_TYPE == 'nodejs' # Adjust or remove if no build step
+
+    - name: Deploy to VPS
+      run: |
+        rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DESTINATION_PATH }}
+
+    - name: Restart application (example for PM2)
+      run: |
+        ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+          cd ${{ secrets.VPS_DESTINATION_PATH }}
+          npm install # Install dependencies on VPS if needed
+          pm2 restart rem-api || pm2 start npm --name "rem-api" -- start
+          sudo systemctl reload nginx
+        EOF
+      if: env.PROJECT_TYPE == 'nodejs' # Adjust for your project
