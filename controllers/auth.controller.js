@@ -28,7 +28,15 @@ const staffLogin = async (req, res) => {
     }
 
     
-    const staff = await Staff.findOne({ email }).exec();
+    const staff = await Staff.findOne({ email })
+      .populate({
+        path: "staffRoleId",
+        populate: {
+          path: "permissions", 
+          model: "staff_Permission",
+        },
+      })
+      .exec();
 
     if (!staff) {
       return res.status(401).json({
@@ -133,6 +141,7 @@ const register = async (req, res) => {
       .json({ message: "Internal server error", success: false });
   }
 };
+
 const validatedEmailToken = async (req, res) => {
   try {
     const { token } = req.params;
