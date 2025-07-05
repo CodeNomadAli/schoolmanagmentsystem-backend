@@ -1,6 +1,7 @@
 // File: seeders/role-seeder.js
 import mongoose from 'mongoose';
 import StaffRole from '../models/staff_role.model.js';
+import staffPermission from '../models/staff_permission.model.js';
 
 // Define the connectToDatabase function (or import it if defined elsewhere)
 async function connectToDatabase() {
@@ -24,7 +25,12 @@ async function seedRole() {
 
   // Define seed data
   const roles = [
-    { name: 'Super Admin', description: 'Administrator role with full access' },
+    { name: 'Super Admin', description: 'Administrator role with full access', permissions: [ 
+      await staffPermission.findOne({ slug: 'create-users' }),
+      await staffPermission.findOne({ slug: 'read-users' }),
+      await staffPermission.findOne({ slug: 'update-users' }),
+      await staffPermission.findOne({ slug: 'delete-users' }),
+      ] },
   ];
 
   // Create and save the roles
