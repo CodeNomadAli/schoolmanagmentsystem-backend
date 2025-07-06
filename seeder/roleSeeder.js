@@ -30,6 +30,16 @@ async function seedRole() {
       await staffPermission.findOne({ slug: 'read-users' }),
       await staffPermission.findOne({ slug: 'update-users' }),
       await staffPermission.findOne({ slug: 'delete-users' }),
+
+      await staffPermission.findOne({ slug: 'read-staff' }),
+      await staffPermission.findOne({ slug: 'create-staff' }),
+      await staffPermission.findOne({ slug: 'update-staff' }),
+      await staffPermission.findOne({ slug: 'delete-staff' }),
+
+      await staffPermission.findOne({ slug: 'read-role' }),
+      await staffPermission.findOne({ slug: 'create-role' }),
+      await staffPermission.findOne({ slug: 'update-role' }),
+      await staffPermission.findOne({ slug: 'delete-role' }),
       ] },
   ];
 

@@ -11,6 +11,11 @@ const permissions = [
     { name: "Create Staff", slug: "create-staff", description: "Can create staff data" },
     { name: "Update Staff", slug: "update-staff", description: "Can update staff data" },
     { name: "Delete Staff", slug: "delete-staff", description: "Can delete staff data" },
+
+    { name: "Read Role", slug: "read-role", description: "Can read role data" },
+    { name: "Create Role", slug: "create-role", description: "Can create role data" },
+    { name: "Update Role", slug: "update-role", description: "Can update role data" },
+    { name: "Delete Role", slug: "delete-role", description: "Can delete role data" },
 ];
 
 async function seedPermissions() {
