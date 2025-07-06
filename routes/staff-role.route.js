@@ -1,20 +1,20 @@
 import express from "express";
 import {
-  // createStaff,
+  createStaffRole,
   getAllStaffRoles,
   fetchRoleById,
-  // updateStaff,
-  // deleteStaff,
+  updateStaffRole,
+  deleteStaffRole,
   
 } from "../controllers/staff-roles.controller.js";
 
 const router = express.Router();
 
 
-// router.post("/create", createStaff);         
+router.post("/", createStaffRole);         
 router.get("/", getAllStaffRoles);          
 router.get("/:id", fetchRoleById);      
-// router.put("/:id", updateStaff);       
-// router.delete("/:id", deleteStaff);    
+router.put("/:id", updateStaffRole);       
+router.delete("/:id", deleteStaffRole);    
 
 export default router;
