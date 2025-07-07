@@ -85,8 +85,31 @@ export const createStaff = async (req, res) => {
 
 export const getAllStaff = async (req, res) => {
   try {
-    const staffList = await Staff.find().select("-password").populate("staffRoleId");
-    return res.status(200).json({ success: true, staff: staffList });
+    const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
+    const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
+    const skip = (page - 1) * limit;
+
+    const [staffList, total] = await Promise.all([
+      Staff.find()
+        .select("-password")
+        .populate("staffRoleId")
+        .skip(skip)
+        .limit(limit),
+      Staff.countDocuments()
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+      staffs: staffList,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit)
+      }
+    }
+    });
   } catch (error) {
     console.error("Get all staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });

@@ -16,7 +16,6 @@ import WriterRouter from "./routes/writer.route.js";
 import writerMiddleware from './middleware/writer.middleware.js';
 import ArticleRouter from "./routes/article.route.js";
 import staffRoutes from "./routes/staff.route.js";
-import staffAuth from "./middleware/staff.middleware.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -52,7 +51,7 @@ app.use("/api/v1/articles",ArticleRouter)
 
 
 // staff routes
-app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff",staffRoutes)
 
 // main();
 const PORT = process.env.PORT || 3000;

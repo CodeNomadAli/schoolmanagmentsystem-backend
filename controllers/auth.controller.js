@@ -19,6 +19,8 @@ import Staff from "../models/staff.model.js"
 const staffLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    console.log(email, password)
    
     if (!email || !password) {
       return res.status(400).json({
