@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import Staff from "../models/staff.model.js";
 
-const auth = async (req, res, next) => {
+const staffAuth = async (req, res, next) => {
   try {
     const authHeader = req.header("Authorization");
 
@@ -30,4 +30,4 @@ const auth = async (req, res, next) => {
   }
 };
 
-export default auth;
+export default staffAuth;

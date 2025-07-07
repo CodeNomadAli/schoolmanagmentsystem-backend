@@ -9,7 +9,7 @@ import {
   createComment,
 } from "../controllers/remedy.controller.js";
 import auth from "../middleware/auth.middleware.js";
-import adminMiddleware from "./../middleware/admin.middleware.js";
+import adminMiddleware from "../middleware/staff.middleware.js";
 
 const RemedyRouter = express.Router();
 // create remedy route

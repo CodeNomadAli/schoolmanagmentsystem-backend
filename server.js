@@ -8,7 +8,7 @@ import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
 import auth from "./middleware/auth.middleware.js";
 import reviewRouter from './routes/review.route.js';
-import adminMiddleware from "./middleware/admin.middleware.js";
+import adminMiddleware from "./middleware/staff.middleware.js";
 import adminRouter from "./routes/admin.route.js";
 import uploadRouter from "./routes/upload.routes.js";
 import ModeratorRoute from "./routes/moderator.route.js";
@@ -16,6 +16,7 @@ import WriterRouter from "./routes/writer.route.js";
 import writerMiddleware from './middleware/writer.middleware.js';
 import ArticleRouter from "./routes/article.route.js";
 import staffRoutes from "./routes/staff.route.js";
+import staffAuth from "./middleware/staff.middleware.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -46,7 +47,7 @@ app.use("/api/v1/moderator",auth,ModeratorRoute);
 // writer routes
 app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
 // articles route
-app.use("/api/v1/articles",ArticleRouter)
+app.use("/api/v1/articles",staffAuth,ArticleRouter)
 
 
 
