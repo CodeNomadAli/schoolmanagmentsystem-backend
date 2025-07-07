@@ -1,14 +1,33 @@
-const adminMiddleware = (req, res, next) => {
+import jwt from "jsonwebtoken";
+import Staff from "../models/staff.model.js";
+
+const auth = async (req, res, next) => {
   try {
-    if (!req.user || req.user.role === "user") {
-      return res.status(403).json({ message: "Access denied. Admins only." });
+    const authHeader = req.header("Authorization");
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Access denied. No token provided." });
     }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await Staff.findById(decoded.id); 
+
+    if (!user) {
+      return res.status(401).json({ message: "Access denied. User not found." });
+    }
+
+    req.user = {
+      id: user._id,
+      email: user.email,
+      role: user.accessLevel,
+    };
+    req.token = token;
     next();
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Admin check failed.", error: error.message });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token." });
   }
 };
 
-export default adminMiddleware;
+export default auth;

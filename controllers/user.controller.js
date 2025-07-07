@@ -56,6 +56,8 @@ const getUserHealthQuestionBaseOnHealthProfile = async (req, res) => {
       });
     }
 
+    
+
     const healthQuestions = await generateHealthQuestions(req.body);
 
     return res.status(200).json({

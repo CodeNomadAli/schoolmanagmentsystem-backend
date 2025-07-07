@@ -60,6 +60,8 @@ const generateHealthQuestions = async (userHealthData) => {
       },
     });
 
+    console.log(response)
+
     if (isUnexpected(response)) {
       throw response.body.error;
     }

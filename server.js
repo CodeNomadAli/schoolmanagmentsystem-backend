@@ -15,15 +15,28 @@ import ModeratorRoute from "./routes/moderator.route.js";
 import WriterRouter from "./routes/writer.route.js";
 import writerMiddleware from './middleware/writer.middleware.js';
 import ArticleRouter from "./routes/article.route.js";
+import staffRoutes from "./routes/staff.route.js";
+import staffRolesRoutes from "./routes/staff-role.route.js";
+import staffPermissionRoutes from "./routes/staff-permissions.route.js";
 
 const app = express();
 
+const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
+
 dotenv.config(); // Load environment variables from .env file
 app.use(express.json());
+
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
+},{
+  origin: "http://localhost:5173", // Allow requests from this local origin
+  credentials: true,
+},{
+  origin: "http://localhost:3000", // Allow requests from this local origin
+  credentials: true,
 }));
+
 validateEnv(); // check all env variable is available
 connectDB(); // connect to Database
 
@@ -46,8 +59,16 @@ app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
 // articles route
 app.use("/api/v1/articles",ArticleRouter)
 
+
+
+// staff routes
+app.use(PORTAL_ROUTE_PREFIX+"/staff",staffRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffRolesRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffPermissionRoutes)
+
 // main();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

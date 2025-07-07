@@ -13,6 +13,98 @@ import { sendMail } from "./../services/sendMail.service.js";
 import UserProfile from "./../models/user_profile.model.js";
 import admin from "./../config/firebase.config.js";
 import hashPassword from "./../utils/hashPassword.js";
+import Staff from "../models/staff.model.js"
+
+
+const staffLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    console.log(email, password)
+   
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+        success: false,
+      });
+    }
+
+    
+    const staff = await Staff.findOne({ email })
+      .populate({
+        path: "staffRoleId",
+        populate: {
+          path: "permissions", 
+          model: "staff_Permission",
+        },
+      })
+      .exec();
+
+    if (!staff) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+        success: false,
+      });
+    }
+
+    // Check if password matches
+    const isMatch = await staff.matchPassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+        success: false,
+      });
+    }
+
+    // Update lastLogin
+    staff.lastLogin = new Date();
+    await staff.save();
+
+    // Generate a token
+    const token = generateToken(staff);
+
+    // Set secure cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict", 
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Extract client info
+    const { browser, os, deviceType } = getClientInfo(req.headers["user-agent"]);
+    // Log session
+    await Session.create({
+      userId: staff._id,
+      ipAddress: req.ip || req.connection.remoteAddress,
+      userAgent: req.headers["user-agent"],
+      deviceType,
+      sessionToken: token,
+      metadata: { browser, os },
+    });
+
+    // Prepare safe staff data
+    const { password: _, ...staffData } = staff.toObject();
+
+    return res.status(200).json({
+      message: "Login successful",
+      success: true,
+      data: {
+        user: staffData,
+        token        
+      },
+    });
+  } catch (error) {
+    console.error("Staff login error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};
+
+
 
 // Register user
 const register = async (req, res) => {
@@ -51,6 +143,7 @@ const register = async (req, res) => {
       .json({ message: "Internal server error", success: false });
   }
 };
+
 const validatedEmailToken = async (req, res) => {
   try {
     const { token } = req.params;
@@ -696,34 +789,6 @@ export {
   sendEmailVerification,
   socialAuth,
   verifyAuth,
+  staffLogin
 };
 
-/**
- * Paste one or more documents here
- */
-// {
-//   "username": "Aliyan siddiqui",
-//   "email": "aliyansiddiqui555@gmail.com",
-//   "password": "$2b$10$a36oJi6DOCzvfBhDMP21buln.yz58SehdwX68Xp.LDcsgArdX5Wnq",
-//   "accessLevel": "admin",
-//   "geographicRegion": "global",
-//   "isActive": true,
-//   "emailVerified": true,
-//   "twoFactorStatus": "disabled",
-//   "profileImage": "/user/default.png",
-//   "emailVerificationRequestCount": 0,
-//   "emailVerificationTimestamp": null,
-//   "resetRequestCount": 0,
-//   "resetRequestTimestamp": null,
-//   "createdAt": {
-//     "$date": "2025-05-27T09:14:08.173Z"
-//   },
-//   "updatedAt": {
-//     "$date": "2025-05-29T16:50:28.938Z"
-//   },
-//   "__v": 0,
-//   "lastLogin": {
-//     "$date": "2025-05-29T16:50:28.938Z"
-//   },
-//   "status": "active"
-// }
