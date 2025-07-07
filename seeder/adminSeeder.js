@@ -43,6 +43,14 @@ async function seedRole() {
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
       staffRoleId: adminRole.id,
+      permissions: {
+        canManageUsers: true,
+        canManageStaff: true,
+        canManageRoles: true,
+        canManageSettings: true,
+        canViewReports: true,
+        canAccessAllData: true,
+      }
     },
     {
       firstName: 'Ali',
