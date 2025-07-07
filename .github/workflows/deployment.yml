@@ -1,4 +1,4 @@
-name: Push Subdirectory to Target Repository via SSH
+name: Push to Target Repository via SSH
 
 on:
   push:
@@ -8,11 +8,12 @@ on:
 jobs:
   push-to-repo:
     runs-on: ubuntu-latest
+    environment: GITHUB_PUSH
     steps:
       - name: Checkout source repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Fetch full history for accurate push
 
       - name: Set up SSH
         run: |
@@ -27,17 +28,17 @@ jobs:
           git config user.name "Ali Hyder"
           git config user.email "cw.alihyder@gmail.com"
 
-      - name: Create temporary directory
+      - name: Create temporary directory excluding deployment.yml
         run: |
           mkdir temp-repo
-          cp -r src/* temp-repo/  # Copy only the src folder
+          rsync -av --exclude='.github/workflows/deployment.yml' --exclude='.git' ./ temp-repo/
           cd temp-repo
           git init
           git add .
-          git commit -m "updates"
+          git commit -m "Latest Changes"
 
       - name: Push to target repository
         run: |
           cd temp-repo
           git remote add target git@github.com:remlyo-ai/remlyo-backend.git
-          git push target main --force  # Adjust branch as needed
+          git push target main --force || { echo "Push failed"; exit 1; }
