@@ -25,8 +25,8 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config user.name "Ali Hyder"
-          git config user.email "cw.alihyder@gmail.com"
+          git config --global user.name "Ali Hyder"
+          git config --global user.email "cw.alihyder@gmail.com"
 
       - name: Create temporary directory excluding deployment.yml
         run: |
