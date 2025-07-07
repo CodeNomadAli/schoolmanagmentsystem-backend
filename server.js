@@ -25,6 +25,7 @@ const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
 
 dotenv.config(); // Load environment variables from .env file
 app.use(express.json());
+
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
@@ -35,6 +36,7 @@ app.use(cors({
   origin: "http://localhost:3000", // Allow requests from this local origin
   credentials: true,
 }));
+
 validateEnv(); // check all env variable is available
 connectDB(); // connect to Database
 

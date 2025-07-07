@@ -1,0 +1,43 @@
+name: Push Subdirectory to Target Repository via SSH
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push-to-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Set up Git
+        run: |
+          git config user.name "Ali Hyder"
+          git config user.email "cw.alihyder@gmail.com"
+
+      - name: Create temporary directory
+        run: |
+          mkdir temp-repo
+          cp -r src/* temp-repo/  # Copy only the src folder
+          cd temp-repo
+          git init
+          git add .
+          git commit -m "updates"
+
+      - name: Push to target repository
+        run: |
+          cd temp-repo
+          git remote add target git@github.com:remlyo-ai/remlyo-backend.git
+          git push target main --force  # Adjust branch as needed
