@@ -31,6 +31,9 @@ app.use(cors({
 },{
   origin: "http://localhost:5173", // Allow requests from this local origin
   credentials: true,
+},{
+  origin: "http://localhost:3000", // Allow requests from this local origin
+  credentials: true,
 }));
 validateEnv(); // check all env variable is available
 connectDB(); // connect to Database
