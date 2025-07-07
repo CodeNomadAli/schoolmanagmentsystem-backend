@@ -7,7 +7,7 @@ import hashPassword from '../utils/hashPassword.js';
 import User from '../models/user.model.js';
 
 
-// Define the connectToDatabase function (or import it if defined elsewhere)
+
 async function connectToDatabase() {
   try {
     await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {

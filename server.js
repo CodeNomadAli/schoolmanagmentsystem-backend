@@ -21,7 +21,7 @@ const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); 
 app.use(express.json());
 app.use(cors({
   origin: process.env.FRONTEND_URL,
@@ -47,12 +47,12 @@ app.use("/api/v1/moderator",auth,ModeratorRoute);
 // writer routes
 app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
 // articles route
-app.use("/api/v1/articles",staffAuth,ArticleRouter)
+app.use("/api/v1/articles",ArticleRouter)
 
 
 
 // staff routes
-app.use(PORTAL_ROUTE_PREFIX+"/staff",staffRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 
 // main();
 const PORT = process.env.PORT || 3000;
