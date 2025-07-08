@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.route.js";
 import remedyRouter from "./routes/remedy.route.js";
 import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
+import userPortalRoute from "./routes/portal/user-portal.route.js";
 import auth from "./middleware/auth.middleware.js";
 import reviewRouter from './routes/review.route.js';
 import adminMiddleware from "./middleware/staff.middleware.js";
@@ -39,7 +40,10 @@ connectDB(); // connect to Database
 // authentication routes
 app.use("/api/v1/auth", authRouter);
 // user routes
-app.use(PORTAL_ROUTE_PREFIX+"/users",auth, userRouter);
+
+app.use("/api/v1/users", userRouter);
+
+app.use(PORTAL_ROUTE_PREFIX+"/user",auth, userPortalRoute);
 
 // user profile routes
   app.use("/api/v1/user-profile", auth, UserProfile);
