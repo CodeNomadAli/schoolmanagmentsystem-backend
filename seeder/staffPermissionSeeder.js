@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import staffPermission from "../models/staff_permission.model.js"
 import staffRole from "../models/staff_role.model.js"
 import staff from "../models/staff.model.js"
+import Users from "../models/user.model.js"
 import hashPassword from "../utils/hashPassword.js"
 
 const permissions = [
