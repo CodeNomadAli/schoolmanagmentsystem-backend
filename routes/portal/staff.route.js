@@ -12,9 +12,9 @@ const router = express.Router();
 
 
 router.post("/create",checkPermission("create-staff"), createStaff);         
-router.get("/", checkPermission("view-staff"), getAllStaff);          
-router.get("/:id", checkPermission("view-staff"), getStaffById);      
-router.put("/:id", checkPermission("edit-staff"), updateStaff);       
+router.get("/", checkPermission("read-staff"), getAllStaff);          
+router.get("/:id", checkPermission("read-staff"), getStaffById);      
+router.put("/:id", checkPermission("update-staff"), updateStaff);       
 router.delete("/:id", checkPermission("delete-staff"), deleteStaff);    
 
 export default router;
