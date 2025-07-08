@@ -87,27 +87,6 @@ async function seedEverything() {
       }
     })
 
-    
-    await Users.create({
-      username: "superadmin",
-      firstName: "Manager",
-      lastName: "User",
-      email: "manager@gmail.com",
-      password: await hashPassword("manager123"),
-      staffRoleId: moderatorRole._id,      
-    })
-
-    
-    await Users.create({
-      username: "writer",
-      firstName: "Writer",
-      lastName: "User",
-      email: "writer@gmail.com",
-      password: await hashPassword("writer123"),
-      staffRoleId: writerRole._id,
-
-    })
-
     console.log("✅ Roles and users seeded successfully.")
     process.exit(0)
   } catch (error) {

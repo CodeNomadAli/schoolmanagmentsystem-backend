@@ -6,7 +6,7 @@ import {
   updateStaffRole,
   deleteStaffRole,
   
-} from "../controllers/staff-roles.controller.js";
+} from "../../controllers/staff-roles.controller.js";
 
 const router = express.Router();
 
