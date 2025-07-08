@@ -4,8 +4,7 @@ import {
   getAllStaff,
   getStaffById,
   updateStaff,
-  deleteStaff,
-  
+  deleteStaff
 } from "../../controllers/staff.controller.js";
 import checkPermission from "../../middleware/check_permission.middleware.js";
 
