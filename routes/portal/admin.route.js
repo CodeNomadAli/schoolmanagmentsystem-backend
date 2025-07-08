@@ -5,7 +5,7 @@ import {
   deleteUser,
   getAllUsers,
   userAccountStatus,
-} from "../controllers/admin.controller.js";
+} from "../../controllers/admin.controller.js";
 
 const adminRouter = express.Router();
 

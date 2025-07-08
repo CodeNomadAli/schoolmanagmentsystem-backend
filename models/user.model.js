@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     accessLevel: {
       type: String,
-      enum: ["user", "admin","moderator","writer"], // maybe update this in future
+      enum: ["user", "admin","moderator","writer"], 
       default: "user",
     },
     geographicRegion: {

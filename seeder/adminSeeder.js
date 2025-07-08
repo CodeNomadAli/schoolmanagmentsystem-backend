@@ -7,7 +7,7 @@ import hashPassword from '../utils/hashPassword.js';
 import User from '../models/user.model.js';
 
 
-// Define the connectToDatabase function (or import it if defined elsewhere)
+
 async function connectToDatabase() {
   try {
     await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
@@ -43,6 +43,14 @@ async function seedRole() {
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
       staffRoleId: adminRole.id,
+      permissions: {
+        canManageUsers: true,
+        canManageStaff: true,
+        canManageRoles: true,
+        canManageSettings: true,
+        canViewReports: true,
+        canAccessAllData: true,
+      }
     },
     {
       firstName: 'Ali',

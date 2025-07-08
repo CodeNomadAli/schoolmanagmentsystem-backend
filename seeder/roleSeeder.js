@@ -41,6 +41,7 @@ async function seedRole() {
       await staffPermission.findOne({ slug: 'update-role' }),
       await staffPermission.findOne({ slug: 'delete-role' }),
       ] },
+    { name: 'Manager', description: 'Manager role with limited access', }
   ];
 
   // Create and save the roles

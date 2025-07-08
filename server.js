@@ -8,22 +8,21 @@ import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
 import auth from "./middleware/auth.middleware.js";
 import reviewRouter from './routes/review.route.js';
-import adminMiddleware from "./middleware/admin.middleware.js";
-import adminRouter from "./routes/admin.route.js";
+import adminMiddleware from "./middleware/staff.middleware.js";
+import adminRouter from "./routes/portal/admin.route.js";
 import uploadRouter from "./routes/upload.routes.js";
 import ModeratorRoute from "./routes/moderator.route.js";
 import WriterRouter from "./routes/writer.route.js";
 import writerMiddleware from './middleware/writer.middleware.js';
 import ArticleRouter from "./routes/article.route.js";
-import staffRoutes from "./routes/staff.route.js";
-import staffRolesRoutes from "./routes/staff-role.route.js";
-import staffPermissionRoutes from "./routes/staff-permissions.route.js";
-
+import staffRoutes from "./routes/portal/staff.route.js";
+import UserProfile from "./models/user_profile.model.js";
+import staffAuth from "./middleware/staff.middleware.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); 
 app.use(express.json());
 
 app.use(cors({
@@ -43,7 +42,10 @@ connectDB(); // connect to Database
 // authentication routes
 app.use("/api/v1/auth", authRouter);
 // user routes
-app.use("/api/v1/user", auth, userRouter);
+app.use(PORTAL_ROUTE_PREFIX+"/users", auth, userRouter);
+
+// user profile routes
+  app.use("/api/v1/user-profile", auth, UserProfile);
 // review routes
 app.use("/api/v1/review",reviewRouter);
 // remedy routes
@@ -62,9 +64,7 @@ app.use("/api/v1/articles",ArticleRouter)
 
 
 // staff routes
-app.use(PORTAL_ROUTE_PREFIX+"/staff",staffRoutes)
-app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffRolesRoutes)
-app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffPermissionRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 
 // main();
 const PORT = process.env.PORT || 3000;
