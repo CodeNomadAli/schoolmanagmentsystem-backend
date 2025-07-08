@@ -57,12 +57,7 @@ async function seedEverything() {
     // Super Admin Role
     const adminRole = await upsertRole("Super Admin", "super-admin", "Full access to all system features")
 
-    // Moderator Role
-    const moderatorRole = await upsertRole("Moderator", "moderator", "Can manage users and staff")
-
-    // Writer Role
-    const writerRole = await upsertRole("Writer", "writer", "Can create and manage content")
-
+   
     // Remove existing super admin user
     const existingAdmin = await staff.findOne({ email: "superadmin@gmail.com" })
     if (existingAdmin) {
