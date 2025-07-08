@@ -15,15 +15,18 @@ import checkPermission from "../middleware/check_permission.middleware.js";
 
 const router = express.Router();
 
-router.post("/register", checkPermission("create-users"), registerUser);
-router.post("/login", checkPermission("login-users"), loginUser);
-router.get("/", checkPermission("read-users"), getAllUsers);
-router.get("/:id", checkPermission("read-users"), getUserById);
-router.put("/:id", checkPermission("update-users"), updateUser);
-router.delete("/:id", checkPermission("delete-users"), deleteUser);
-router.post("/:id/suspend", checkPermission("suspend-users"), suspendUser);
-router.post("/:id/warn", checkPermission("warn-users"), warnUser);
-router.post("/create", checkPermission("create-users"), createUser);
+router.post("/register",registerUser);
+router.post("/login",loginUser);
+router.get("/",getAllUsers);
+router.get("/:id",getUserById);
+router.put("/:id",updateUser);
+router.delete("/:id",deleteUser);
+router.post("/:id/suspend",suspendUser);
+router.post("/:id/warn", warnUser);
+router.post("/create", createUser);
+
+
+
 
 
 export default router;
