@@ -18,6 +18,8 @@ import ArticleRouter from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
 import UserProfile from "./models/user_profile.model.js";
 import staffAuth from "./middleware/staff.middleware.js";
+import staffRolesRoutes from "./routes/portal/staff-role.route.js";
+import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -37,7 +39,7 @@ connectDB(); // connect to Database
 // authentication routes
 app.use("/api/v1/auth", authRouter);
 // user routes
-app.use(PORTAL_ROUTE_PREFIX+"/users", userRouter);
+app.use(PORTAL_ROUTE_PREFIX+"/users",auth, userRouter);
 
 // user profile routes
   app.use("/api/v1/user-profile", auth, UserProfile);
@@ -57,6 +59,10 @@ app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
 app.use("/api/v1/articles",ArticleRouter)
 // staff routes
 app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
+
+app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffRolesRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffPermissionRoutes)
+
 
 // main();
 const PORT = process.env.PORT || 3000;
