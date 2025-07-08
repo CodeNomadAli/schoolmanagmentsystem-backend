@@ -26,13 +26,8 @@ dotenv.config();
 app.use(express.json());
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-},{
-  origin: "http://localhost:5173", // Allow requests from this local origin
-  credentials: true,
-},{
-  origin: "http://localhost:3000", // Allow requests from this local origin
+  origin: [ process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:3000" ], // Allow requests from these origins
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], //
   credentials: true,
 }));
 
@@ -42,7 +37,7 @@ connectDB(); // connect to Database
 // authentication routes
 app.use("/api/v1/auth", authRouter);
 // user routes
-app.use(PORTAL_ROUTE_PREFIX+"/users", auth, userRouter);
+app.use(PORTAL_ROUTE_PREFIX+"/users", userRouter);
 
 // user profile routes
   app.use("/api/v1/user-profile", auth, UserProfile);
@@ -60,9 +55,6 @@ app.use("/api/v1/moderator",auth,ModeratorRoute);
 app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
 // articles route
 app.use("/api/v1/articles",ArticleRouter)
-
-
-
 // staff routes
 app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 

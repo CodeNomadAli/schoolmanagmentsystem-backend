@@ -46,7 +46,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// @desc Login user
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -175,6 +175,7 @@ export const suspendUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+
 // @desc Warn user
 export const warnUser = async (req, res) => {
   try {
