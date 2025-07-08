@@ -26,7 +26,7 @@ const checkPermission = (permissionKey) => {
       });
 
       if (!staff) {
-        return res.status(401).json({ message: "Access denied. user not found." });
+        return res.status(401).json({ message: "Access denied. staff not found." });
       }
 
       const havePermission = staff.staffRoleId?.permissions?.find(p => p.slug === permissionKey) || null;

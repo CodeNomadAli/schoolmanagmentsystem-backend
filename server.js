@@ -65,6 +65,7 @@ app.use("/api/v1/articles",ArticleRouter)
 app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffRolesRoutes)
+
 app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffPermissionRoutes)
 
 
