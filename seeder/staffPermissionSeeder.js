@@ -71,6 +71,7 @@ async function seedEverything() {
     }
 
     await staff.create({
+      username: "superadmin",
       firstName: "Super",
       lastName: "Admin",
       email: "superadmin@gmail.com",
@@ -88,6 +89,7 @@ async function seedEverything() {
 
     
     await Users.create({
+      username: "superadmin",
       firstName: "Manager",
       lastName: "User",
       email: "manager@gmail.com",
@@ -97,6 +99,7 @@ async function seedEverything() {
 
     
     await Users.create({
+      username: "writer",
       firstName: "Writer",
       lastName: "User",
       email: "writer@gmail.com",
