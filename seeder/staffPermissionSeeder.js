@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import staffPermission from "../models/staff_permission.model.js"
 import staffRole from "../models/staff_role.model.js"
 import staff from "../models/staff.model.js"
-import { hashPassword } from "../utils/hashPassword.js" // Update the path as per your project
+import { hashPassword } from "../utils/hashPassword.js"
 
 const permissions = [
   // User CRUD
@@ -39,33 +39,38 @@ async function seedEverything() {
   try {
     await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/remedy")
 
-    // Clear and seed permissions
     await staffPermission.deleteMany({})
     await staffPermission.insertMany(permissions)
+    console.log("✅ Permissions seeded.")
 
-    // Delete existing Super Admin role if it exists
-    const existingRole = await staffRole.findOne({ slug: "super-admin" })
-    if (existingRole) {
-      await staffRole.deleteOne({ _id: existingRole._id })
-      console.log("🔁 Old Super Admin role deleted.")
+    // Helper to create or replace role
+    const upsertRole = async (name, slug, description) => {
+      const existing = await staffRole.findOne({ slug })
+      if (existing) {
+        await staffRole.deleteOne({ _id: existing._id })
+        console.log(`🔁 Old ${name} role deleted.`)
+      }
+      return await staffRole.create({ name, slug, description })
     }
 
-    // Create new Super Admin role
-    const adminRole = await staffRole.create({
-      name: "Super Admin",
-      slug: "super-admin",
-      description: "Full access to all system features"
-    })
+    // Super Admin Role
+    const adminRole = await upsertRole("Super Admin", "super-admin", "Full access to all system features")
 
-    // Delete existing Super Admin user if it exists
-    const existingUser = await staff.findOne({ email: "superadmin@gmail.com" })
-    if (existingUser) {
-      await staff.deleteOne({ _id: existingUser._id })
+    // Moderator Role
+    const moderatorRole = await upsertRole("Moderator", "moderator", "Can manage users and staff")
+
+    // Writer Role
+    const writerRole = await upsertRole("Writer", "writer", "Can create and manage content")
+
+    // Remove existing super admin user
+    const existingAdmin = await staff.findOne({ email: "superadmin@gmail.com" })
+    if (existingAdmin) {
+      await staff.deleteOne({ _id: existingAdmin._id })
       console.log("🔁 Old Super Admin user deleted.")
     }
 
-    // Create new Super Admin user
-    const superAdmin = await staff.create({
+    // Create Super Admin user
+    await staff.create({
       firstName: "Super",
       lastName: "Admin",
       email: "superadmin@gmail.com",
@@ -81,7 +86,26 @@ async function seedEverything() {
       }
     })
 
-    console.log("✅ Permissions, Super Admin role, and user seeded successfully.")
+    
+    await Users.create({
+      firstName: "Manager",
+      lastName: "User",
+      email: "manager@gmail.com",
+      password: await hashPassword("manager123"),
+      staffRoleId: moderatorRole._id,      
+    })
+
+    
+    await Users.create({
+      firstName: "Writer",
+      lastName: "User",
+      email: "writer@gmail.com",
+      password: await hashPassword("writer123"),
+      staffRoleId: writerRole._id,
+
+    })
+
+    console.log("✅ Roles and users seeded successfully.")
     process.exit(0)
   } catch (error) {
     console.error("❌ Seeding error:", error)
