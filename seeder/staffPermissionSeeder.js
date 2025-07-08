@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import staffPermission from "../models/staff_permission.model.js"
 import staffRole from "../models/staff_role.model.js"
 import staff from "../models/staff.model.js"
-import { hashPassword } from "../utils/hashPassword.js"
+import hashPassword from "../utils/hashPassword.js"
 
 const permissions = [
   // User CRUD
@@ -69,7 +69,6 @@ async function seedEverything() {
       console.log("🔁 Old Super Admin user deleted.")
     }
 
-    // Create Super Admin user
     await staff.create({
       firstName: "Super",
       lastName: "Admin",
