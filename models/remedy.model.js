@@ -23,18 +23,19 @@ const RemedySchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: String,
-      enum: REMEDY_CATEGORIES, // reference the constant here
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RemedyCategory",
       required: true,
     },
+
     ingredients: {
       type: String,
     },
     preparationMethod: {
       type: String,
     },
-    brandName:{
-      type:String,
+    brandName: {
+      type: String,
     },
     instructions: {
       type: String,
@@ -82,8 +83,8 @@ const RemedySchema = new mongoose.Schema(
       default: [],
     },
     type: {
-      type: String,
-      enum: REMEDY_TYPES,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RemedyType",
       required: true,
     },
     createdBy: {
@@ -117,9 +118,16 @@ const RemedySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    
+
   },
   { timestamps: true }
 );
 
 const Remedy = mongoose.model("Remedy", RemedySchema);
 export default Remedy;
+
+
+
+

@@ -15,7 +15,7 @@ const checkPermission = (permissionKey) => {
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      console.log("Decoded JWT:", decoded);
+      
 
       const staff = await Staff.findById(decoded.userId).populate({
         path: "staffRoleId",
