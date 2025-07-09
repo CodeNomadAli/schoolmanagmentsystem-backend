@@ -41,9 +41,8 @@ connectDB(); // connect to Database
 app.use("/api/v1/auth", authRouter);
 // user routes
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users",auth, userRouter);
 
-app.use(PORTAL_ROUTE_PREFIX+"/user",auth, userPortalRoute);
 
 // user profile routes
   app.use("/api/v1/user-profile", auth, UserProfile);
@@ -61,12 +60,17 @@ app.use("/api/v1/moderator",auth,ModeratorRoute);
 app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
 // articles route
 app.use("/api/v1/articles",ArticleRouter)
+
+
 // staff routes
 app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffRolesRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffAuth, staffRolesRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffPermissionRoutes)
+app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffAuth, staffPermissionRoutes)
+
+app.use(PORTAL_ROUTE_PREFIX+"/users",staffAuth, userPortalRoute);
+
 
 
 // main();
