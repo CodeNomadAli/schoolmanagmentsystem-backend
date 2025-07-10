@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import Staff from '../models/staff.model.js';
 import StaffRole from '../models/staff_role.model.js';
 import hashPassword from '../utils/hashPassword.js';
-import staffPermission from './staffPermissionSeeder.js'; // Adjust the import path as needed
 import User from '../models/user.model.js';
 
 
