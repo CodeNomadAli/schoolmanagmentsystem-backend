@@ -1,3 +1,6 @@
+import mongoose from "mongoose"
+import StaffPermission from "../models/staff_permission.model.js"
+
 const permissions = [
   // User CRUD
   { name: "Create Users", slug: "create-users", description: "Can create user data" },
@@ -36,8 +39,7 @@ const permissions = [
   { name: "Delete Category", slug: "delete-category", description: "Can delete category data" },
 ]
 
-import mongoose from "mongoose"
-import StaffPermission from "../models/staffPermission.model.js"
+
 const seedPermissions = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
