@@ -141,4 +141,4 @@ const runSeeder = async () => {
   process.exit(0);
 };
 
-runSeeder();
+export default runSeeder;
