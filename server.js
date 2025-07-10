@@ -21,6 +21,10 @@ import UserProfile from "./models/user_profile.model.js";
 import staffAuth from "./middleware/staff.middleware.js";
 import staffRolesRoutes from "./routes/portal/staff-role.route.js";
 import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
+import remedyRoutes from "./routes/portal/remedy.route.js";
+import remedyCategoryRoutes from "./routes/portal/remedyCategory.routes.js";
+import remedyTypeRoutes from "./routes/portal/remedyType.routes.js";
+
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -49,7 +53,7 @@ app.use("/api/v1/users",auth, userRouter);
 // review routes
 app.use("/api/v1/review",reviewRouter);
 // remedy routes
-app.use("/api/v1/remedy", remedyRouter);
+app.use("/api/v1/remedy",auth, remedyRouter);
 // admin Routes
 app.use("/api/v1/admin",auth,adminMiddleware,adminRouter);
 // upload files (images,etc)
@@ -72,6 +76,12 @@ app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffAuth, staffPermissionRoute
 app.use(PORTAL_ROUTE_PREFIX+"/users",staffAuth, userPortalRoute);
 
 
+
+
+app.use(PORTAL_ROUTE_PREFIX+"/remedy", remedyRoutes);
+
+app.use(PORTAL_ROUTE_PREFIX+"/remedy-types", remedyTypeRoutes);
+app.use(PORTAL_ROUTE_PREFIX+"/remedy-categories", remedyCategoryRoutes);
 
 // main();
 const PORT = process.env.PORT || 3000;

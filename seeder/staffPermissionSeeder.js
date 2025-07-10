@@ -1,10 +1,3 @@
-import mongoose from "mongoose"
-import staffPermission from "../models/staff_permission.model.js"
-import staffRole from "../models/staff_role.model.js"
-import staff from "../models/staff.model.js"
-import Users from "../models/user.model.js"
-import hashPassword from "../utils/hashPassword.js"
-
 const permissions = [
   // User CRUD
   { name: "Create Users", slug: "create-users", description: "Can create user data" },
@@ -16,7 +9,7 @@ const permissions = [
   { name: "Create Staff", slug: "create-staff", description: "Can create staff data" },
   { name: "Read Staff", slug: "read-staff", description: "Can read staff data" },
   { name: "Update Staff", slug: "update-staff", description: "Can update staff data" },
-  { name: "Delete Staff", slug: "delete-staff", description: "Can delete staff data" },
+{ name: "Delete Staff", slug: "delete-staff", description: "Can delete staff data" },
 
   // Role CRUD
   { name: "Create Role", slug: "create-role", description: "Can create role data" },
@@ -30,64 +23,17 @@ const permissions = [
   { name: "Update Customer", slug: "update-customer", description: "Can update customer data" },
   { name: "Delete Customer", slug: "delete-customer", description: "Can delete customer data" },
 
-  // Admin-level permissions
-  { name: "Manage Settings", slug: "can-manage-settings", description: "Can manage system settings" },
-  { name: "View Reports", slug: "can-view-reports", description: "Can view reports and analytics" },
-  { name: "Access All Data", slug: "can-access-all-data", description: "Can access all system data" }
+  // Remedy CRUD
+  { name: "Create Remedy", slug: "create-remedy", description: "Can create remedy data" },
+  { name: "Read Remedy", slug: "read-remedy", description: "Can read remedy data" },
+  { name: "Update Remedy", slug: "update-remedy", description: "Can update remedy data" },
+  { name: "Delete Remedy", slug: "delete-remedy", description: "Can delete remedy data" },
+
+  // Category CRUD
+  { name: "Create Category", slug: "create-category", description: "Can create category data" },
+  { name: "Read Category", slug: "read-category", description: "Can read category data" },
+  { name: "Update Category", slug: "update-category", description: "Can update category data" },
+  { name: "Delete Category", slug: "delete-category", description: "Can delete category data" },
 ]
 
-async function seedEverything() {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/remedy")
-
-    await staffPermission.deleteMany({})
-    await staffPermission.insertMany(permissions)
-    console.log("✅ Permissions seeded.")
-
-    // Helper to create or replace role
-    const upsertRole = async (name, slug, description) => {
-      const existing = await staffRole.findOne({ slug })
-      if (existing) {
-        await staffRole.deleteOne({ _id: existing._id })
-        console.log(`🔁 Old ${name} role deleted.`)
-      }
-      return await staffRole.create({ name, slug, description })
-    }
-
-    // Super Admin Role
-    const adminRole = await upsertRole("Super Admin", "super-admin", "Full access to all system features")
-
-   
-    // Remove existing super admin user
-    const existingAdmin = await staff.findOne({ email: "superadmin@gmail.com" })
-    if (existingAdmin) {
-      await staff.deleteOne({ _id: existingAdmin._id })
-      console.log("🔁 Old Super Admin user deleted.")
-    }
-
-    await staff.create({
-      username: "superadmin",
-      firstName: "Super",
-      lastName: "Admin",
-      email: "superadmin@gmail.com",
-      password: await hashPassword("admin123"),
-      staffRoleId: adminRole._id,
-      permissions: {
-        canManageUsers: true,
-        canManageStaff: true,
-        canManageRoles: true,
-        canManageSettings: true,
-        canViewReports: true,
-        canAccessAllData: true
-      }
-    })
-
-    console.log("✅ Roles and users seeded successfully.")
-    process.exit(0)
-  } catch (error) {
-    console.error("❌ Seeding error:", error)
-    process.exit(1)
-  }
-}
-
-seedEverything()
+export default permissions
