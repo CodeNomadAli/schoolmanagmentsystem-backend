@@ -22,13 +22,6 @@ async function connectToDatabase() {
   }
 }
 
-  const permission = staffPermission.map((perm) => ({
-    
-    slug: perm.slug,
-    
-  }));
-  console.log('Permissions:', permission);
-
 async function seedRole() {
   await connectToDatabase();
 
@@ -51,8 +44,7 @@ async function seedRole() {
       lastName: 'Admin',
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
-      staffRoleId: adminRole.id,
-      permissions: permission, // Assigning permissions to the Super Admin    
+      staffRoleId: adminRole.id
     },
     {
       firstName: 'Ali',
