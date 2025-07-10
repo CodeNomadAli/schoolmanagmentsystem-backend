@@ -36,4 +36,30 @@ const permissions = [
   { name: "Delete Category", slug: "delete-category", description: "Can delete category data" },
 ]
 
-export default permissions
+import mongoose from "mongoose"
+import StaffPermission from "../models/staffPermission.model.js"
+const seedPermissions = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+
+    // Clear existing permissions
+    await StaffPermission.deleteMany({})
+
+    // Insert new permissions
+    const createdPermissions = await StaffPermission.insertMany(permissions)
+    console.log("✅ Permissions seeded successfully:", createdPermissions.length)
+  } catch (error) {
+    console.error("❌ Error seeding permissions:", error)
+  } finally {
+    await mongoose.disconnect()
+  }
+}
+
+seedPermissions().catch((error) => {
+  console.error("❌ Error in permission seeding:", error)
+  process.exit(1)
+})  
+
