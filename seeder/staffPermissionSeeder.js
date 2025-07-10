@@ -40,12 +40,23 @@ const permissions = [
 ]
 
 
-const seedPermissions = async () => {
+// Define the connectToDatabase function (or import it if defined elsewhere)
+async function connectToDatabase() {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    })
+    });
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+  }
+}
+
+
+const seedPermissions = async () => {
+  try {
+    await connectToDatabase()
 
     // Clear existing permissions
     await StaffPermission.deleteMany({})
