@@ -3,11 +3,12 @@ import mongoose from 'mongoose';
 import Staff from '../models/staff.model.js';
 import StaffRole from '../models/staff_role.model.js';
 import hashPassword from '../utils/hashPassword.js';
-
 import User from '../models/user.model.js';
 
 
-// Define the connectToDatabase function (or import it if defined elsewhere)
+
+
+
 async function connectToDatabase() {
   try {
     await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
@@ -20,7 +21,7 @@ async function connectToDatabase() {
   }
 }
 
-async function seedRole() {
+async function adminSeeder() {
   await connectToDatabase();
 
   await Staff.deleteMany({});
@@ -42,7 +43,7 @@ async function seedRole() {
       lastName: 'Admin',
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
-      staffRoleId: adminRole.id,
+      staffRoleId: adminRole.id
     },
     {
       firstName: 'Ali',
@@ -105,6 +106,10 @@ async function seedRole() {
 }
 
 
+adminSeeder().catch((error) => {
+  console.error('Error in admin seeding:', error);
+  process.exit(1);
+});
 
 
-seedRole();
+// export default seedRole;

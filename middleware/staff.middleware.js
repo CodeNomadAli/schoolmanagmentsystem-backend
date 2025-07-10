@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 import Staff from "../models/staff.model.js";
+import Permission from "../models/permission.model.js";
+import StaffRole from "../models/staff_role.model.js"; // Ensure this matches the Role model name
 
-const auth = async (req, res, next) => {
+const staffAuth = async (req, res, next) => {
   try {
     const authHeader = req.header("Authorization");
 
@@ -12,22 +14,29 @@ const auth = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await Staff.findById(decoded.id); 
 
-    if (!user) {
-      return res.status(401).json({ message: "Access denied. User not found." });
+    const staff = await Staff.findById(decoded.userId)
+      .populate({
+        path: "staffRoleId",
+      });
+
+    if (!staff) {
+      return res.status(401).json({ message: "Access denied. Staff not found." });
     }
 
+    // Attach user data to request
     req.user = {
-      id: user._id,
-      email: user.email,
-      role: user.accessLevel,
+      id: staff._id,
+      email: staff.email,
+      role: staff.accessLevel,
     };
+
     req.token = token;
     next();
   } catch (err) {
+    
     return res.status(401).json({ message: "Invalid or expired token." });
   }
 };
 
-export default auth;
+export default staffAuth;

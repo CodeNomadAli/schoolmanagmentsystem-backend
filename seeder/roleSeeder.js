@@ -2,6 +2,7 @@
 import mongoose from 'mongoose';
 import StaffRole from '../models/staff_role.model.js';
 import staffPermission from '../models/staff_permission.model.js';
+import e from 'express';
 
 // Define the connectToDatabase function (or import it if defined elsewhere)
 async function connectToDatabase() {
@@ -40,7 +41,17 @@ async function seedRole() {
       await staffPermission.findOne({ slug: 'create-role' }),
       await staffPermission.findOne({ slug: 'update-role' }),
       await staffPermission.findOne({ slug: 'delete-role' }),
+      await staffPermission.findOne({ slug: 'create-remedy' }),
+      await staffPermission.findOne({ slug: 'read-remedy' }),
+      await staffPermission.findOne({ slug: 'update-remedy' }),
+      await staffPermission.findOne({ slug: 'delete-remedy' }),
+      await staffPermission.findOne({ slug: 'create-category' }),
+      await staffPermission.findOne({ slug: 'read-category' }),
+      await staffPermission.findOne({ slug: 'update-category' }),
+      await staffPermission.findOne({ slug: 'delete-category' }),
+      
       ] },
+    { name: 'Manager', description: 'Manager role with limited access', }
   ];
 
   // Create and save the roles
@@ -56,4 +67,9 @@ async function seedRole() {
   console.log('Database connection closed');
 }
 
-seedRole();
+seedRole().catch((error) => {
+  console.error('Error in role seeding:', error);
+  process.exit(1);
+});
+
+// export default seedRole;

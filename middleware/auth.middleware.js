@@ -17,7 +17,7 @@ const auth = async (req, res, next) => {
 
     const user = await User.findById(decoded.userId);
     if (!user) {
-      return res .status(401).json({ message: "Access denied. User not found." });
+      return res .status(401).json({ message: "Access denied. user not found." });
     }
 
     req.user = {

@@ -352,7 +352,7 @@ const createComment = async (req, res) => {
   }
 };
 
-export {
+export  {
   flagRemedy,
   createRemedy,
   getAllRemedies,

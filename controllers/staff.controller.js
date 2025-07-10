@@ -74,7 +74,7 @@ export const createStaff = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newStaff = await Staff.create({ email, password: hashedPassword, ...rest });
 
-    return res.status(201).json({ message: "Staff created", success: true, staff: newStaff });
+    return res.status(201).json({ message: "Staff created", success: true, data: newStaff });
   } catch (error) {
     console.error("Create staff error:", error); // 👈 log actual error
     return res.status(500).json({ message: "Internal server error", success: false });

@@ -1,22 +1,32 @@
 import express from "express";
 import {
-  healthProfileStatus,
-  getUserHealthQuestionBaseOnHealthProfile,
-  userHealthProfile,
+  registerUser,
+  loginUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  suspendUser,
+  warnUser,
+  createUser
 } from "../controllers/user.controller.js";
+import checkPermission from "../middleware/check_permission.middleware.js";
 
-const userRouter = express.Router();
 
-// POST /health-profile/generate
-userRouter.post(
-  "/health-profile/generate",
-  getUserHealthQuestionBaseOnHealthProfile
-);
+const router = express.Router();
 
-// POST /health-profile
-userRouter.post("/health-profile", userHealthProfile);
+router.post("/register",registerUser);
+router.post("/login",loginUser);
+router.get("/",getAllUsers);
+router.get("/:id",getUserById);
+router.put("/:id",updateUser);
+router.delete("/:id",deleteUser);
+router.post("/:id/suspend",suspendUser);
+router.post("/:id/warn", warnUser);
+router.post("/create", createUser);
 
-// GET /health-profile/status
-userRouter.get("/health-profile/status", healthProfileStatus);
 
-export default userRouter;
+
+
+
+export default router;
