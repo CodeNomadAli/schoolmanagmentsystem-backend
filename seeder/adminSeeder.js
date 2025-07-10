@@ -22,7 +22,7 @@ async function connectToDatabase() {
   }
 }
 
-async function seedRole() {
+async function adminSeeder() {
   await connectToDatabase();
 
   await Staff.deleteMany({});
@@ -107,6 +107,10 @@ async function seedRole() {
 }
 
 
+adminSeeder().catch((error) => {
+  console.error('Error in admin seeding:', error);
+  process.exit(1);
+});
 
 
-export default seedRole;
+// export default seedRole;
