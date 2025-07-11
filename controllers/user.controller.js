@@ -1,6 +1,9 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import userValidations from "../validations/user.validations.js";
+
+const { createUserSchema, loginUserSchema,updateUserSchema } = userValidations;
 
 
 const generateToken = (user) => {
@@ -14,6 +17,10 @@ const generateToken = (user) => {
 
 export const registerUser = async (req, res) => {
   try {
+      const { error, value } = createUserSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -49,9 +56,13 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
+     const { error, value } = loginUserSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required", success: false });
+  
 
     const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
@@ -120,6 +131,11 @@ export const getUserById = async (req, res) => {
 // @desc Update user
 export const updateUser = async (req, res) => {
   try {
+    const { error, value } = updateUserSchema.validate(req.body);
+   
+    if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { id } = req.params;
     const update = { ...req.body };
 
@@ -140,7 +156,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// @desc Delete user
+
 export const deleteUser = async (req, res) => {
   try {
     const deleted = await User.findByIdAndDelete(req.params.id);
@@ -153,7 +169,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// @desc Suspend user
+
 export const suspendUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -202,12 +218,14 @@ export const warnUser = async (req, res) => {
 
  export const createUser = async (req, res) => {
   try {
+      const { error, value } = createUserSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { username, email, password, profileImage } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required", success: false });
-    }
-
+  
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already registered", success: false });

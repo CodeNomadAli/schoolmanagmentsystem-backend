@@ -18,12 +18,12 @@ const createArticle = async (req, res) => {
       });
     }
 
-    const article = await Article.create(value);
+    const data = await Article.create(value);
 
     res.status(201).json({
       success: true,
       message: "Article created successfully",
-      article,
+      data,
     });
   } catch (error) {
     console.error("Error creating article:", error);
@@ -39,10 +39,10 @@ const getAllArticles = async (req, res) => {
   try {
     const { search, page = 1, limit = 10 } = req.query;
 
-    // Build query
+  
     const query = {};
     
-    // Add search functionality
+  
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -55,7 +55,7 @@ const getAllArticles = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const articles = await Article.find(query)
+    const data = await Article.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
@@ -65,7 +65,7 @@ const getAllArticles = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      articles,
+      data,
       pagination: {
         total,
         page: parseInt(page),
@@ -84,6 +84,7 @@ const getAllArticles = async (req, res) => {
 
 const getArticlesByWriterId = async (req, res) => {
   const author = req.user.id;
+  console.log(author, "auther id sharef")
   try {
     const { status, page = 1, limit = 10, search = "" } = req.query;
 
@@ -105,7 +106,7 @@ const getArticlesByWriterId = async (req, res) => {
     }
 
     // Fetch filtered and paginated articles
-    const articles = await Article.find(query)
+    const data = await Article.find(query)
       .populate("author", "username profileImage email")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -115,7 +116,7 @@ const getArticlesByWriterId = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      articles,
+      data,
       pagination: {
         total,
         page: parsedPage,
@@ -220,7 +221,8 @@ const getArticleBySlug = async (req, res) => {
 
 const getArticleById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = r
+    eq.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
@@ -291,7 +293,7 @@ const updateArticle = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Article updated successfully",
-      article: updatedArticle,
+      data: updatedArticle,
     });
   } catch (error) {
     console.error("Error updating article:", error);
@@ -351,7 +353,7 @@ const checkSlugUniqueness = async (req, res) => {
       isUnique: !existingArticle,
       message: existingArticle ? "Slug already exists" : "Slug is available"
     });
-
+    
   } catch (error) {
     console.error("Error checking slug uniqueness:", error);
     return res.status(500).json({

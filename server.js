@@ -29,11 +29,11 @@ const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
 
-dotenv.config(); 
+dotenv.config();
 app.use(express.json());
 
 app.use(cors({
-  origin: [ process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:3000" ], // Allow requests from these origins
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:3000"], // Allow requests from these origins
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], //
   credentials: true,
 }));
@@ -45,43 +45,43 @@ connectDB(); // connect to Database
 app.use("/api/v1/auth", authRouter);
 // user routes
 
-app.use("/api/v1/users",auth, userRouter);
+app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
-  app.use("/api/v1/user-profile", auth, UserProfile);
+app.use("/api/v1/user-profile", auth, UserProfile);
 // review routes
-app.use("/api/v1/review",reviewRouter);
+app.use("/api/v1/review", reviewRouter);
 // remedy routes
-app.use("/api/v1/remedy",auth, remedyRouter);
+app.use("/api/v1/remedy", auth, remedyRouter);
 // admin Routes
-app.use("/api/v1/admin",auth,adminMiddleware,adminRouter);
+app.use("/api/v1/admin", auth, adminMiddleware, adminRouter);
 // upload files (images,etc)
-app.use("/api/v1/upload",auth,uploadRouter)
+app.use("/api/v1/upload", auth, uploadRouter)
 // moderator routes
-app.use("/api/v1/moderator",auth,ModeratorRoute);
+app.use("/api/v1/moderator", auth, ModeratorRoute);
 // writer routes
-app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
+app.use("/api/v1/writer", auth, writerMiddleware, WriterRouter)
 // articles route
-app.use("/api/v1/articles",ArticleRouter)
+app.use("/api/v1/articles", ArticleRouter)
 
 
 // staff routes
-app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffAuth, staffRolesRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffAuth, staffPermissionRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/users",staffAuth, userPortalRoute);
+app.use(PORTAL_ROUTE_PREFIX + "/staff-permissions", staffAuth, staffPermissionRoutes)
 
+app.use(PORTAL_ROUTE_PREFIX + "/users", staffAuth,userPortalRoute);
 
+app.use(PORTAL_ROUTE_PREFIX + "/writer", staffAuth, WriterRouter)
 
+app.use(PORTAL_ROUTE_PREFIX + "/remedy", remedyRoutes);
 
-app.use(PORTAL_ROUTE_PREFIX+"/remedy", remedyRoutes);
-
-app.use(PORTAL_ROUTE_PREFIX+"/remedy-types", remedyTypeRoutes);
-app.use(PORTAL_ROUTE_PREFIX+"/remedy-categories", remedyCategoryRoutes);
+app.use(PORTAL_ROUTE_PREFIX + "/remedy-types", remedyTypeRoutes);
+app.use(PORTAL_ROUTE_PREFIX + "/remedy-categories", remedyCategoryRoutes);
 
 // main();
 const PORT = process.env.PORT || 3000;
