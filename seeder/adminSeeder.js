@@ -22,11 +22,7 @@ async function connectToDatabase() {
   }
 }
 
-  const permission = staffPermission.map((perm) => ({
-    
-    slug: perm.slug,
-    
-  }));
+  const permission = staffPermission.map((perm) => (perm.slug));
   console.log('Permissions:', permission);
 
 async function seedRole() {

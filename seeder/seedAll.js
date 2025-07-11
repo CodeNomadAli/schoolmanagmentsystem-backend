@@ -12,10 +12,9 @@ async function runAllSeeders() {
   try {
     
     console.log("🟢 Connected to DB")
-
-    
-    const adminRoleId = await seedRoles()
-    await adminSeeder(adminRoleId)
+    await seedRoles()
+    console.log("🟢 Roles seeded successfully")
+    await adminSeeder()
     console.log("🟢 Admin seeder ran successfully")
     await seedRemedyCategories()
     console.log("🟢 Remedy categories seeded successfully")
