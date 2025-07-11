@@ -202,7 +202,7 @@ export const warnUser = async (req, res) => {
 
  export const createUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, profileImage } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required", success: false });
@@ -218,6 +218,7 @@ export const warnUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      profileImage
     });
 
     return res.status(201).json({

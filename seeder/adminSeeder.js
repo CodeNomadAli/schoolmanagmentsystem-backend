@@ -21,7 +21,14 @@ async function connectToDatabase() {
   }
 }
 
+
+  const permission = staffPermission.map((perm) => (perm.slug));
+  console.log('Permissions:', permission);
+
+async function seedRole() {
+
 async function adminSeeder() {
+
   await connectToDatabase();
 
   await Staff.deleteMany({});
