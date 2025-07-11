@@ -15,7 +15,7 @@ import uploadRouter from "./routes/upload.routes.js";
 import ModeratorRoute from "./routes/moderator.route.js";
 import WriterRouter from "./routes/writer.route.js";
 import writerMiddleware from './middleware/writer.middleware.js';
-import ArticleRouter from "./routes/article.route.js";
+import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
 import UserProfile from "./models/user_profile.model.js";
 import staffAuth from "./middleware/staff.middleware.js";
@@ -24,6 +24,7 @@ import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
 import remedyRoutes from "./routes/portal/remedy.route.js";
 import remedyCategoryRoutes from "./routes/portal/remedyCategory.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedyType.routes.js";
+import ArticleRouter from "./routes/portal/article.route.js";
 
 const app = express();
 
@@ -63,7 +64,7 @@ app.use("/api/v1/moderator", auth, ModeratorRoute);
 // writer routes
 app.use("/api/v1/writer", auth, writerMiddleware, WriterRouter)
 // articles route
-app.use("/api/v1/articles", ArticleRouter)
+app.use("/api/v1/articles", ArticleRoute)
 
 
 // staff routes
@@ -76,7 +77,7 @@ app.use(PORTAL_ROUTE_PREFIX + "/staff-permissions", staffAuth, staffPermissionRo
 
 app.use(PORTAL_ROUTE_PREFIX + "/users", staffAuth,userPortalRoute);
 
-app.use(PORTAL_ROUTE_PREFIX + "/writer", staffAuth, WriterRouter)
+app.use(PORTAL_ROUTE_PREFIX + "/article", staffAuth,ArticleRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/remedy", remedyRoutes);
 

@@ -1,5 +1,5 @@
-import Article from "../models/article.model.js";
-import articleValidationSchema from "../validations/article.validation.js";
+import Article from "../../models/article.model.js";
+import articleValidationSchema from "../../validations/article.validation.js";
 import mongoose from "mongoose";
 
 const createArticle = async (req, res) => {

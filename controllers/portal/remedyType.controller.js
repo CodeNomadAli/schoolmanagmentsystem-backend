@@ -1,6 +1,6 @@
 
 import mongoose from "mongoose";
-import RemedyType from "../models/remedy_types.model.js";
+import RemedyType from "../../models/remedy_types.model.js";
 
 // Create
 export const createRemedyType = async (req, res) => {

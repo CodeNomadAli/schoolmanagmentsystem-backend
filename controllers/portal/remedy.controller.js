@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import Remedy from "../models/remedy.model.js";
-import { remedyValidation } from "../validations/remedy.validation.js";
-import ModerationStatus from "./../models/moderation_status.model.js";
-import Flag from "../models/flag.model.js";
-import Comment from "../models/comment.model.js";
+import Remedy from "../../models/remedy.model.js";
+import { remedyValidation } from "../../validations/remedy.validation.js";
+import ModerationStatus from "../../models/moderation_status.model.js";
+import Flag from "../../models/flag.model.js";
+import Comment from "../../models/comment.model.js";
 import {
   createCommentValidation,
   moderateCommentValidation,
-} from "../validations/comment.validation.js";
+} from "../../validations/comment.validation.js";
 
 const createRemedy = async (req, res) => {
   try {
