@@ -66,7 +66,7 @@ const articleSchema = Joi.object({
   version: Joi.number().integer().min(1).optional(),
   isFeatured: Joi.boolean().optional(),
 
-  // Views and comments are usually controlled internally, not from client
+
   viewsCount: Joi.number().integer().min(0).optional(),
   commentsCount: Joi.number().integer().min(0).optional(),
 });

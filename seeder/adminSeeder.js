@@ -31,6 +31,8 @@ async function seedRole() {
   console.log('Cleared existing staff and user data');
 
   const adminRole = await StaffRole.findOne({ name: 'Super Admin' });
+   const writerRole = await StaffRole.findOne({ name: 'Writer' });
+   
   let userRole = await StaffRole.findOne({ name: 'User' });
 
   if (!adminRole) throw new Error("Super Admin role not found");
@@ -38,6 +40,7 @@ async function seedRole() {
     userRole = await StaffRole.create({ name: 'User' });
     console.log('Created missing User role');
   }
+  if(!writerRole) throw new Error("writer role not found")
 
   const staff = [
     {
@@ -51,9 +54,9 @@ async function seedRole() {
     {
       firstName: 'Ali',
       lastName: 'Khan',
-      email: 'ali.khan@example.com',
-      password: await hashPassword('user123'),
-      staffRoleId: userRole.id,
+      email: 'writer@gmail.com',
+      password: await hashPassword('writer123'),
+      staffRoleId: writerRole.id,
     },
     {
       firstName: 'Sara',

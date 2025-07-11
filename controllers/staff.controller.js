@@ -100,6 +100,7 @@ export const getAllStaff = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+       order: "desc",
       data: {
       staffs: staffList,
       pagination: {
@@ -126,7 +127,7 @@ export const getStaffById = async (req, res) => {
       return res.status(404).json({ message: "Staff not found", success: false });
     }
 
-    return res.status(200).json({ success: true, staff });
+    return res.status(200).json({ success: true, data });
   } catch (error) {
     console.error("Get staff by ID error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
@@ -148,7 +149,7 @@ export const updateStaff = async (req, res) => {
       return res.status(404).json({ message: "Staff not found", success: false });
     }
 
-    return res.status(200).json({ message: "Staff updated", success: true, staff: updatedStaff });
+    return res.status(200).json({ message: "Staff updated", success: true, data: updatedStaff });
   } catch (error) {
     console.error("Update staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
