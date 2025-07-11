@@ -1,9 +1,9 @@
 
-import StaffRole from "../models/staff_role.model.js";
+import StaffRole from "../../models/staff_role.model.js";
 import bcrypt from "bcrypt";
-import generateToken from "../utils/generateToken.js";
-import { getClientInfo } from "../utils/clientInfo.js";
-import Session from "../models/session.model.js";
+import generateToken from "../../utils/generateToken.js";
+import { getClientInfo } from "../../utils/clientInfo.js";
+import Session from "../../models/session.model.js";
 
 export const getAllStaffRoles = async (req, res) => {
     try {
@@ -13,7 +13,7 @@ export const getAllStaffRoles = async (req, res) => {
             .exec();
 
         // Count users for each role
-        const Staff = (await import("../models/staff.model.js")).default;
+        const Staff = (await import("../../models/staff.model.js")).default;
         const rolesWithUserCount = await Promise.all(
             roles.map(async (role) => {
                 const userCount = await Staff.countDocuments({ staffRoleId: role._id });
@@ -135,7 +135,7 @@ export const deleteStaffRole = async (req, res) => {
         }
 
         // Check if the role is associated with any staff members
-        const Staff = (await import("../models/staff.model.js")).default;
+        const Staff = (await import("../../models/staff.model.js")).default;
         const staffCount = await Staff.countDocuments({ staffRoleId: id });        
 
         if (staffCount > 0) {

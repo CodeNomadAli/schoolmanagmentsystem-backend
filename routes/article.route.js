@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllArticles, getArticleBySlug } from "../controllers/article.controller.js";
+import { getAllArticles, getArticleBySlug } from "../controllers/portal/article.controller.js";
 
 const ArticleRouter = express.Router();
 

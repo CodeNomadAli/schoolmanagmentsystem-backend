@@ -7,7 +7,7 @@ import {
   getRemedyById,
   updateRemedy,
   createComment,
-} from "../controllers/remedy.controller.js";
+} from "../controllers/portal/remedy.controller.js";
 import auth from "../middleware/auth.middleware.js";
 import adminMiddleware from "../middleware/staff.middleware.js";
 

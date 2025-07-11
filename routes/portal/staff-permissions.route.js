@@ -6,7 +6,7 @@ import {
   // updateStaff,
   // deleteStaff,
   
-} from "../../controllers/staff-permissions.controller.js";
+} from "../../controllers/portal/staff-permissions.controller.js";
 
 const router = express.Router();
 

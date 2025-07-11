@@ -1,8 +1,8 @@
-import Staff from "../models/staff.model.js";
+import Staff from "../../models/staff.model.js";
 import bcrypt from "bcrypt";
-import generateToken from "../utils/generateToken.js";
-import { getClientInfo } from "../utils/clientInfo.js";
-import Session from "../models/session.model.js";
+import generateToken from "../../utils/generateToken.js";
+import { getClientInfo } from "../../utils/clientInfo.js";
+import Session from "../../models/session.model.js";
 
 
 export const staffLogin = async (req, res) => {

@@ -1,5 +1,5 @@
 
-import StaffPermissions from "../models/staff_permission.model.js";
+import StaffPermissions from "../../models/staff_permission.model.js";
 
 export const getAllStaffPermissions = async (req, res) => {
     try {

@@ -15,7 +15,7 @@ import {
   validatedEmailToken,
   verifyAuth,
   staffLogin
-} from "../controllers/auth.controller.js";
+} from "../controllers/portal/auth.controller.js";
 
 const authRouter = express.Router();
 
