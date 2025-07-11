@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import Staff from '../models/staff.model.js';
 import StaffRole from '../models/staff_role.model.js';
 import hashPassword from '../utils/hashPassword.js';
-import staffPermission from './staffPermissionSeeder.js'; // Adjust the import path as needed
 import User from '../models/user.model.js';
 
 
@@ -22,8 +21,7 @@ async function connectToDatabase() {
   }
 }
 
-  const permission = staffPermission.map((perm) => (perm.slug));
-  console.log('Permissions:', permission);
+  
 
 async function seedRole() {
   await connectToDatabase();
@@ -48,7 +46,7 @@ async function seedRole() {
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
       staffRoleId: adminRole.id,
-      permissions: permission, // Assigning permissions to the Super Admin    
+        //  
     },
     {
       firstName: 'Ali',

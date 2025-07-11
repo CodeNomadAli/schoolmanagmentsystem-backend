@@ -40,6 +40,8 @@ const staffLogin = async (req, res) => {
       })
       .exec();
 
+    console.log(email)
+
     if (!staff) {
       return res.status(401).json({
         message: "Invalid email or password",

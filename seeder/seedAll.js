@@ -5,22 +5,24 @@ dotenv.config()
 
 import seedRoles from "./roleSeeder.js"
 import adminSeeder from "./adminSeeder.js"
-import seedRemedyCategories from "./remedyCategorySeeder.js"
-import seedRemedyTypes from "./remedyTypeSeeder.js"
-import seedRemedies from "./remedySeeder.js"
+// import seedRemedyCategories from "./remedyCategorySeeder.js"
+// import seedRemedyTypes from "./remedyTypeSeeder.js"
+// import seedRemedies from "./remedySeeder.js"
+import permissionSeeder from "./staffPermissionSeeder.js"
 async function runAllSeeders() {
   try {
     
+    await permissionSeeder()
     console.log("🟢 Connected to DB")
     await seedRoles()
     console.log("🟢 Roles seeded successfully")
     await adminSeeder()
     console.log("🟢 Admin seeder ran successfully")
-    await seedRemedyCategories()
+    // await seedRemedyCategories()
     console.log("🟢 Remedy categories seeded successfully")
-    await seedRemedyTypes()
+    // await seedRemedyTypes()
     console.log("🟢 Remedy types seeded successfully")
-    await seedRemedies()
+    // await seedRemedies()
     console.log("🟢 Remedies seeded successfully")
 
     console.log("🎉 All seeders ran successfully")
