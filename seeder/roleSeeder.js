@@ -67,4 +67,4 @@ async function seedRole() {
   console.log('Database connection closed');
 }
 
-export default seedRole;
+export default seedRoles;
