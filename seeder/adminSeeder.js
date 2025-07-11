@@ -118,5 +118,5 @@ adminSeeder().catch((error) => {
   process.exit(1);
 });
 
-
-// export default seedRole;
+}
+export default adminSeeder;
