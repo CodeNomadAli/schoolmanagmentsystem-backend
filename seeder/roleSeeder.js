@@ -5,20 +5,9 @@ import staffPermission from '../models/staff_permission.model.js';
 import e from 'express';
 
 // Define the connectToDatabase function (or import it if defined elsewhere)
-async function connectToDatabase() {
-  try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-  }
-}
 
-async function seedRole() {
-  await connectToDatabase();
+async function seedRoles() {
+
 
   // Optional: Clear existing data
   await StaffRole.deleteMany({});
@@ -62,8 +51,8 @@ async function seedRole() {
     console.error('Error seeding roles:', error);
   }
 
-  // Close the database connection
-  await mongoose.connection.close();
+
+
   console.log('Database connection closed');
 }
 
