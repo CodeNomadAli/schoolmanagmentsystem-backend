@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import generateToken from "../../utils/generateToken.js";
 import { getClientInfo } from "../../utils/clientInfo.js";
 import Session from "../../models/session.model.js";
+import { apiResponse } from "../../helper.js";
 
 
 export const staffLogin = async (req, res) => {
@@ -85,6 +86,8 @@ export const createStaff = async (req, res) => {
 
 export const getAllStaff = async (req, res) => {
   try {
+
+
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
     const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
@@ -98,19 +101,13 @@ export const getAllStaff = async (req, res) => {
       Staff.countDocuments()
     ]);
 
-    return res.status(200).json({
-      success: true,
-       order: "desc",
-      data: {
-      staffs: staffList,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit)
-      }
-    }
-    });
+    return res.json(apiResponse(200, { data:staffList, pagination: {
+            total,
+            page,
+            limit,
+            pages: Math.ceil(total / limit),
+          }  },
+        'Data fetched successfully'));
   } catch (error) {
     console.error("Get all staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
