@@ -67,4 +67,9 @@ async function seedRole() {
   console.log('Database connection closed');
 }
 
-export default seedRole;
+seedRole().catch((error) => {
+  console.error('Error in role seeding:', error);
+  process.exit(1);
+});
+
+// export default seedRole;

@@ -1,3 +1,6 @@
+import mongoose from "mongoose"
+import StaffPermission from "../models/staff_permission.model.js"
+
 const permissions = [
   // User CRUD
   { name: "Create Users", slug: "create-users", description: "Can create user data" },
@@ -36,4 +39,40 @@ const permissions = [
   { name: "Delete Category", slug: "delete-category", description: "Can delete category data" },
 ]
 
-export default permissions
+
+// Define the connectToDatabase function (or import it if defined elsewhere)
+async function connectToDatabase() {
+  try {
+    await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+  }
+}
+
+
+const seedPermissions = async () => {
+  try {
+    await connectToDatabase()
+
+    // Clear existing permissions
+    await StaffPermission.deleteMany({})
+
+    // Insert new permissions
+    const createdPermissions = await StaffPermission.insertMany(permissions)
+    console.log("✅ Permissions seeded successfully:", createdPermissions.length)
+  } catch (error) {
+    console.error("❌ Error seeding permissions:", error)
+  } finally {
+    await mongoose.disconnect()
+  }
+}
+
+seedPermissions().catch((error) => {
+  console.error("❌ Error in permission seeding:", error)
+  process.exit(1)
+})  
+

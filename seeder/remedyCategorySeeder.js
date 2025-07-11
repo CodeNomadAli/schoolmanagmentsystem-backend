@@ -48,4 +48,8 @@ const seedRemedyCategories = async () => {
   }
 };
 
-export default seedRemedyCategories;
+seedRemedyCategories().catch((error) => {
+  console.error("❌ Error in remedy category seeding:", error);
+  process.exit(1);
+});
+// export default seedRemedyCategories;

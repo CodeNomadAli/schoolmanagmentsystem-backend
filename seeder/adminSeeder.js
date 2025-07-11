@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import Staff from '../models/staff.model.js';
 import StaffRole from '../models/staff_role.model.js';
 import hashPassword from '../utils/hashPassword.js';
-import staffPermission from './staffPermissionSeeder.js'; // Adjust the import path as needed
 import User from '../models/user.model.js';
 
 
@@ -22,10 +21,14 @@ async function connectToDatabase() {
   }
 }
 
+
   const permission = staffPermission.map((perm) => (perm.slug));
   console.log('Permissions:', permission);
 
 async function seedRole() {
+
+async function adminSeeder() {
+
   await connectToDatabase();
 
   await Staff.deleteMany({});
@@ -47,8 +50,7 @@ async function seedRole() {
       lastName: 'Admin',
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
-      staffRoleId: adminRole.id,
-      permissions: permission, // Assigning permissions to the Super Admin    
+      staffRoleId: adminRole.id
     },
     {
       firstName: 'Ali',
@@ -111,6 +113,10 @@ async function seedRole() {
 }
 
 
+adminSeeder().catch((error) => {
+  console.error('Error in admin seeding:', error);
+  process.exit(1);
+});
 
 
-export default seedRole;
+// export default seedRole;
