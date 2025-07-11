@@ -1,36 +1,36 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-dotenv.config();
+import mongoose from "mongoose"
+import dotenv from "dotenv"
+dotenv.config()
 
-import seedPermissions from "./staffPermissionSeeder.js";
-import seedRoles from "./roleSeeder.js";
-import adminSeeder from "./adminSeeder.js";
-import seedRemedyCategories from "./remedyCategorySeeder.js";
-import seedRemedyTypes from "./remedyTypeSeeder.js";
-import seedRemedies from "./remedySeeder.js";
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/remedy";
-
-const runAllSeeders = async () => {
+import seedRoles from "./roleSeeder.js"
+import adminSeeder from "./adminSeeder.js"
+import seedRemedyCategories from "./remedyCategorySeeder.js"
+import seedRemedyTypes from "./remedyTypeSeeder.js"
+import seedRemedies from "./remedySeeder.js"
+async function runAllSeeders() {
   try {
-    await mongoose.connect(MONGO_URI);
-    console.log("✅ Connected to MongoDB");
+    
+    console.log("🟢 Connected to DB")
+    await seedRoles()
+    console.log("🟢 Roles seeded successfully")
+    await adminSeeder()
+    console.log("🟢 Admin seeder ran successfully")
+    await seedRemedyCategories()
+    console.log("🟢 Remedy categories seeded successfully")
+    await seedRemedyTypes()
+    console.log("🟢 Remedy types seeded successfully")
+    await seedRemedies()
+    console.log("🟢 Remedies seeded successfully")
 
-    await seedPermissions();
-    await seedRoles();
-    await adminSeeder();
-    await seedRemedyCategories();
-    await seedRemedyTypes();
-    await seedRemedies();
-
-    console.log("🎉 All seeders ran successfully");
+    console.log("🎉 All seeders ran successfully")
   } catch (err) {
-    console.error("❌ Seeder error:", err);
+    console.error("❌ Seeder failed:", err)
   } finally {
-    await mongoose.disconnect();
-    console.log("🔌 Disconnected from MongoDB");
-    process.exit(0);
+    await mongoose.disconnect()
+    console.log("🔌 Disconnected from DB")
+    process.exit(0)
   }
-};
+}
 
-runAllSeeders();
+runAllSeeders()
