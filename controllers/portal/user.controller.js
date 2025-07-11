@@ -2,6 +2,7 @@ import User from "../../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userValidations from "../../validations/user.validations.js";
+import { apiResponse } from "../../helper.js";
 
 const { createUserSchema, loginUserSchema,updateUserSchema } = userValidations;
 
@@ -89,6 +90,7 @@ export const loginUser = async (req, res) => {
 
 // @desc Get all users (with pagination)
 export const getAllUsers = async (req, res) => {
+  let response;
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -98,17 +100,17 @@ export const getAllUsers = async (req, res) => {
       User.find().select("-password").skip(skip).limit(limit),
       User.countDocuments(),
     ]);
+    
 
-    res.status(200).json({
-      success: true,
-      data: users,
-      pagination: {
+    response = apiResponse(200, { users, pagination: {
         total,
         page,
         limit,
         pages: Math.ceil(total / limit),
-      },
-    });
+      }  },
+    'Data fetched successfully')
+
+    res.status(200).json(response);
   } catch (error) {
     console.error("Get users error:", error);
     res.status(500).json({ message: "Internal server error", success: false });
