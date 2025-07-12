@@ -43,7 +43,7 @@ const createRemedy = async (req, res) => {
 };
 
 
-export const getAllRemedies = async (req, res) => {
+ const getAllRemedies = async (req, res) => {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
