@@ -59,12 +59,12 @@ const getAllArticles = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("author", "username profileImage email");
+      .populate("author category");
 
     const total = await Article.countDocuments(query);
 
     res.json(apiResponse(200, {
-   data,
+   articles: data,
   pagination: {
     total,
     page,
@@ -222,8 +222,7 @@ const getArticleBySlug = async (req, res) => {
 
 const getArticleById = async (req, res) => {
   try {
-    const { id } = r
-    eq.params;
+    const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
@@ -235,7 +234,7 @@ const getArticleById = async (req, res) => {
     const article = await Article.findById(id).populate(
       "author",
       "username email profileImage"
-    );
+    ).populate('category');
 
     if (!article) {
       return res.status(404).json({
@@ -244,10 +243,7 @@ const getArticleById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      article,
-    });
+    res.status(200).json(apiResponse(200, article, 'Article fetched successfully'));
   } catch (error) {
     console.error("Error fetching article:", error);
     res.status(500).json({

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+import './permission.model.js'; // Ensure Permission model is imported for autopopulate
 const rolePermissionSchema = new mongoose.Schema({
     role: {
         type: mongoose.Schema.Types.ObjectId,

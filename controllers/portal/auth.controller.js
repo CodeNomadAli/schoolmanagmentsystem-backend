@@ -35,7 +35,7 @@ const staffLogin = async (req, res) => {
         path: "staffRoleId",
         populate: {
           path: "permissions", 
-          model: "staff_Permission",
+          model: "StaffPermission",
         },
       })
       .exec();

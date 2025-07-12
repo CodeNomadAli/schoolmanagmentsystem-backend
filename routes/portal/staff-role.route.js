@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/", createStaffRole);         
 router.get("/", getAllStaffRoles);          
 router.get("/:id", fetchRoleById);      
-router.put("/:id", updateStaffRole);       
+router.put("/:id", updateStaffRole);     
 router.delete("/:id", deleteStaffRole);    
 
 export default router;
