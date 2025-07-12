@@ -63,13 +63,16 @@ const getAllArticles = async (req, res) => {
 
     const total = await Article.countDocuments(query);
 
-    res.json(apiResponse(200, { data, pagination: {
-            total,
-            page,
-            limit,
-            pages: Math.ceil(total / limit),
-          }  },
-        'Data fetched successfully'));
+    res.json(apiResponse(200, {
+   data,
+  pagination: {
+    total,
+    page,
+    limit,
+    pages: Math.ceil(total / limit),
+  }
+}, 'Data fetched successfully'));
+
   } catch (error) {
     console.error("Error fetching articles:", error);
     res.status(500).json({

@@ -53,6 +53,7 @@ const permissions = [
     slug: "generate-slug",
     description: "Can auto-generate a unique article slug"
   }
+  
 
 
 ]
