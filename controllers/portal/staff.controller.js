@@ -101,7 +101,7 @@ export const getAllStaff = async (req, res) => {
       Staff.countDocuments()
     ]);
 
-    return res.json(apiResponse(200, { data:staffList, pagination: {
+    return res.json(apiResponse(200, {staffList, pagination: {
             total,
             page,
             limit,

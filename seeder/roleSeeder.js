@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import StaffRole from '../models/staff_role.model.js';
 import staffPermission from '../models/staff_permission.model.js';
-import e from 'express';
+
 
 // Define the connectToDatabase function (or import it if defined elsewhere)
 async function connectToDatabase() {
