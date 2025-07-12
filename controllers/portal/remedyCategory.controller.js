@@ -1,6 +1,6 @@
 
 import mongoose from "mongoose";
-import RemedyCategory from "../../models/categories.model.js";
+import RemedyCategory from "../../models/remedyCategories.model.js";
 
 // Create
 export const createRemedyCategory = async (req, res) => {

@@ -25,6 +25,7 @@ import remedyRoutes from "./routes/portal/remedy.route.js";
 import remedyCategoryRoutes from "./routes/portal/remedyCategory.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedyType.routes.js";
 import ArticleRouter from "./routes/portal/article.route.js";
+import ArticleCategoryRouter from "./routes/portal/articleCategory.routes.js";
 
 const app = express();
 
@@ -76,6 +77,9 @@ app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 app.use(PORTAL_ROUTE_PREFIX + "/staff-permissions", staffAuth, staffPermissionRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/users", staffAuth,userPortalRoute);
+
+ 
+app.use(PORTAL_ROUTE_PREFIX + "/category", staffAuth,ArticleCategoryRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/article", staffAuth,ArticleRouter)
 
