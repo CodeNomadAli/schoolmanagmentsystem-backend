@@ -5,7 +5,7 @@ import {
   getArticleCategoryById,
   updateArticleCategory,
   deleteArticleCategory,
-} from "../../controllers/articleCategory.controller.js";
+} from "../../controllers/portal/articleCategory.controller.js"
 import checkPermission from "../../middleware/check_permission.middleware.js";
 const router = express.Router();
 

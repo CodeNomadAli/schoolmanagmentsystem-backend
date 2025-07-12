@@ -1,4 +1,5 @@
-import ArticleCategory from "../../models/ArticleCategory.js";
+
+import ArticleCategory from "../../models/articleCategories.model.js";
 
 // Create
 export const createArticleCategory = async (req, res) => {
