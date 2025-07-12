@@ -8,6 +8,7 @@ import {
   createCommentValidation,
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
+import { apiResponse } from "../../helper.js";
 
 const createRemedy = async (req, res) => {
   try {
@@ -41,7 +42,8 @@ const createRemedy = async (req, res) => {
   }
 };
 
-const getAllRemedies = async (req, res) => {
+
+export const getAllRemedies = async (req, res) => {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
@@ -54,14 +56,13 @@ const getAllRemedies = async (req, res) => {
       searchQuery.$or = [
         { name: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
-        // { ingredients: { $regex: search, $options: "i" } },
         { "createdBy.username": { $regex: search, $options: "i" } },
       ];
     }
 
-    // Add filters for active remedies only
+    // Optional filters
     // searchQuery.isActive = true;
-    // searchQuery.moderationStatus = 'approved';
+    // searchQuery.moderationStatus = "approved";
 
     const [remedies, totalRemedies] = await Promise.all([
       Remedy.find(searchQuery)
@@ -72,25 +73,25 @@ const getAllRemedies = async (req, res) => {
       Remedy.countDocuments(searchQuery),
     ]);
 
-    res.status(200).json({
-      success: true,
-      message: "Successfully fetched remedies",
-      page,
-      limit,
-      totalRemedies,
-      totalPages: Math.ceil(totalRemedies / limit),
-      hasNextPage: page < Math.ceil(totalRemedies / limit),
-      hasPrevPage: page > 1,
-      search,
+    const totalPages = Math.ceil(totalRemedies / limit);
+
+    const data = {
       remedies,
-    });
+      meta: {
+        page,
+        limit,
+        totalRemedies,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+        search,
+      },
+    };
+
+    res.status(200).json(apiResponse(true, data, "Successfully fetched remedies"));
   } catch (error) {
     console.error("Error fetching remedies:", error);
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-      success: false,
-    });
+    res.status(500).json(apiResponse(false, null, error.message));
   }
 };
 
