@@ -21,7 +21,9 @@ async function connectToDatabase() {
   }
 }
 
-async function adminSeeder() {
+  
+
+async function seedRole() {
   await connectToDatabase();
 
   await Staff.deleteMany({});
@@ -29,6 +31,8 @@ async function adminSeeder() {
   console.log('Cleared existing staff and user data');
 
   const adminRole = await StaffRole.findOne({ name: 'Super Admin' });
+   const writerRole = await StaffRole.findOne({ name: 'Writer' });
+   
   let userRole = await StaffRole.findOne({ name: 'User' });
 
   if (!adminRole) throw new Error("Super Admin role not found");
@@ -36,6 +40,7 @@ async function adminSeeder() {
     userRole = await StaffRole.create({ name: 'User' });
     console.log('Created missing User role');
   }
+  if(!writerRole) throw new Error("writer role not found")
 
   const staff = [
     {
@@ -43,14 +48,15 @@ async function adminSeeder() {
       lastName: 'Admin',
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
-      staffRoleId: adminRole.id
+      staffRoleId: adminRole.id,
+        //  
     },
     {
       firstName: 'Ali',
       lastName: 'Khan',
-      email: 'ali.khan@example.com',
-      password: await hashPassword('user123'),
-      staffRoleId: userRole.id,
+      email: 'writer@gmail.com',
+      password: await hashPassword('writer123'),
+      staffRoleId: writerRole.id,
     },
     {
       firstName: 'Sara',
@@ -106,10 +112,6 @@ async function adminSeeder() {
 }
 
 
-adminSeeder().catch((error) => {
-  console.error('Error in admin seeding:', error);
-  process.exit(1);
-});
 
 
-// export default seedRole;
+export default seedRole;

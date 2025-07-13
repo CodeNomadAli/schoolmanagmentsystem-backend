@@ -1,7 +1,7 @@
-import Article from "../models/article.model.js";
-import articleValidationSchema from "../validations/article.validation.js";
+import Article from "../../models/article.model.js";
+import articleValidationSchema from "../../validations/article.validation.js";
 import mongoose from "mongoose";
-
+import { apiResponse } from "../../helper.js";
 const createArticle = async (req, res) => {
   try {
     const articleData = req.body;
@@ -18,12 +18,12 @@ const createArticle = async (req, res) => {
       });
     }
 
-    const article = await Article.create(value);
+    const data = await Article.create(value);
 
     res.status(201).json({
       success: true,
       message: "Article created successfully",
-      article,
+      data,
     });
   } catch (error) {
     console.error("Error creating article:", error);
@@ -39,10 +39,10 @@ const getAllArticles = async (req, res) => {
   try {
     const { search, page = 1, limit = 10 } = req.query;
 
-    // Build query
+  
     const query = {};
     
-    // Add search functionality
+  
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -55,23 +55,24 @@ const getAllArticles = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const articles = await Article.find(query)
+    const data = await Article.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("author", "username profileImage email");
+      .populate("author category");
 
     const total = await Article.countDocuments(query);
 
-    res.status(200).json({
-      success: true,
-      articles,
-      pagination: {
-        total,
-        page: parseInt(page),
-        pages: Math.ceil(total / limit),
-      },
-    });
+    res.json(apiResponse(200, {
+   articles: data,
+  pagination: {
+    total,
+    page,
+    limit,
+    pages: Math.ceil(total / limit),
+  }
+}, 'Data fetched successfully'));
+
   } catch (error) {
     console.error("Error fetching articles:", error);
     res.status(500).json({
@@ -84,6 +85,7 @@ const getAllArticles = async (req, res) => {
 
 const getArticlesByWriterId = async (req, res) => {
   const author = req.user.id;
+  console.log(author, "auther id sharef")
   try {
     const { status, page = 1, limit = 10, search = "" } = req.query;
 
@@ -105,7 +107,7 @@ const getArticlesByWriterId = async (req, res) => {
     }
 
     // Fetch filtered and paginated articles
-    const articles = await Article.find(query)
+    const data = await Article.find(query)
       .populate("author", "username profileImage email")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -115,7 +117,7 @@ const getArticlesByWriterId = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      articles,
+      data,
       pagination: {
         total,
         page: parsedPage,
@@ -232,7 +234,7 @@ const getArticleById = async (req, res) => {
     const article = await Article.findById(id).populate(
       "author",
       "username email profileImage"
-    );
+    ).populate('category');
 
     if (!article) {
       return res.status(404).json({
@@ -241,10 +243,7 @@ const getArticleById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      article,
-    });
+    res.status(200).json(apiResponse(200, article, 'Article fetched successfully'));
   } catch (error) {
     console.error("Error fetching article:", error);
     res.status(500).json({
@@ -291,7 +290,7 @@ const updateArticle = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Article updated successfully",
-      article: updatedArticle,
+      data: updatedArticle,
     });
   } catch (error) {
     console.error("Error updating article:", error);
@@ -351,7 +350,7 @@ const checkSlugUniqueness = async (req, res) => {
       isUnique: !existingArticle,
       message: existingArticle ? "Slug already exists" : "Slug is available"
     });
-
+    
   } catch (error) {
     console.error("Error checking slug uniqueness:", error);
     return res.status(500).json({

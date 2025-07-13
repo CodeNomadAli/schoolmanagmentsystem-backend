@@ -1,6 +1,10 @@
-import User from "../models/user.model.js";
+import User from "../../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import userValidations from "../../validations/user.validations.js";
+import { apiResponse } from "../../helper.js";
+
+const { createUserSchema, loginUserSchema,updateUserSchema } = userValidations;
 
 
 const generateToken = (user) => {
@@ -14,6 +18,10 @@ const generateToken = (user) => {
 
 export const registerUser = async (req, res) => {
   try {
+      const { error, value } = createUserSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -49,9 +57,13 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
+     const { error, value } = loginUserSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required", success: false });
+  
 
     const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
@@ -78,6 +90,7 @@ export const loginUser = async (req, res) => {
 
 // @desc Get all users (with pagination)
 export const getAllUsers = async (req, res) => {
+  let response;
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -87,17 +100,17 @@ export const getAllUsers = async (req, res) => {
       User.find().select("-password").skip(skip).limit(limit),
       User.countDocuments(),
     ]);
+    
 
-    res.status(200).json({
-      success: true,
-      data: users,
-      pagination: {
+    response = apiResponse(200, { users, pagination: {
         total,
         page,
         limit,
         pages: Math.ceil(total / limit),
-      },
-    });
+      }  },
+    'Data fetched successfully')
+
+    res.status(200).json(response);
   } catch (error) {
     console.error("Get users error:", error);
     res.status(500).json({ message: "Internal server error", success: false });
@@ -120,6 +133,11 @@ export const getUserById = async (req, res) => {
 // @desc Update user
 export const updateUser = async (req, res) => {
   try {
+    const { error, value } = updateUserSchema.validate(req.body);
+   
+    if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
     const { id } = req.params;
     const update = { ...req.body };
 
@@ -140,7 +158,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// @desc Delete user
+
 export const deleteUser = async (req, res) => {
   try {
     const deleted = await User.findByIdAndDelete(req.params.id);
@@ -153,7 +171,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// @desc Suspend user
+
 export const suspendUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -202,12 +220,14 @@ export const warnUser = async (req, res) => {
 
  export const createUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+      const { error, value } = createUserSchema.validate(req.body);
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required", success: false });
-    }
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+    const { username, email, password, profileImage } = req.body;
 
+  
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already registered", success: false });
@@ -218,6 +238,7 @@ export const warnUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      profileImage
     });
 
     return res.status(201).json({

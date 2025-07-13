@@ -7,7 +7,8 @@ import {
   getRemedyById,
   updateRemedy,
   createComment,
-} from "../../controllers/remedy.controller.js";
+} from "../../controllers/portal/remedy.controller.js";
+
 import checkPermission from "../../middleware/check_permission.middleware.js";
 
 

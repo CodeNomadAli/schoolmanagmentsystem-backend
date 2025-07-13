@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import User from "../models/user.model.js";
-import generateToken from "../utils/generateToken.js";
+import User from "../../models/user.model.js";
+import generateToken from "../../utils/generateToken.js";
 import {
   registerValidation,
   loginValidation,
-} from "../validations/auth.validation.js";
-import { getClientInfo } from "../utils/clientInfo.js";
-import Session from "../models/session.model.js";
+} from "../../validations/auth.validation.js";
+import { getClientInfo } from "../../utils/clientInfo.js";
+import Session from "../../models/session.model.js";
 import crypto from "crypto";
-import { sendMail } from "./../services/sendMail.service.js";
-import UserProfile from "./../models/user_profile.model.js";
-import admin from "./../config/firebase.config.js";
-import hashPassword from "./../utils/hashPassword.js";
-import Staff from "../models/staff.model.js"
+import { sendMail } from "../../services/sendMail.service.js";
+import UserProfile from "../../models/user_profile.model.js";
+import admin from "../../config/firebase.config.js";
+import hashPassword from "../../utils/hashPassword.js";
+import Staff from "../../models/staff.model.js"
 
 
 const staffLogin = async (req, res) => {
@@ -35,10 +35,12 @@ const staffLogin = async (req, res) => {
         path: "staffRoleId",
         populate: {
           path: "permissions", 
-          model: "staff_Permission",
+          model: "StaffPermission",
         },
       })
       .exec();
+
+    console.log(email)
 
     if (!staff) {
       return res.status(401).json({

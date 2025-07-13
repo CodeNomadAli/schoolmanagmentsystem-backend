@@ -1,3 +1,5 @@
+
+
 import mongoose from "mongoose";
 
 const articleSchema = new mongoose.Schema(
@@ -32,7 +34,8 @@ const articleSchema = new mongoose.Schema(
       },
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ArticleCategory",
     },
 
     tags: [
@@ -72,10 +75,14 @@ const articleSchema = new mongoose.Schema(
     },
     publishedAt: {
       type: Date,
+      default: Date.now,
     },
+
 
     lastEditedAt: {
       type: Date,
+      default: Date.now,
+
     },
 
     version: {

@@ -5,7 +5,7 @@ import {
   getStaffById,
   updateStaff,
   deleteStaff
-} from "../../controllers/staff.controller.js";
+} from "../../controllers/portal/staff.controller.js";
 import checkPermission from "../../middleware/check_permission.middleware.js";
 
 const router = express.Router();

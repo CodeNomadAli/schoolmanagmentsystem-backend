@@ -6,7 +6,7 @@ import {
   updateStaffRole,
   deleteStaffRole,
   
-} from "../../controllers/staff-roles.controller.js";
+} from "../../controllers/portal/staff-roles.controller.js";
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/", createStaffRole);         
 router.get("/", getAllStaffRoles);          
 router.get("/:id", fetchRoleById);      
-router.put("/:id", updateStaffRole);       
+router.put("/:id", updateStaffRole);     
 router.delete("/:id", deleteStaffRole);    
 
 export default router;

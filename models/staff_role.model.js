@@ -12,7 +12,7 @@ const staffRoleSchema = new mongoose.Schema(
     permissions: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "staff_Permission", // Ensure this matches the Permission model name
+        ref: "StaffPermission", // Ensure this matches the Permission model name
       },
     ],
   },

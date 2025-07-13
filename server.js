@@ -15,7 +15,7 @@ import uploadRouter from "./routes/upload.routes.js";
 import ModeratorRoute from "./routes/moderator.route.js";
 import WriterRouter from "./routes/writer.route.js";
 import writerMiddleware from './middleware/writer.middleware.js';
-import ArticleRouter from "./routes/article.route.js";
+import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
 import UserProfile from "./models/user_profile.model.js";
 import staffAuth from "./middleware/staff.middleware.js";
@@ -24,12 +24,14 @@ import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
 import remedyRoutes from "./routes/portal/remedy.route.js";
 import remedyCategoryRoutes from "./routes/portal/remedyCategory.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedyType.routes.js";
+import ArticleRouter from "./routes/portal/article.route.js";
+import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
 
-dotenv.config(); 
+dotenv.config();
 app.use(express.json());
 
 app.use(cors({
@@ -45,43 +47,46 @@ connectDB(); // connect to Database
 app.use("/api/v1/auth", authRouter);
 // user routes
 
-app.use("/api/v1/users",auth, userRouter);
+app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
-  app.use("/api/v1/user-profile", auth, UserProfile);
+app.use("/api/v1/user-profile", auth, UserProfile);
 // review routes
-app.use("/api/v1/review",reviewRouter);
+app.use("/api/v1/review", reviewRouter);
 // remedy routes
-app.use("/api/v1/remedy",auth, remedyRouter);
+app.use("/api/v1/remedy", auth, remedyRouter);
 // admin Routes
-app.use("/api/v1/admin",auth,adminMiddleware,adminRouter);
+app.use("/api/v1/admin", auth, adminMiddleware, adminRouter);
 // upload files (images,etc)
-app.use("/api/v1/upload",auth,uploadRouter)
+app.use("/api/v1/upload", auth, uploadRouter)
 // moderator routes
-app.use("/api/v1/moderator",auth,ModeratorRoute);
+app.use("/api/v1/moderator", auth, ModeratorRoute);
 // writer routes
-app.use("/api/v1/writer",auth,writerMiddleware,WriterRouter)
+app.use("/api/v1/writer", auth, writerMiddleware, WriterRouter)
 // articles route
-app.use("/api/v1/articles",ArticleRouter)
+app.use("/api/v1/articles", ArticleRoute)
 
 
 // staff routes
-app.use(PORTAL_ROUTE_PREFIX+"/staff",staffAuth,staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/staff-roles",staffAuth, staffRolesRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/staff-permissions",staffAuth, staffPermissionRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX+"/users",staffAuth, userPortalRoute);
+app.use(PORTAL_ROUTE_PREFIX + "/staff-permissions", staffAuth, staffPermissionRoutes)
 
+app.use(PORTAL_ROUTE_PREFIX + "/users", staffAuth,userPortalRoute);
 
+ 
+app.use(PORTAL_ROUTE_PREFIX + "/article-categories", staffAuth,ArticleCategoryRouter)
 
+app.use(PORTAL_ROUTE_PREFIX + "/articles", staffAuth,ArticleRouter)
 
-app.use(PORTAL_ROUTE_PREFIX+"/remedy", remedyRoutes);
+app.use(PORTAL_ROUTE_PREFIX + "/remedy", remedyRoutes);
 
-app.use(PORTAL_ROUTE_PREFIX+"/remedy-types", remedyTypeRoutes);
-app.use(PORTAL_ROUTE_PREFIX+"/remedy-categories", remedyCategoryRoutes);
+app.use(PORTAL_ROUTE_PREFIX + "/remedy-types", remedyTypeRoutes);
+app.use(PORTAL_ROUTE_PREFIX + "/remedy-categories", remedyCategoryRoutes);
 
 // main();
 const PORT = process.env.PORT || 3000;

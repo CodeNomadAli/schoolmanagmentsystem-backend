@@ -1,8 +1,9 @@
-import Staff from "../models/staff.model.js";
+import Staff from "../../models/staff.model.js";
 import bcrypt from "bcrypt";
-import generateToken from "../utils/generateToken.js";
-import { getClientInfo } from "../utils/clientInfo.js";
-import Session from "../models/session.model.js";
+import generateToken from "../../utils/generateToken.js";
+import { getClientInfo } from "../../utils/clientInfo.js";
+import Session from "../../models/session.model.js";
+import { apiResponse } from "../../helper.js";
 
 
 export const staffLogin = async (req, res) => {
@@ -85,6 +86,8 @@ export const createStaff = async (req, res) => {
 
 export const getAllStaff = async (req, res) => {
   try {
+
+
     const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
     const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
@@ -98,18 +101,13 @@ export const getAllStaff = async (req, res) => {
       Staff.countDocuments()
     ]);
 
-    return res.status(200).json({
-      success: true,
-      data: {
-      staffs: staffList,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit)
-      }
-    }
-    });
+    return res.json(apiResponse(200, {staffs: staffList, pagination: {
+            total,
+            page,
+            limit,
+            pages: Math.ceil(total / limit),
+          }  },
+        'Data fetched successfully'));
   } catch (error) {
     console.error("Get all staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
@@ -126,7 +124,7 @@ export const getStaffById = async (req, res) => {
       return res.status(404).json({ message: "Staff not found", success: false });
     }
 
-    return res.status(200).json({ success: true, staff });
+    return res.status(200).json({ success: true, data: staff });
   } catch (error) {
     console.error("Get staff by ID error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
@@ -148,7 +146,7 @@ export const updateStaff = async (req, res) => {
       return res.status(404).json({ message: "Staff not found", success: false });
     }
 
-    return res.status(200).json({ message: "Staff updated", success: true, staff: updatedStaff });
+    return res.status(200).json({ message: "Staff updated", success: true, data: updatedStaff });
   } catch (error) {
     console.error("Update staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
