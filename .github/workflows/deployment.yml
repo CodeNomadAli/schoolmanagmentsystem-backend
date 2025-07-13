@@ -31,9 +31,9 @@ jobs:
           # Remove .github directory to exclude workflows from client repo
           rm -rf .github
 
-          # Add and commit changes
+          # Add all files and create a new commit
           git add -A
-          git commit -m "Latest changes from source repo" --allow-empty
+          git commit -m "Updated changes" --allow-empty
 
       - name: Debug Repository State
         run: |
@@ -41,10 +41,10 @@ jobs:
           git log --oneline -n 5
           git fsck --full  # Check for repository corruption
 
-      - name: Push to Client Repo
+      - name: Push to Client Repo with New History
         run: |
           git remote add client git@github.com:remlyo-ai/remlyo-backend.git
-          # Force push to overwrite client repo's main branch
+          # Force push to overwrite client repo's main branch and its history
           git push --force client main:main || { echo "Push failed"; git status; exit 1; }
 
       - name: Cleanup
