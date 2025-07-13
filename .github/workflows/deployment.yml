@@ -1,4 +1,4 @@
-name: Sync to Target Repository via SSH
+name: Push Clean Code to Client Repo via SSH
 
 on:
   push:
@@ -6,46 +6,49 @@ on:
       - main
 
 jobs:
-  push-to-repo:
+  push:
     runs-on: ubuntu-latest
     environment: GITHUB_PUSH
+
     steps:
-      - name: Checkout source repository
+      - name: Checkout Source Repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for accurate source repo access
+          fetch-depth: 0  # Fetch full history to ensure all objects are available
 
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.SS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
 
-      - name: Set up Git
+      - name: Prepare Clean Commit
         run: |
           git config --global user.name "Ali Hyder"
           git config --global user.email "cw.alihyder@gmail.com"
 
-      - name: Clone target repository
-        run: |
-          git clone git@github.com:remlyo-ai/remlyo-backend.git temp-repo
-          cd temp-repo
-          git checkout main  # Ensure we're on the main branch
+          # Remove .github directory and deployment.yml
+          rm -rf .github/workflows/deployment.yml
 
-      - name: Sync source repository files excluding deployment.yml
-        run: |
-          rsync -av --delete --exclude='.github/workflows/deployment.yml' --exclude='.git' ../ temp-repo/
-          cd temp-repo
-          if git status --porcelain | grep .; then
-            git add .
-            git commit -m "Latest Update"
-          else
-            echo "No changes to commit"
-          fi
+          # Add and commit changes
+          git add -A
+          git commit -m "Latest changes" --allow-empty || true
 
-      - name: Push to target repository
+      - name: Debug Repository State
         run: |
-          cd temp-repo
-          git push origin main || { echo "Push failed"; exit 1; }
+          git status
+          git log --oneline -n 5
+          git fsck --full  # Check for repository corruption
+
+      - name: Push to Client Repo
+        run: |
+          git remote add client git@github.com:remlyo-ai/remlyo-backend.git
+          git fetch client
+          # Merge or rebase to preserve client repo history
+          git pull --rebase client main || true  # Attempt to rebase, continue if conflicts
+          git push client main:main || { echo "Push failed"; git status; exit 1; }
+
+      - name: Cleanup
+        run: |
+          rm -rf ~/.ssh
