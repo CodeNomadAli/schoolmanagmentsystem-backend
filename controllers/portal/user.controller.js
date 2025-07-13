@@ -123,7 +123,7 @@ export const getUserById = async (req, res) => {
     const user = await User.findById(req.params.id).select("-password");
     if (!user) return res.status(404).json({ message: "User not found", success: false });
 
-    res.json({ success: true, user });
+    res.json(apiResponse(200, user, 'Data fetched successfully!'));
   } catch (error) {
     console.error("Get user by ID error:", error);
     res.status(500).json({ message: "Internal server error", success: false });
