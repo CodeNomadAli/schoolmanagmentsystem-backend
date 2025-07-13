@@ -1,4 +1,4 @@
-name: Push Clean Code to Client Repo via SSH with New History
+name: Push Clean Code to Client Repo via SSH
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Source Repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1  # Shallow clone to avoid fetching source repo history
+          fetch-depth: 0  # Fetch full history to ensure all objects are available
 
       - name: Set up SSH
         run: |
@@ -23,40 +23,30 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-      - name: Create New Git Repository
+      - name: Prepare Clean Commit
         run: |
-          # Create a temporary directory for the new repository
-          mkdir -p ../new-repo
-          cd ../new-repo
+          git config --global user.name "Ali Hyder"
+          git config --global user.email "cw.alihyder@gmail.com"
 
-          # Initialize a new Git repository
-          git init
-          git config user.name "Ali Hyder"
-          git config user.email "cw.alihyder@gmail.com"
-
-          # Copy source repo files (excluding .github) to the new repo
-          cp -r ${{ github.workspace }}/* .
+          # Remove .github directory to exclude workflows from client repo
           rm -rf .github
 
-          # Add all files and create a single new commit
+          # Add and commit changes
           git add -A
-          git commit -m "Initial commit with latest source repo changes"
+          git commit -m "Updated Changes" --allow-empty
 
       - name: Debug Repository State
         run: |
-          cd ../new-repo
           git status
           git log --oneline -n 5
           git fsck --full  # Check for repository corruption
 
-      - name: Push to Client Repo with New History
+      - name: Push to Client Repo
         run: |
-          cd ../new-repo
           git remote add client git@github.com:remlyo-ai/remlyo-backend.git
-          # Force push to overwrite client repo's main branch and its history
+          # Force push to overwrite client repo's main branch
           git push --force client main:main || { echo "Push failed"; git status; exit 1; }
 
       - name: Cleanup
         run: |
           rm -rf ~/.ssh
-          rm -rf ../new-repo
