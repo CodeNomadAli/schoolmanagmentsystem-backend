@@ -1,4 +1,4 @@
-name: Push Clean Code to Client Repo via SSH
+name: Push Clean Code to Client Repo via SSH with New History
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Source Repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history to ensure all objects are available
+          fetch-depth: 1  # Shallow clone to avoid fetching source repo history
 
       - name: Set up SSH
         run: |
@@ -23,26 +23,35 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-      - name: Prepare Clean Commit
+      - name: Create New Git Repository
         run: |
-          git config --global user.name "Ali Hyder"
-          git config --global user.email "cw.alihyder@gmail.com"
+          # Create a temporary directory for the new repository
+          mkdir -p ../new-repo
+          cd ../new-repo
 
-          # Remove .github directory to exclude workflows from client repo
+          # Initialize a new Git repository
+          git init
+          git config user.name "Ali Hyder"
+          git config user.email "cw.alihyder@gmail.com"
+
+          # Copy source repo files (excluding .github) to the new repo
+          cp -r ${{ github.workspace }}/* .
           rm -rf .github
 
-          # Add all files and create a new commit
+          # Add all files and create a single new commit
           git add -A
-          git commit -m "Updated changes" --allow-empty
+          git commit -m "Initial commit with latest source repo changes"
 
       - name: Debug Repository State
         run: |
+          cd ../new-repo
           git status
           git log --oneline -n 5
           git fsck --full  # Check for repository corruption
 
       - name: Push to Client Repo with New History
         run: |
+          cd ../new-repo
           git remote add client git@github.com:remlyo-ai/remlyo-backend.git
           # Force push to overwrite client repo's main branch and its history
           git push --force client main:main || { echo "Push failed"; git status; exit 1; }
@@ -50,3 +59,4 @@ jobs:
       - name: Cleanup
         run: |
           rm -rf ~/.ssh
+          rm -rf ../new-repo
