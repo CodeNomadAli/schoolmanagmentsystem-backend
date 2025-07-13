@@ -28,12 +28,12 @@ jobs:
           git config --global user.name "Ali Hyder"
           git config --global user.email "cw.alihyder@gmail.com"
 
-          # Remove .github directory and deployment.yml
-          rm -rf .github/workflows/deployment.yml
+          # Remove .github directory to exclude workflows from client repo
+          rm -rf .github
 
           # Add and commit changes
           git add -A
-          git commit -m "Latest changes" --allow-empty || true
+          git commit -m "Latest changes from source repo" --allow-empty
 
       - name: Debug Repository State
         run: |
@@ -44,10 +44,8 @@ jobs:
       - name: Push to Client Repo
         run: |
           git remote add client git@github.com:remlyo-ai/remlyo-backend.git
-          git fetch client
-          # Merge or rebase to preserve client repo history
-          git pull --rebase client main || true  # Attempt to rebase, continue if conflicts
-          git push client main:main || { echo "Push failed"; git status; exit 1; }
+          # Force push to overwrite client repo's main branch
+          git push --force client main:main || { echo "Push failed"; git status; exit 1; }
 
       - name: Cleanup
         run: |
