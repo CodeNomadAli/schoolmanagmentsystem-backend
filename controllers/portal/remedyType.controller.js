@@ -3,6 +3,7 @@ import RemedyType from "../../models/remedy_types.model.js";
 import { apiResponse } from "../../helper.js";
 import { remedyTypeSchema } from "../../validations/remedyTypeValidator.js";
 
+
 export const createRemedyType = async (req, res) => {
    try {
     const { error, value } = remedyTypeSchema.validate(req.body, { abortEarly: false });
@@ -23,13 +24,32 @@ export const createRemedyType = async (req, res) => {
 
 export const getAllRemedyTypes = async (req, res) => {
   try {
-    const types = await RemedyType.find().sort({ createdAt: -1 });
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 100); 
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const skip = (page - 1) * limit;
 
-    return res.json(apiResponse(200, types));
+    const [types, total] = await Promise.all([
+      RemedyType.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      RemedyType.countDocuments()
+    ]);
+
+    return res.status(200).json(apiResponse(200, {
+      types,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      }
+    }, "Remedy types fetched successfully"));
   } catch (error) {
     return res.status(500).json(apiResponse(500, null, error.message));
   }
 };
+
 
 
 export const getRemedyTypesById = async (req, res) => {
