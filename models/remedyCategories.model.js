@@ -15,10 +15,18 @@ const RemedyCategorySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    relatedQuestions: {
+      type: [
+        {
+          question: { type: String, required: true },
+          answer: { type: String }, 
+        },
+      ],
+    
+    },
   },
   { timestamps: true }
 );
 
 const RemedyCategory = mongoose.model("RemedyCategory", RemedyCategorySchema);
-
 export default RemedyCategory;

@@ -9,25 +9,57 @@ import {
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
+import RemedyCategory from "../../models/remedyCategories.model.js";
 
 const createRemedy = async (req, res) => {
+ 
   try {
-    const user = req.user;
-    // const { error } = remedyValidation.validate(req.body);
-    // if (error) {
-    //   return res.status(400).json({
-    //     message: "Validation error",
-    //     success: false,
-    //     details: error.details.map((d) => d.message),
-    //   });
-    // }
 
+    const { name, description, category, type, answers, ...rest } = req.body;
+    
+    const { error } = remedyValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: "Validation error",
+        success: false,
+        details: error.details.map((d) => d.message),
+      });
+    }
+
+    const cat = await RemedyCategory.findById(category);
+    
+    if (!cat || !Array.isArray(cat.relatedQuestions) || cat.relatedQuestions.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category or no related questions defined",
+      });
+    }
+
+    
+    if (!Array.isArray(answers) || cat.relatedQuestions.length===null) {
+      return res.status(400).json({
+        success: false,
+        message: `You must provide ${cat.relatedQuestions.length} answers`,
+      });
+    }
+
+    const answeredQuestions = cat.relatedQuestions.map((q, i) => ({
+      question: q.question,
+      answer: answers[i],
+    }));
+
+   
     const newRemedy = await Remedy.create({
-      ...req.body,
+      name,
+      description,
+      category,
+      type,
       createdBy: user.id,
+      answeredQuestions,
+      ...rest,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Remedy successfully created",
       success: true,
       remedy: newRemedy,
@@ -88,7 +120,7 @@ const createRemedy = async (req, res) => {
       },
     };
 
-    res.status(200).json(apiResponse(true, data, "Successfully fetched remedies"));
+    res.status(200).json(apiResponse(200, data, "Successfully fetched remedies"));
   } catch (error) {
     console.error("Error fetching remedies:", error);
     res.status(500).json(apiResponse(false, null, error.message));
