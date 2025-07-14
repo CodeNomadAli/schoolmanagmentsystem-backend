@@ -12,7 +12,6 @@ import permissionSeeder from "./staffPermissionSeeder.js"
 async function runAllSeeders() {
   try {
     console.log("🟢 Connected to DB")
-    
     await permissionSeeder()
     console.log("🟢 permission seeded successfully")
     await seedRoles()
