@@ -32,7 +32,9 @@ const remedyValidation = Joi.object({
     })
   ).optional(),
   type: Joi.string().required(),
-    answers: Joi.array().items(Joi.string()).optional()
+    answers: Joi.array().items(Joi.string()).optional(),
+    brandName:Joi.string().optional(),
+    content:Joi.string().optional(),
 
 
 });
