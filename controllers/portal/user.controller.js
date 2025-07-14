@@ -108,7 +108,7 @@ export const getAllUsers = async (req, res) => {
         limit,
         pages: Math.ceil(total / limit),
       }  },
-    'Data fetched successfully')
+    'User fetched successfully')
 
     res.status(200).json(response);
   } catch (error) {

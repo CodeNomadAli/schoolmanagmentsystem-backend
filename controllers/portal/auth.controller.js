@@ -185,7 +185,7 @@ const validatedEmailToken = async (req, res) => {
       req.headers["user-agent"]
     );
 
-    // Log session
+    //  Log session
     await Session.create({
       userId: user._id,
       ipAddress: req.ip || req.connection.remoteAddress,

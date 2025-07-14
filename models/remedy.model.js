@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 // Define category enum as a constant for maintainability and clarity
@@ -118,8 +119,19 @@ const RemedySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-
+ 
+    answeredQuestions: {
+    type: [
+      {
+        question: { type: String, required: false },
+        answer: { type: String, required: false },
+          is_required: { type: Boolean }, 
+      },
+    ],
+  default: [],
+},
     
+
 
   },
   { timestamps: true }

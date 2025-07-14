@@ -9,25 +9,36 @@ import {
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
+import RemedyCategory from "../../models/remedy_categories.model.js";
 
 const createRemedy = async (req, res) => {
+ 
   try {
-    const user = req.user;
-    // const { error } = remedyValidation.validate(req.body);
-    // if (error) {
-    //   return res.status(400).json({
-    //     message: "Validation error",
-    //     success: false,
-    //     details: error.details.map((d) => d.message),
-    //   });
-    // }
+
+    const { name, description, category, type, answeredQuestions, ...rest } = req.body;
+    
+    const { error } = remedyValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: "Validation error",
+        success: false,
+        details: error.details.map((d) => d.message),
+      });
+    }
+
+     
 
     const newRemedy = await Remedy.create({
-      ...req.body,
+      name,
+      description,
+      category,
+      type,
       createdBy: user.id,
+      answeredQuestions,
+      ...rest,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Remedy successfully created",
       success: true,
       remedy: newRemedy,
@@ -43,28 +54,24 @@ const createRemedy = async (req, res) => {
 };
 
 
- const getAllRemedies = async (req, res) => {
+const getAllRemedies = async (req, res) => {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
     const search = req.query.search || "";
 
-    // Build search query
     const searchQuery = {};
     if (search) {
       searchQuery.$or = [
         { name: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
-        { "createdBy.username": { $regex: search, $options: "i" } },
+        { "createdBy.username": { $regex: search, $options: "i" } }, 
       ];
     }
 
-    // Optional filters
-    // searchQuery.isActive = true;
-    // searchQuery.moderationStatus = "approved";
-
-    const [remedies, totalRemedies] = await Promise.all([
+    
+    const [remedies, total] = await Promise.all([
       Remedy.find(searchQuery)
         .populate("createdBy", "username email")
         .sort({ createdAt: -1 })
@@ -73,27 +80,23 @@ const createRemedy = async (req, res) => {
       Remedy.countDocuments(searchQuery),
     ]);
 
-    const totalPages = Math.ceil(totalRemedies / limit);
-
     const data = {
       remedies,
-      meta: {
+      pagination: {
+        total,
         page,
         limit,
-        totalRemedies,
-        totalPages,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
-        search,
+        pages: Math.ceil(total / limit),
       },
     };
 
-    res.status(200).json(apiResponse(true, data, "Successfully fetched remedies"));
+    res.status(200).json(apiResponse(200, data, "Successfully fetched remedies"));
   } catch (error) {
     console.error("Error fetching remedies:", error);
-    res.status(500).json(apiResponse(false, null, error.message));
+    res.status(500).json(apiResponse(500, null, error.message));
   }
 };
+
 
 const getRemedyById = async (req, res) => {
   try {

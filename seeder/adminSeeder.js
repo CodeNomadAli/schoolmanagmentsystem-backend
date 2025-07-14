@@ -49,7 +49,7 @@ async function seedRole() {
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
       staffRoleId: adminRole.id,
-        //  
+        
     },
     {
       firstName: 'Ali',
@@ -114,4 +114,4 @@ async function seedRole() {
 
 
 
-export default seedRole;
+export default seedRole();

@@ -92,7 +92,7 @@ export const getAllStaff = async (req, res) => {
     const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 10;
     const skip = (page - 1) * limit;
 
-    const [staffList, total] = await Promise.all([
+    const [staffList,total] = await Promise.all([
       Staff.find()
         .select("-password")
         .populate("staffRoleId")
