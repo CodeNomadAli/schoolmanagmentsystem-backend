@@ -9,12 +9,12 @@ import {
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
-import RemedyCategory from "../../models/remedy_categories.model.js";
+
 
 const createRemedy = async (req, res) => {
  
   try {
-
+     const user=req.user
     const { name, description, category, type, answeredQuestions, ...rest } = req.body;
     
     const { error } = remedyValidation.validate(req.body);
