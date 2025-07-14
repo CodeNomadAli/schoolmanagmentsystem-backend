@@ -41,10 +41,10 @@ const remedyValidation = Joi.object({
   isActive: Joi.boolean().default(true),
 
   media: Joi.object({
-    type: Joi.string()
+    type: Joi.string().optional
       .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
       .optional(),
-    source: Joi.string().uri().optional(),
+    source: Joi.string().optional(),
   }).optional(),
 
   
