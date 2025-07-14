@@ -114,4 +114,4 @@ async function seedRole() {
 
 
 
-export default seedRole();
+export default seedRole;
