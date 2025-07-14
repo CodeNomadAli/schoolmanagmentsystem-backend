@@ -5,9 +5,7 @@ dotenv.config()
 
 import seedRoles from "./roleSeeder.js"
 import adminSeeder from "./adminSeeder.js"
-// import seedRemedyCategories from "./remedyCategorySeeder.js"
-// import seedRemedyTypes from "./remedyTypeSeeder.js"
-// import seedRemedies from "./remedySeeder.js"
+
 import permissionSeeder from "./staffPermissionSeeder.js"
 async function runAllSeeders() {
   try {
