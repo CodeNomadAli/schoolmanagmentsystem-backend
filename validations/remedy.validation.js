@@ -40,12 +40,13 @@ const remedyValidation = Joi.object({
   averageRating: Joi.number().min(0).max(5).default(0),
   isActive: Joi.boolean().default(true),
 
-  media: Joi.object({
-    type: Joi.string().optional
-      .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
-      .optional(),
-    source: Joi.string().optional(),
-  }).optional(),
+ media: Joi.object({
+  type: Joi.string()
+    .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
+    .optional(),
+  source: Joi.string().optional(),
+}).optional(),
+
 
   
   relatedQuestions: Joi.array().items(
