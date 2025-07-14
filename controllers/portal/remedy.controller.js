@@ -28,21 +28,7 @@ const createRemedy = async (req, res) => {
 
     const cat = await RemedyCategory.findById(category);
     
-    if (!cat || !Array.isArray(cat.relatedQuestions) || cat.relatedQuestions.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid category or no related questions defined",
-      });
-    }
-
-    
-    if (!Array.isArray(answers) || cat.relatedQuestions.length===null) {
-      return res.status(400).json({
-        success: false,
-        message: `You must provide ${cat.relatedQuestions.length} answers`,
-      });
-    }
-
+    //this required sir beacuse this set each questions with this anser 
     const answeredQuestions = cat.relatedQuestions.map((q, i) => ({
       question: q.question,
       answer: answers[i],
@@ -75,28 +61,24 @@ const createRemedy = async (req, res) => {
 };
 
 
- const getAllRemedies = async (req, res) => {
+const getAllRemedies = async (req, res) => {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
     const search = req.query.search || "";
 
-    // Build search query
     const searchQuery = {};
     if (search) {
       searchQuery.$or = [
         { name: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
-        { "createdBy.username": { $regex: search, $options: "i" } },
+        { "createdBy.username": { $regex: search, $options: "i" } }, 
       ];
     }
 
-    // Optional filters
-    // searchQuery.isActive = true;
-    // searchQuery.moderationStatus = "approved";
-
-    const [remedies, totalRemedies] = await Promise.all([
+    
+    const [remedies, total] = await Promise.all([
       Remedy.find(searchQuery)
         .populate("createdBy", "username email")
         .sort({ createdAt: -1 })
@@ -105,27 +87,23 @@ const createRemedy = async (req, res) => {
       Remedy.countDocuments(searchQuery),
     ]);
 
-    const totalPages = Math.ceil(totalRemedies / limit);
-
     const data = {
       remedies,
-      meta: {
+      pagination: {
+        total,
         page,
         limit,
-        totalRemedies,
-        totalPages,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
-        search,
+        pages: Math.ceil(total / limit),
       },
     };
 
     res.status(200).json(apiResponse(200, data, "Successfully fetched remedies"));
   } catch (error) {
     console.error("Error fetching remedies:", error);
-    res.status(500).json(apiResponse(false, null, error.message));
+    res.status(500).json(apiResponse(500, null, error.message));
   }
 };
+
 
 const getRemedyById = async (req, res) => {
   try {

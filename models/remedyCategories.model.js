@@ -18,11 +18,11 @@ const RemedyCategorySchema = new mongoose.Schema(
     relatedQuestions: {
       type: [
         {
-          question: { type: String, required: true },
+          question: { type: String, required: false },
           answer: { type: String }, 
         },
       ],
-    
+  default: [],
     },
   },
   { timestamps: true }

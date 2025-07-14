@@ -27,12 +27,12 @@ const remedyValidation = Joi.object({
   // ✅ Add this:
   relatedQuestions: Joi.array().items(
     Joi.object({
-      question: Joi.string().required(),
+      question: Joi.string().optional(),
       answer: Joi.string().optional()
     })
   ).optional(),
   type: Joi.string().required(),
-    answers: Joi.array().items(Joi.string()).required()
+    answers: Joi.array().items(Joi.string()).optional()
 
 
 });

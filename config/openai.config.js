@@ -25,18 +25,12 @@ const userHealthData = {
 };
 
 
-const categories = [
-  "Lifestyle Habits",
-  "Dietary Habits",
-  "Medical History",
-  "Environmental Exposure",
-  "Health Monitoring",
-];
+
 
 
 function generatePrompt(data, categories) {
  
-  const formattedCategories = categories.map(c => `- ${c}`).join("\n");
+
 
   return `
 You are a health questionnaire assistant. Based on the following user health data:
@@ -45,7 +39,11 @@ ${JSON.stringify(data, null, 2)}
 
 Generate at least 50 multiple-choice questions, distributed across these categories:
 
-${formattedCategories}
+"Lifestyle Habits",
+  "Dietary Habits",
+  "Medical History",
+  "Environmental Exposure",
+  "Health Monitoring",
 
 Each category should follow this format:
 {
