@@ -9,13 +9,13 @@ import {
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
-import RemedyCategory from "../../models/remedyCategories.model.js";
+import RemedyCategory from "../../models/remedy_categories.model.js";
 
 const createRemedy = async (req, res) => {
  
   try {
 
-    const { name, description, category, type, answers, ...rest } = req.body;
+    const { name, description, category, type, answeredQuestions, ...rest } = req.body;
     
     const { error } = remedyValidation.validate(req.body);
     if (error) {
@@ -26,15 +26,8 @@ const createRemedy = async (req, res) => {
       });
     }
 
-    const cat = await RemedyCategory.findById(category);
-    
-    //this required sir beacuse this set each questions with this anser 
-    const answeredQuestions = cat.relatedQuestions.map((q, i) => ({
-      question: q.question,
-      answer: answers[i],
-    }));
+     
 
-   
     const newRemedy = await Remedy.create({
       name,
       description,

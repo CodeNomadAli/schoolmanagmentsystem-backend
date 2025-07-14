@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import RemedyCategory from "../../models/remedyCategories.model.js";
+import RemedyCategory from "../../models/remedy_categories.model.js";
 import { apiResponse } from "../../helper.js";
 
 
@@ -33,16 +33,34 @@ export const createRemedyCategory = async (req, res) => {
 
 export const getAllRemedyCategories = async (req, res) => {
   try {
-    const categories = await RemedyCategory.find().sort({ createdAt: -1 });
-    return res
-      .status(200)
-      .json(apiResponse(200, categories, "All categories fetched"));
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50); 
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const skip = (page - 1) * limit;
+
+    const [categories, total] = await Promise.all([
+      RemedyCategory.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      RemedyCategory.countDocuments()
+    ]);
+
+    return res.status(200).json(
+      apiResponse(200, {
+        categories,
+        pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+      }, "Categories fetched with pagination")
+    );
   } catch (error) {
-    return res
-      .status(500)
-      .json(apiResponse(500, null, error.message));
+    return res.status(500).json(apiResponse(500, null, error.message));
   }
 };
+
 
 
 export const getCategoriesById = async (req, res) => {

@@ -121,12 +121,13 @@ const RemedySchema = new mongoose.Schema(
     },
  
     answeredQuestions: {
-  type: [
-    {
-      question: { type: String, required: false },
-      answer: { type: String, required: false },
-    },
-  ],
+    type: [
+      {
+        question: { type: String, required: false },
+        answer: { type: String, required: false },
+          is_required: { type: Boolean }, 
+      },
+    ],
   default: [],
 },
     

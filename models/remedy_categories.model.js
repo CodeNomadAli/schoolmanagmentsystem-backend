@@ -19,7 +19,7 @@ const RemedyCategorySchema = new mongoose.Schema(
       type: [
         {
           question: { type: String, required: false },
-          answer: { type: String }, 
+          is_required: { type: Boolean }, 
         },
       ],
   default: [],
