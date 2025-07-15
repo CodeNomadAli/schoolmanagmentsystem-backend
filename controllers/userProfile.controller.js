@@ -1,18 +1,18 @@
 import UserProfile from "../models/user_profile.model.js";
 import generateHealthQuestions from "../services/healthQuestion.service.js";
-import { userHealthProfileValidation } from "../validations/user.validations.js";
+// import { userHealthProfileValidation } from "../validations/user.validations.js";
 
 const userHealthProfile = async (req, res) => {
   try {
-    const { error } = userHealthProfileValidation.validate(req.body);
+    // const { error } = userHealthProfileValidation.validate(req.body);
 
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation error",
-        errors: error.details.map((detail) => detail.message),
-      });
-    }
+    // if (error) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Validation error",
+    //     errors: error.details.map((detail) => detail.message),
+    //   });
+    // }
 
     const userId = req.user.id;
     const profileData = req.body;
