@@ -18,7 +18,7 @@ import ModeratorRoute from "./routes/moderator.route.js";
 
 import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
-import UserProfile from "./models/user_profile.model.js";
+import userPorfileRoute from "./routes/userProfile.route.js";
 import staffAuth from "./middleware/staff.middleware.js";
 import staffRolesRoutes from "./routes/portal/staff-role.route.js";
 import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
@@ -52,9 +52,7 @@ app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
-app.use("/api/v1/user-profile", auth, UserProfile);
-// review routes
-app.use("/api/v1/review", reviewRouter);
+app.use("/api/v1/user-profile",auth,userPorfileRoute);
 // remedy routes
 app.use("/api/v1/remedy", auth, remedyRouter);
 // admin Routes
