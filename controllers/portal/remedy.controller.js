@@ -139,7 +139,7 @@ const getRemedyById = async (req, res) => {
 
     res
       .status(200)
-      .json(apiResponse(200, { remedy }, "Successfully fetched remedy"));
+      .json(apiResponse(200, remedy , "Successfully fetched remedy"));
   } catch (error) {
     res.status(500).json({
       message: "Internal server error",
