@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
-import generateToken from "../../utils/generateToken.js";
+import generateToken from "../utils/generateToken.js";
 import {
   registerValidation,
   loginValidation,
-} from "../../validations/auth.validation.js";
-import { getClientInfo } from "../../utils/clientInfo.js";
-import Session from "../../models/session.model.js";
+} from "../validations/auth.validation.js";
+import { getClientInfo } from "../utils/clientInfo.js";
+import Session from "../models/session.model.js";
 import crypto from "crypto";
-import { sendMail } from "../../services/sendMail.service.js";
-import UserProfile from "../../models/user_profile.model.js";
-import admin from "../../config/firebase.config.js";
-import hashPassword from "../../utils/hashPassword.js";
-import Staff from "../../models/staff.model.js"
+import { sendMail } from "../services/sendMail.service.js";
+import UserProfile from "../models/user_profile.model.js";
+import admin from "../config/firebase.config.js";
+import hashPassword from "../utils/hashPassword.js";
+import Staff from "../models/staff.model.js"
 
 
 const staffLogin = async (req, res) => {
@@ -149,7 +149,7 @@ const register = async (req, res) => {
 const validatedEmailToken = async (req, res) => {
   try {
     const { token } = req.params;
-
+   
     if (!token || token.length < 32) {
       return res
         .status(400)
@@ -159,6 +159,7 @@ const validatedEmailToken = async (req, res) => {
     const user = await User.findOne({
       emailVerificationToken: token,
     });
+   
     if (!user) {
       return res
         .status(400)
@@ -239,6 +240,7 @@ const WINDOW_MS = 60 * 60 * 1000; // 1 hours
 const sendEmailVerification = async (req, res) => {
   try {
     const { email } = req.body;
+    
     const user = await User.findOne({ email });
     if (!user) {
       return res
