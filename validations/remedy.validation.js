@@ -4,7 +4,7 @@ const remedyValidation = Joi.object({
   name: Joi.string().trim().min(2).max(100).required(),
   description: Joi.string().min(10).required(),
   category: Joi.string().required(), 
-  type: Joi.string().required(),     
+  remedyType: Joi.string().required(),     
 
   ingredients: Joi.string().optional(),
   preparationMethod: Joi.string().min(5).optional(),
@@ -35,7 +35,6 @@ const remedyValidation = Joi.object({
     .items(Joi.string().trim())
     .default([]),
 
-  createdBy: Joi.string().required(), 
   viewCount: Joi.number().min(0).default(0),
   averageRating: Joi.number().min(0).max(5).default(0),
   isActive: Joi.boolean().default(true),

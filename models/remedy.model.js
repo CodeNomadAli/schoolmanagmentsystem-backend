@@ -83,14 +83,14 @@ const RemedySchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    type: {
+    remedyType: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "RemedyType",
       required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "staff",
       required: true,
     },
     viewCount: {

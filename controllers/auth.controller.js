@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import User from "../../models/user.model.js";
+import User from "../models/user.model.js";
 import generateToken from "../../utils/generateToken.js";
 import {
   registerValidation,
@@ -149,7 +149,7 @@ const register = async (req, res) => {
 const validatedEmailToken = async (req, res) => {
   try {
     const { token } = req.params;
-   
+
     if (!token || token.length < 32) {
       return res
         .status(400)
@@ -159,7 +159,6 @@ const validatedEmailToken = async (req, res) => {
     const user = await User.findOne({
       emailVerificationToken: token,
     });
-   
     if (!user) {
       return res
         .status(400)
@@ -240,7 +239,6 @@ const WINDOW_MS = 60 * 60 * 1000; // 1 hours
 const sendEmailVerification = async (req, res) => {
   try {
     const { email } = req.body;
-    
     const user = await User.findOne({ email });
     if (!user) {
       return res
