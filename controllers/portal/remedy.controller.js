@@ -4,45 +4,45 @@ import { remedyValidation } from "../../validations/remedy.validation.js";
 import ModerationStatus from "../../models/moderation_status.model.js";
 import Flag from "../../models/flag.model.js";
 import Comment from "../../models/comment.model.js";
+import RemedyCategory from "../../models/remedy_categories.model.js";
+import User from "../../models/user.model.js";
+import RemedyType from "../../models/remedy_types.model.js";
 import {
   createCommentValidation,
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
 
-
 const createRemedy = async (req, res) => {
- 
   try {
-     const user=req.user
-    const { name, description, category, type, answeredQuestions, ...rest } = req.body;
-    
+    const user = req.user;
+    const { name, description, category, remedyType, answeredQuestions, ...rest } =
+      req.body;
+
     const { error } = remedyValidation.validate(req.body);
     if (error) {
-      return res.status(400).json({
+      return res.status(422).json({
         message: "Validation error",
         success: false,
-        details: error.details.map((d) => d.message),
+        errors: error.details.map((d) => d.message),
       });
     }
-
-     
-
+      
     const newRemedy = await Remedy.create({
       name,
       description,
       category,
-      type,
+      remedyType,
       createdBy: user.id,
       answeredQuestions,
       ...rest,
     });
 
-    return res.status(201).json({
-      message: "Remedy successfully created",
-      success: true,
-      remedy: newRemedy,
-    });
+    return res
+      .status(201)
+      .json(
+        apiResponse(201, { remedy: newRemedy }, "Remedy successfully created")
+      );
   } catch (error) {
     console.error("Error creating remedy:", error);
     res.status(500).json({
@@ -52,7 +52,6 @@ const createRemedy = async (req, res) => {
     });
   }
 };
-
 
 const getAllRemedies = async (req, res) => {
   try {
@@ -66,14 +65,24 @@ const getAllRemedies = async (req, res) => {
       searchQuery.$or = [
         { name: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
-        { "createdBy.username": { $regex: search, $options: "i" } }, 
+        { "createdBy.username": { $regex: search, $options: "i" } },
       ];
     }
 
-    
     const [remedies, total] = await Promise.all([
       Remedy.find(searchQuery)
-        .populate("createdBy", "username email")
+        .populate([
+          {
+            path: "createdBy",
+            
+          },
+          {
+            path: "category",
+          },
+          {
+            path: "remedyType",
+          },
+        ])
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
@@ -90,13 +99,14 @@ const getAllRemedies = async (req, res) => {
       },
     };
 
-    res.status(200).json(apiResponse(200, data, "Successfully fetched remedies"));
+    res
+      .status(200)
+      .json(apiResponse(200, data, "Successfully fetched remedies"));
   } catch (error) {
     console.error("Error fetching remedies:", error);
     res.status(500).json(apiResponse(500, null, error.message));
   }
 };
-
 
 const getRemedyById = async (req, res) => {
   try {
@@ -108,21 +118,28 @@ const getRemedyById = async (req, res) => {
         .json({ message: "Invalid remedy ID", success: false });
     }
 
-    const remedy = await Remedy.findById(id).populate(
-      "createdBy",
-      "username email profileImage status"
-    );
+    const remedy = await Remedy.findById(id).populate([
+      {
+        path: "createdBy",
+        select:"firstName lastName email"
+      },
+      {
+        path: "category",
+      },
+      {
+        path: "remedyType",
+      },
+    ]);
+
     if (!remedy || !remedy.isActive) {
       return res
         .status(404)
         .json({ message: "Remedy not found or deleted", success: false });
     }
 
-    res.status(200).json({
-      message: "Successfully fetched remedy",
-      remedy,
-      success: true,
-    });
+    res
+      .status(200)
+      .json(apiResponse(200, { remedy }, "Successfully fetched remedy"));
   } catch (error) {
     res.status(500).json({
       message: "Internal server error",
@@ -171,11 +188,9 @@ const updateRemedy = async (req, res) => {
     Object.assign(remedy, req.body);
     await remedy.save();
 
-    res.status(200).json({
-      message: "Remedy successfully updated",
-      remedy,
-      success: true,
-    });
+    res
+      .status(200)
+      .json(apiResponse(200, { remedy }, "Successfully updated remedy"));
   } catch (error) {
     console.error("Error updating remedy:", error);
     res.status(500).json({
@@ -356,7 +371,7 @@ const createComment = async (req, res) => {
   }
 };
 
-export  {
+export {
   flagRemedy,
   createRemedy,
   getAllRemedies,

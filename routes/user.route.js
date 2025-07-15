@@ -9,8 +9,8 @@ import {
   suspendUser,
   warnUser,
   createUser
-} from "../controllers/portal/user.controller.js";
-import checkPermission from "../middleware/check_permission.middleware.js";
+} from "../controllers/user.controller.js";
+
 
 
 const router = express.Router();

@@ -1,5 +1,5 @@
 import express from "express";
-import auth from "./../middleware/auth.middleware.js";
+import auth from "../middleware/auth.middleware.js";
 import {
   
   getAllUsers,
@@ -15,7 +15,7 @@ import {
   validatedEmailToken,
   verifyAuth,
   staffLogin
-} from "../controllers/portal/auth.controller.js";
+} from "../controllers/auth.controller.js";
 
 const authRouter = express.Router();
 
