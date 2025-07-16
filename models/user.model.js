@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     accessLevel: {
       type: String,
-      enum: ["user", "admin","moderator","writer"], 
+      enum: ["user", "admin","freeuser","prouser"], 
       default: "user",
     },
     geographicRegion: {
@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["disabled", "pending", "enabled"], // maybe update this in future
       default: "disabled",
+      
     },
 
     // user profile image
