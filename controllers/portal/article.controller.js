@@ -6,7 +6,7 @@ const createArticle = async (req, res) => {
   try {
     const articleData = req.body;
 
-    // Validate article data using the schema
+
     const { error, value } = articleValidationSchema.validate(articleData, {
       abortEarly: false,
     });
@@ -237,10 +237,10 @@ const getArticleById = async (req, res) => {
       });
     }
 
-    const article = await Article.findById(id).populate(
-      "author",
-      "username email profileImage"
-    ).populate('category');
+   const article = await Article.findById(id)
+  .populate({ path: "author" })
+  .populate({ path: "category" });
+
 
     if (!article) {
       return res.status(404).json({
