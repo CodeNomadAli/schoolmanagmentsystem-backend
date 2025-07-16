@@ -1,8 +1,8 @@
-import User from "../../models/user.model.js";
+import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import userValidations from "../../validations/user.validations.js";
-import { apiResponse } from "../../helper.js";
+import userValidations from "../validations/user.validations.js";
+import { apiResponse } from "../helper.js";
 
 const { createUserSchema, loginUserSchema,updateUserSchema } = userValidations;
 

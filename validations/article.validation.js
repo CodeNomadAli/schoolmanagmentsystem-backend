@@ -3,6 +3,9 @@ import Joi from "joi";
 // Define allowed media types
 const ALLOWED_MEDIA_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
 
+// Define ObjectId pattern once, outside the schema
+const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+
 // Base schema
 const articleSchema = Joi.object({
   title: Joi.string().max(200).required().messages({
@@ -22,31 +25,32 @@ const articleSchema = Joi.object({
     "string.empty": "Content is required",
   }),
 
-  shortDescription: Joi.string().allow("").optional(),
+  shortDescription: Joi.string().max(300).allow("").optional(),
 
   media: Joi.object({
     type: Joi.string().valid(...ALLOWED_MEDIA_TYPES).optional(),
     source: Joi.string().optional(),
   }).optional(),
 
-  category: Joi.string().allow("").optional(),
+  category: Joi.string().pattern(objectIdPattern).optional().messages({
+    "string.pattern.base": "Category must be a valid MongoDB ObjectId",
+  }),
+
+  author: Joi.string().pattern(objectIdPattern).optional().messages({
+    "string.pattern.base": "Author must be a valid MongoDB ObjectId",
+  }),
 
   tags: Joi.array()
     .items(
-      Joi.string()
-        .trim()
-        .lowercase()
-        .max(50)
+      Joi.string().trim().lowercase().max(50)
     )
     .max(5)
     .optional(),
 
-  author: Joi.string(),
-
   seo: Joi.object({
     metaTitle: Joi.string().max(60).optional(),
     metaDescription: Joi.string().max(160).optional(),
-    keywords: Joi.array().items(Joi.string().max(50)).optional(),
+    keywords: Joi.array().items(Joi.string().trim().lowercase().max(50)).optional(),
     canonicalUrl: Joi.string().uri().optional(),
   }).optional(),
 
@@ -66,11 +70,8 @@ const articleSchema = Joi.object({
   version: Joi.number().integer().min(1).optional(),
   isFeatured: Joi.boolean().optional(),
 
-
   viewsCount: Joi.number().integer().min(0).optional(),
   commentsCount: Joi.number().integer().min(0).optional(),
 });
-
-
 
 export default articleSchema;

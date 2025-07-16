@@ -14,7 +14,7 @@ import checkPermission from "../../middleware/check_permission.middleware.js";
 const ArticleRouter = express.Router();
 
 // create Article route
-ArticleRouter.post("/",checkPermission('create-article'), createArticle);
+ArticleRouter.post("/create",checkPermission('create-article'), createArticle);
 // delete article route
 ArticleRouter.delete("/:id",checkPermission('delete-article'), deleteArticle);
 // get all articles with author

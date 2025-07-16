@@ -51,7 +51,7 @@ const permissions = [
   { name: "Read Article", slug: "read-article", description: "Can read article data", groupId: groupIds.article, groupName: "Article" },
   { name: "Update Article", slug: "update-article", description: "Can update article data", groupId: groupIds.article, groupName: "Article" },
   { name: "Delete Article", slug: "delete-article", description: "Can delete article data", groupId: groupIds.article, groupName: "Article" },
-
+  
   { name: "Read Article Category", slug: "read-article-category", description: "Can read article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
   { name: "Create Article Category", slug: "create-article-category", description: "Can create article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
   { name: "Update Article Category", slug: "update-article-category", description: "Can update article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
@@ -106,7 +106,6 @@ const seedPermissions = async () => {
   }
 };
 
-seedPermissions()
-  .then(() => console.log("Seeding completed successfully"))
 
-// export default seedPermissions;
+
+export default seedPermissions;

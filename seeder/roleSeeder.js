@@ -1,19 +1,18 @@
 // File: seeders/role-seeder.js
-import mongoose from 'mongoose';
-import StaffRole from '../models/staff_role.model.js';
-import staffPermission from '../models/staff_permission.model.js';
-
+import mongoose from "mongoose";
+import StaffRole from "../models/staff_role.model.js";
+import staffPermission from "../models/staff_permission.model.js";
 
 // Define the connectToDatabase function (or import it if defined elsewhere)
 async function connectToDatabase() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
+    await mongoose.connect("mongodb://127.0.0.1:27017/remedy", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error("MongoDB connection error:", error);
   }
 }
 
@@ -22,69 +21,82 @@ async function seedRole() {
 
   // Optional: Clear existing data
   await StaffRole.deleteMany({});
-  console.log('Cleared existing roles');
+  console.log("Cleared existing roles");
 
   // Define seed data
   const roles = [
     {
-      name: 'Super Admin', description: 'Administrator role with full access', permissions: [
-        await staffPermission.findOne({ slug: 'create-users' }),
-        await staffPermission.findOne({ slug: 'read-users' }),
-        await staffPermission.findOne({ slug: 'update-users' }),
-        await staffPermission.findOne({ slug: 'delete-users' }),
+      name: "Super Admin",
+      description: "Administrator role with full access",
+      permissions: [
+        await staffPermission.findOne({ slug: "create-user" }),
+        await staffPermission.findOne({ slug: "read-user" }),
+        await staffPermission.findOne({ slug: "update-user" }),
+        await staffPermission.findOne({ slug: "delete-user" }),
 
-        await staffPermission.findOne({ slug: 'read-staff' }),
-        await staffPermission.findOne({ slug: 'create-staff' }),
-        await staffPermission.findOne({ slug: 'update-staff' }),
-        await staffPermission.findOne({ slug: 'delete-staff' }),
+        // Staff
+        await staffPermission.findOne({ slug: "create-staff" }),
+        await staffPermission.findOne({ slug: "read-staff" }),
+        await staffPermission.findOne({ slug: "update-staff" }),
+        await staffPermission.findOne({ slug: "delete-staff" }),
 
-        await staffPermission.findOne({ slug: 'read-role' }),
-        await staffPermission.findOne({ slug: 'create-role' }),
-        await staffPermission.findOne({ slug: 'update-role' }),
-        await staffPermission.findOne({ slug: 'delete-role' }),
-        await staffPermission.findOne({ slug: 'create-remedy' }),
-        await staffPermission.findOne({ slug: 'read-remedy' }),
-        await staffPermission.findOne({ slug: 'update-remedy' }),
-        await staffPermission.findOne({ slug: 'delete-remedy' }),
-        await staffPermission.findOne({ slug: 'create-category' }),
-        await staffPermission.findOne({ slug: 'read-category' }),
-        await staffPermission.findOne({ slug: 'update-category' }),
-        await staffPermission.findOne({ slug: 'delete-category' }),
-        await staffPermission.findOne({ slug: 'create-article' }),
-        await staffPermission.findOne({ slug: 'read-article' }),
-        await staffPermission.findOne({ slug: 'update-article' }),
-        await staffPermission.findOne({ slug: 'generate-slug' }),
-        await staffPermission.findOne({ slug: 'check-slug' }),
-        await staffPermission.findOne({ slug: 'delete-article' })
+        // Role
+        await staffPermission.findOne({ slug: "create-role" }),
+        await staffPermission.findOne({ slug: "read-role" }),
+        await staffPermission.findOne({ slug: "update-role" }),
+        await staffPermission.findOne({ slug: "delete-role" }),
 
-      ]
+        // Remedy
+        await staffPermission.findOne({ slug: "create-remedy" }),
+        await staffPermission.findOne({ slug: "read-remedy" }),
+        await staffPermission.findOne({ slug: "update-remedy" }),
+        await staffPermission.findOne({ slug: "delete-remedy" }),
+
+        // Category
+        await staffPermission.findOne({ slug: "create-category" }),
+        await staffPermission.findOne({ slug: "read-category" }),
+        await staffPermission.findOne({ slug: "update-category" }),
+        await staffPermission.findOne({ slug: "delete-category" }),
+
+        // Article
+        await staffPermission.findOne({ slug: "create-article" }),
+        await staffPermission.findOne({ slug: "read-article" }),
+        await staffPermission.findOne({ slug: "update-article" }),
+        await staffPermission.findOne({ slug: "delete-article" }),
+
+        // Article Category
+        await staffPermission.findOne({ slug: "create-article-category" }),
+        await staffPermission.findOne({ slug: "read-article-category" }),
+        await staffPermission.findOne({ slug: "update-article-category" }),
+        await staffPermission.findOne({ slug: "delete-article-category" }),
+      ],
     },
     {
-      name: 'Writer',
-      description: 'Writer role with limited article access',
+      name: "Writer",
+      description: "Writer role with limited article access",
       permissions: [
-        await staffPermission.findOne({ slug: 'create-article' }),
-        await staffPermission.findOne({ slug: 'read-article' }),
-        await staffPermission.findOne({ slug: 'update-article' }),
-        await staffPermission.findOne({ slug: 'generate-slug' }),
-        await staffPermission.findOne({ slug: 'check-slug' }),
-      ]
+        await staffPermission.findOne({ slug: "create-article" }),
+        await staffPermission.findOne({ slug: "read-article" }),
+        await staffPermission.findOne({ slug: "update-article" }),
+        await staffPermission.findOne({ slug: "generate-slug" }),
+        await staffPermission.findOne({ slug: "check-slug" }),
+      ],
     },
 
-    { name: 'User', description: 'Manager role with limited access', }
+    { name: "User", description: "Manager role with limited access" },
   ];
 
   // Create and save the roles
   try {
     await StaffRole.insertMany(roles);
-    console.log('Roles seeded successfully');
+    console.log("Roles seeded successfully");
   } catch (error) {
-    console.error('Error seeding roles:', error);
+    console.error("Error seeding roles:", error);
   }
 
   // Close the database connection
   await mongoose.connection.close();
-  console.log('Database connection closed');
+  console.log("Database connection closed");
 }
 
 export default seedRole;

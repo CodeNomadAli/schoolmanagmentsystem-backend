@@ -7,6 +7,7 @@ const token = process.env.GITHUB_TOKEN;
 const endpoint = "https://models.github.ai/inference";
 const model = "openai/gpt-4.1";
 
+
 const userHealthData = {
   firstName: "Aliyan",
   lastName: "Siddiqui",
@@ -23,17 +24,26 @@ const userHealthData = {
   preferredLanguage: "en",
 };
 
-const prompt = `
+
+
+
+
+function generatePrompt(data, categories) {
+ 
+
+
+  return `
 You are a health questionnaire assistant. Based on the following user health data:
 
-${JSON.stringify(userHealthData, null, 2)}
+${JSON.stringify(data, null, 2)}
 
 Generate at least 50 multiple-choice questions, distributed across these categories:
-- Lifestyle Habits
-- Dietary Habits
-- Medical History
-- Environmental Exposure
-- Health Monitoring
+
+"Lifestyle Habits",
+  "Dietary Habits",
+  "Medical History",
+  "Environmental Exposure",
+  "Health Monitoring",
 
 Each category should follow this format:
 {
@@ -49,7 +59,8 @@ Each category should follow this format:
 }
 
 Respond only with a valid JSON object that is an array of categories.
-`;
+  `.trim();
+}
 
 export async function main() {
   const client = ModelClient(endpoint, new AzureKeyCredential(token));
@@ -58,7 +69,7 @@ export async function main() {
     body: {
       messages: [
         { role: "system", content: "You are a helpful assistant that returns JSON only." },
-        { role: "user", content: prompt },
+        { role: "user", content: generatePrompt(userHealthData, categories) }, // ✅ Dynamic
       ],
       temperature: 0.7,
       top_p: 1,
@@ -74,6 +85,7 @@ export async function main() {
     const output = response.body.choices[0].message.content;
     const parsed = JSON.parse(output);
     console.dir(parsed, { depth: null });
+    console.log("generate")
   } catch (err) {
     console.error("Failed to parse JSON response:", err);
     console.log("Raw response:", response.body.choices[0].message.content);

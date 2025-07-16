@@ -1,73 +1,147 @@
-
 import mongoose from "mongoose";
-import RemedyCategory from "../../models/remedyCategories.model.js";
+import RemedyCategory from "../../models/remedy_categories.model.js";
 import { apiResponse } from "../../helper.js";
-// Create
+
+
 export const createRemedyCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const category = await RemedyCategory.create({ name, description });
-    res.status(201).json({ success: true, message: "Category created", category });
+    const { name, description, relatedQuestions } = req.body;
+
+    const exist = await RemedyCategory.findOne({ name });
+    if (exist) {
+      return res
+        .status(409)
+        .json(apiResponse(409, null, "Category with this name already exists"));
+    }
+
+    const category = await RemedyCategory.create({
+      name,
+      description,
+      relatedQuestions,
+    });
+
+    return res
+      .status(201)
+      .json(apiResponse(201, category, "Category created successfully"));
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message));
   }
 };
 
-// Get all
+
 export const getAllRemedyCategories = async (req, res) => {
   try {
-    const categories = await RemedyCategory.find().sort({ createdAt: -1 });
-    res.json({ success: true, categories });
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50); 
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const skip = (page - 1) * limit;
+
+    const [categories, total] = await Promise.all([
+      RemedyCategory.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      RemedyCategory.countDocuments()
+    ]);
+
+    return res.status(200).json(
+      apiResponse(200, {
+        categories,
+        pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+      }, "Categories fetched with pagination")
+    );
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json(apiResponse(500, null, error.message));
   }
 };
+
 
 
 export const getCategoriesById = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ success: false, message: "Invalid ID" });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json(apiResponse(400, null, "Invalid ID"));
+    }
 
     const category = await RemedyCategory.findById(id);
-    if (!category)
-      return res.status(404).json({ success: false, message: "Category not found" });   
+    if (!category) {
+      return res
+        .status(404)
+        .json(apiResponse(404, null, "Category not found"));
+    }
 
-    res.json({ success: true, category });
+    return res
+      .status(200)
+      .json(apiResponse(200, category, "Category found"));
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message));
   }
 };
 
-// Update
+
 export const updateRemedyCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ success: false, message: "Invalid ID" });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json(apiResponse(400, null, "Invalid ID"));
+    }
 
-    const category = await RemedyCategory.findByIdAndUpdate(id, req.body, { new: true });
-    if (!category) return res.status(404).json({ success: false, message: "Not found" });
+    const category = await RemedyCategory.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
-    res.json({ success: true, message: "Category updated", category });
+    if (!category) {
+      return res
+        .status(404)
+        .json(apiResponse(404, null, "Category not found"));
+    }
+
+    return res
+      .status(200)
+      .json(apiResponse(200, category, "Category updated successfully"));
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message));
   }
 };
 
-// Delete
+
 export const deleteRemedyCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ success: false, message: "Invalid ID" });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json(apiResponse(400, null, "Invalid ID"));
+    }
 
     const category = await RemedyCategory.findByIdAndDelete(id);
-    if (!category) return res.status(404).json({ success: false, message: "Not found" });
+    if (!category) {
+      return res
+        .status(404)
+        .json(apiResponse(404, null, "Category not found"));
+    }
 
-    res.json({ success: true, message: "Category deleted", id: category._id });
+    return res
+      .status(200)
+      .json(apiResponse(200, { id: category._id }, "Category deleted"));
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message));
   }
 };

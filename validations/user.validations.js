@@ -21,7 +21,7 @@ const createUserSchema = Joi.object({
   isActive: Joi.boolean().default(false),
   emailVerified: Joi.boolean().default(false),
   twoFactorStatus: Joi.string().valid("disabled", "pending", "enabled").default("disabled"),
-  profileImage: Joi.string().uri().optional().default("/user/default.png"),
+  profileImage: Joi.string().optional().default("/user/default.png"),
 
   status: Joi.string().valid("active", "suspended", "warning").default("active"),
 
@@ -60,7 +60,7 @@ const updateUserSchema = Joi.object({
   isActive: Joi.boolean(),
   emailVerified: Joi.boolean(),
   twoFactorStatus: Joi.string().valid("disabled", "pending", "enabled"),
-  profileImage: Joi.string().uri(),
+  profileImage: Joi.string().optional(),
   status: Joi.string().valid("active", "suspended", "warning"),
   suspendedBy: objectId.optional(),
   suspendedMessage: Joi.string(),

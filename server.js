@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.config.js";
 import authRouter from "./routes/auth.route.js";
+// import portalAuthRouter from "./routes/portal/auth.route.js";
 import remedyRouter from "./routes/remedy.route.js";
 import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
@@ -13,17 +14,17 @@ import adminMiddleware from "./middleware/staff.middleware.js";
 import adminRouter from "./routes/portal/admin.route.js";
 import uploadRouter from "./routes/upload.routes.js";
 import ModeratorRoute from "./routes/moderator.route.js";
-import WriterRouter from "./routes/writer.route.js";
-import writerMiddleware from './middleware/writer.middleware.js';
+
+
 import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
-import UserProfile from "./models/user_profile.model.js";
+import userPorfileRoute from "./routes/userProfile.route.js";
 import staffAuth from "./middleware/staff.middleware.js";
 import staffRolesRoutes from "./routes/portal/staff-role.route.js";
 import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
 import remedyRoutes from "./routes/portal/remedy.route.js";
-import remedyCategoryRoutes from "./routes/portal/remedyCategory.routes.js";
-import remedyTypeRoutes from "./routes/portal/remedyType.routes.js";
+import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
+import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
 import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 
@@ -43,17 +44,15 @@ app.use(cors({
 validateEnv(); // check all env variable is available
 connectDB(); // connect to Database
 
-// authentication routes
-app.use("/api/v1/auth", authRouter);
-// user routes
 
+app.use("/api/v1/auth", authRouter);
+
+// user routes
 app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
-app.use("/api/v1/user-profile", auth, UserProfile);
-// review routes
-app.use("/api/v1/review", reviewRouter);
+app.use("/api/v1/user",auth,userPorfileRoute);
 // remedy routes
 app.use("/api/v1/remedy", auth, remedyRouter);
 // admin Routes
@@ -63,7 +62,7 @@ app.use("/api/v1/upload", auth, uploadRouter)
 // moderator routes
 app.use("/api/v1/moderator", auth, ModeratorRoute);
 // writer routes
-app.use("/api/v1/writer", auth, writerMiddleware, WriterRouter)
+
 // articles route
 app.use("/api/v1/articles", ArticleRoute)
 

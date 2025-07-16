@@ -6,7 +6,7 @@ const createArticle = async (req, res) => {
   try {
     const articleData = req.body;
 
-    // Validate article data using the schema
+
     const { error, value } = articleValidationSchema.validate(articleData, {
       abortEarly: false,
     });
@@ -17,6 +17,8 @@ const createArticle = async (req, res) => {
         errors: error.details.map((detail) => detail.message),
       });
     }
+
+        value.author = req.user.id; 
 
     const data = await Article.create(value);
 
@@ -55,11 +57,15 @@ const getAllArticles = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const data = await Article.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .populate("author category");
+ const data = await Article.find(query)
+  .sort({ createdAt: -1 })
+  .skip(skip)
+  .limit(parseInt(limit))
+  .populate([
+    { path: "author" },
+    { path: "category" },
+  ]);
+
 
     const total = await Article.countDocuments(query);
 
@@ -108,7 +114,8 @@ const getArticlesByWriterId = async (req, res) => {
 
     // Fetch filtered and paginated articles
     const data = await Article.find(query)
-      .populate("author", "username profileImage email")
+      .populate({ path: "author",})
+
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parsedLimit);
@@ -231,10 +238,10 @@ const getArticleById = async (req, res) => {
       });
     }
 
-    const article = await Article.findById(id).populate(
-      "author",
-      "username email profileImage"
-    ).populate('category');
+   const article = await Article.findById(id)
+  .populate({ path: "author" })
+  .populate({ path: "category" });
+
 
     if (!article) {
       return res.status(404).json({
