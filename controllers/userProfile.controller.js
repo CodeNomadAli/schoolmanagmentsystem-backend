@@ -1,17 +1,14 @@
 import UserProfile from "../models/user_profile.model.js";
 import generateHealthQuestions from "../services/healthQuestion.service.js";
+import { apiResponse } from "../helper.js";
 // import { userHealthProfileValidation } from "../validations/user.validations.js";
 
 const userHealthProfile = async (req, res) => {
   try {
+    // Uncomment this when validation schema is ready
     // const { error } = userHealthProfileValidation.validate(req.body);
-
     // if (error) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Validation error",
-    //     errors: error.details.map((detail) => detail.message),
-    //   });
+    //   return res.status(400).json(apiResponse(400, null, "Validation error", error.details));
     // }
 
     const userId = req.user.id;
@@ -27,49 +24,37 @@ const userHealthProfile = async (req, res) => {
         )
       : await UserProfile.create({ userId, ...profileData });
 
-    return res.status(200).json({
-      success: true,
-      message: existingProfile
-        ? "Profile updated successfully"
-        : "Profile created successfully",
-      data: updatedProfile,
-    });
+    const message = existingProfile
+      ? "Profile updated successfully"
+      : "Profile created successfully";
+
+    return res.status(200).json(apiResponse(200, updatedProfile, message));
   } catch (err) {
     console.error("User Profile Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: err.message,
-    });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, "Internal server error"));
   }
 };
 
 const getUserHealthQuestionBaseOnHealthProfile = async (req, res) => {
   try {
-    const { error } = userHealthProfileValidation.validate(req.body);
-
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation error",
-        error,
-      });
-    }
+    
+    // const { error } = userHealthProfileValidation.validate(req.body);
+    // if (error) {
+    //   return res.status(400).json(apiResponse(400, null, "Validation error", error.details));
+    // }
 
     const healthQuestions = await generateHealthQuestions(req.body);
 
-    return res.status(200).json({
-      success: true,
-      message: "Health questions generated successfully",
-      data: healthQuestions,
-    });
+    return res
+      .status(200)
+      .json(apiResponse(200, healthQuestions, "Health questions generated successfully"));
   } catch (error) {
     console.error("Health Questions Generation Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error,
-    });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, "Internal server error"));
   }
 };
 
@@ -80,26 +65,19 @@ const healthProfileStatus = async (req, res) => {
     const userProfileExist = await UserProfile.findOne({ userId });
 
     if (!userProfileExist) {
-      return res.status(400).json({
-        message: "profile not exist",
-        success: false,
-      });
+      return res
+        .status(404)
+        .json(apiResponse(404, null, "Profile not found"));
     }
 
-    res
+    return res
       .status(200)
-      .json({
-        success: true,
-        message: "profile exist",
-        profile: userProfileExist,
-      });
+      .json(apiResponse(200, userProfileExist, "Profile exists"));
   } catch (error) {
     console.error("Error checking health profile:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to check health profile status",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+    return res
+      .status(500)
+      .json(apiResponse(500, null, "Failed to check health profile status"));
   }
 };
 
@@ -108,17 +86,3 @@ export {
   getUserHealthQuestionBaseOnHealthProfile,
   healthProfileStatus,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-

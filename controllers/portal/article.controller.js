@@ -59,7 +59,11 @@ const getAllArticles = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("author category");
+      .populate([
+  { path: "author" },
+  { path: "category" },
+]);
+
 
     const total = await Article.countDocuments(query);
 
