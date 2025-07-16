@@ -60,7 +60,7 @@ const updateUserSchema = Joi.object({
   isActive: Joi.boolean(),
   emailVerified: Joi.boolean(),
   twoFactorStatus: Joi.string().valid("disabled", "pending", "enabled"),
-  profileImage: Joi.string().uri(),
+  profileImage: Joi.string().optional(),
   status: Joi.string().valid("active", "suspended", "warning"),
   suspendedBy: objectId.optional(),
   suspendedMessage: Joi.string(),

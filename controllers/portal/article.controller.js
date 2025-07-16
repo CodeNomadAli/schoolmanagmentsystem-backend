@@ -114,7 +114,8 @@ const getArticlesByWriterId = async (req, res) => {
 
     // Fetch filtered and paginated articles
     const data = await Article.find(query)
-      .populate("author", "username profileImage email")
+      .populate({ path: "author",})
+
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parsedLimit);
