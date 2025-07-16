@@ -41,7 +41,7 @@ const createRemedy = async (req, res) => {
     return res
       .status(201)
       .json(
-        apiResponse(201, { remedy: newRemedy }, "Remedy successfully created")
+        apiResponse(201,  newRemedy , "Remedy successfully created")
       );
   } catch (error) {
     console.error("Error creating remedy:", error);
@@ -190,7 +190,7 @@ const updateRemedy = async (req, res) => {
 
     res
       .status(200)
-      .json(apiResponse(200, { remedy }, "Successfully updated remedy"));
+      .json(apiResponse(200,  remedy , "Successfully updated remedy"));
   } catch (error) {
     console.error("Error updating remedy:", error);
     res.status(500).json({
