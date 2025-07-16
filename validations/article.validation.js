@@ -29,7 +29,7 @@ const articleSchema = Joi.object({
 
   media: Joi.object({
     type: Joi.string().valid(...ALLOWED_MEDIA_TYPES).optional(),
-    source: Joi.string().uri().optional(),
+    source: Joi.string().optional(),
   }).optional(),
 
   category: Joi.string().pattern(objectIdPattern).optional().messages({
