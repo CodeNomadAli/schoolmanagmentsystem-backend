@@ -18,6 +18,8 @@ const createArticle = async (req, res) => {
       });
     }
 
+        value.author = req.user.id; 
+
     const data = await Article.create(value);
 
     res.status(201).json({
@@ -55,14 +57,14 @@ const getAllArticles = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const data = await Article.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .populate([
-  { path: "author" },
-  { path: "category" },
-]);
+ const data = await Article.find(query)
+  .sort({ createdAt: -1 })
+  .skip(skip)
+  .limit(parseInt(limit))
+  .populate([
+    { path: "author" },
+    { path: "category" },
+  ]);
 
 
     const total = await Article.countDocuments(query);
