@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import RemedyCategory from "../models/remedy_categories.model.js";
 import dotenv from "dotenv";
+import { multipleOf } from "zod/v4";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ const remedyCategories = [
         question: "Rate your pain level",
         is_required: true,
         input_type: "select",
+        multiple:true,
         options: [
           { value: "1", label: "Mild" },
           { value: "2", label: "Moderate" },

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { multipleOf } from "zod/v4";
 
 const RemedyCategorySchema = new mongoose.Schema(
   {
@@ -28,6 +29,7 @@ const RemedyCategorySchema = new mongoose.Schema(
         {
           question: { type: String, required: true },
           is_required: { type: Boolean, default: false },
+          multiple: { type: Boolean, default: false },
           input_type: {
             type: String,
             enum: ["text", "textarea", "select", "radio", "checkbox"],
@@ -38,6 +40,7 @@ const RemedyCategorySchema = new mongoose.Schema(
               {
                 value: { type: String, required: true },
                 label: { type: String, required: true },
+                
               },
             ],
           },
