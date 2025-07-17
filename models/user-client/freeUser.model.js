@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const freeUserSchema = new mongoose.Schema(
   {
-    
     auth: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -14,27 +13,46 @@ const freeUserSchema = new mongoose.Schema(
       default: "global",
     },
 
-    
     answeredQuestions: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "UserProfile",
-      default: null,
+      type: [
+        {
+          question: { type: String, required: false },
+          answer: { type: String, required: false },
+          is_required: { type: Boolean },
+        },
+      ],
+      default: [],
     },
 
-    
     remedyViewCount: {
       type: Number,
       default: 0,
       max: 3,
     },
 
-    
     bookmarkedRemedies: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Remedy",
       },
     ],
+
+    bookMarkedCategory: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "RemedyCategory",
+      },
+    ],
+
+    Comments: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+
+    rating: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
     },
     twoFactorStatus: {
       type: String,
-      enum: ["disabled", "pending", "enabled"], // maybe update this in future
+      enum: ["disabled", "pending", "enabled"], 
       default: "disabled",
       
     },

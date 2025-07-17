@@ -1,52 +1,58 @@
-import mongoose from "mongoose";
-import User from "../models/user.model.js";
-import bcrypt from "bcrypt";
+// server/seeders/freeUserSeeder.js
 
-const dummyUsers = [
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import User from "../models/user.model.js";
+import FreeUser from "../models/user-client/freeUser.model.js";
+
+// Sample dummy users
+const freeUsersData = [
   {
     username: "freeuser1",
-    email: "freeuser1@example.com",
-    password: "password123",
-    accessLevel: "freeuser",
+    email: "free1@example.com",
+    password: "123456",
   },
   {
-    username: "prouser1",
-    email: "prouser1@example.com",
-    password: "password123",
-    accessLevel: "prouser",
-  },
-  {
-    username: "adminuser",
-    email: "admin@example.com",
-    password: "adminpass",
-    accessLevel: "admin",
+    username: "freeuser2",
+    email: "free2@example.com",
+    password: "123456",
   },
 ];
 
-async function seedUsers() {
+export const seedFreeUsers = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/remedy");
+    await mongoose.connect("mongodb://localhost:27017/remedy");
+
+    for (const userData of freeUsersData) {
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
 
     
-    await User.deleteMany({});
-
-    for (const userData of dummyUsers) {
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
-      await User.create({
-        username: userData.username,
-        email: userData.email,
+      const user = new User({
+        ...userData,
         password: hashedPassword,
-        accessLevel: userData.accessLevel,
+        accessLevel: "freeuser",
+        emailVerified: true,
+        isActive: true,
       });
-      console.log(`Created user: ${userData.email}`);
+
+      await user.save();
+
+      // 2. Create FreeUser linked to this User
+      const freeUser = new FreeUser({
+        auth: user._id,
+        geographicRegion: "global",
+        remedyViewCount: 0,
+      });
+
+      await freeUser.save();
     }
 
-    console.log("✅ Dummy users seeded successfully.");
-    process.exit(0);
+    console.log("✅ Free users seeded successfully");
+    process.exit();
   } catch (error) {
-    console.error("❌ Error seeding users:", error);
+    console.error("❌ Error seeding free users:", error);
     process.exit(1);
   }
-}
+};
 
-seedUsers();
+seedFreeUsers()

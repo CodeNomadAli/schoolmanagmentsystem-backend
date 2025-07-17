@@ -1,17 +1,5 @@
-
 import mongoose from "mongoose";
 
-// Define category enum as a constant for maintainability and clarity
-export const REMEDY_CATEGORIES = [
-  "Community Remedies",
-  "Pain Relief",
-  "Digestive",
-  "Respiratory",
-  "Immune Support",
-  "Sleep Aid",
-  "Skin Care",
-];
-const REMEDY_TYPES = ["pharmaceutical", "alternative", "community"];
 const RemedySchema = new mongoose.Schema(
   {
     name: {
@@ -23,12 +11,13 @@ const RemedySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "RemedyCategory",
       required: true,
     },
-
+  
     ingredients: {
       type: String,
     },
@@ -88,6 +77,12 @@ const RemedySchema = new mongoose.Schema(
       ref: "RemedyType",
       required: true,
     },
+
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "staff",
@@ -119,27 +114,20 @@ const RemedySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
- 
+
     answeredQuestions: {
-    type: [
-      {
-        question: { type: String, required: false },
-        answer: { type: String, required: false },
-          is_required: { type: Boolean }, 
-      },
-    ],
-  default: [],
-},
-    
-
-
+      type: [
+        {
+          question: { type: String, required: false },
+          answer: { type: String, required: false },
+          is_required: { type: Boolean },
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );
 
 const Remedy = mongoose.model("Remedy", RemedySchema);
 export default Remedy;
-
-
-
-

@@ -51,6 +51,8 @@ app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
+app.use("/api/v1/freeuser",freeUserRoutes);
+
 app.use("/api/v1/user",auth,userPorfileRoute);
 // remedy routes
 app.use("/api/v1/remedy", auth, remedyRouter);
