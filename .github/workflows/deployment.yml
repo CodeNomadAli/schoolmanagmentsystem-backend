@@ -1,64 +1,52 @@
 name: Push Clean Code to Client Repo via SSH
-
 on:
   push:
     branches:
       - main
-
 jobs:
   push:
     runs-on: ubuntu-latest
     environment: GITHUB_PUSH
-
     steps:
       - name: Checkout Source Repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 1  # Fetch only the latest commit to minimize history
-
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-
       - name: Create Clean Repository
         run: |
           # Configure git user
           git config --global user.name "Ali Hyder"
           git config --global user.email "cw.alihyder@gmail.com"
-
           # Move all files to a temporary directory
           mkdir ../temp
           mv * ../temp/ || true
           mv ../temp/.git* ../temp/.* ../temp/ || true
-
           # Initialize a new git repository
           rm -rf .git
           git init
           git checkout -b main
-
           # Copy files back, excluding .github
           mv ../temp/* . || true
           mv ../temp/.* . || true
           rm -rf ../temp .github
-
           # Create a new commit
           git add -A
           git commit -m "Updated Changes" --allow-empty
-
       - name: Debug Repository State
         run: |
           git status
           git log --oneline -n 5
           git fsck --full
-
       - name: Push to Client Repo
         run: |
           git remote add client git@github.com:remlyo-ai/remlyo-backend.git
           git push --force client main:main || { echo "Push failed"; git status; exit 1; }
-
       - name: Cleanup
         run: |
           rm -rf ~/.ssh
