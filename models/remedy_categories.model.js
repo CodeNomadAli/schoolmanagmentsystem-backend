@@ -18,11 +18,36 @@ const RemedyCategorySchema = new mongoose.Schema(
     relatedQuestions: {
       type: [
         {
-          question: { type: String, required: false },
-          is_required: { type: Boolean }, 
+          question: { type: String, required: true },
+          is_required: { type: Boolean, default: false },
+          input_type: {
+            type: String,
+            enum: ['text', 'textarea', 'select', 'radio', 'checkbox'],
+            required: true,
+          },
+          options: {
+            type: [
+              {
+                value: { type: String, required: true },
+                label: { type: String, required: true },
+              },
+            ],
+            validate: {
+              validator: function (val) {
+                const needsOptions = ['select', 'radio', 'checkbox'];
+                if (needsOptions.includes(this.input_type)) {
+                  return Array.isArray(val) && val.length > 0;
+                } else {
+                  return !val || val.length === 0;
+                }
+              },
+              message:
+                "Options are only allowed for 'select', 'radio', or 'checkbox' types and must be non-empty.",
+            },
+          },
         },
       ],
-  default: [],
+      default: [],
     },
   },
   { timestamps: true }
