@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import RemedyCategory from "../models/remedy_categories.model.js";
 import dotenv from "dotenv";
+import { multipleOf } from "zod/v4";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ const remedyCategories = [
         question: "Select the primary traditional or alternative health system this remedy originates from.",
         is_required: true,
         input_type: "select",
+        multiple:true,
         options: [
           { value: "ayurveda", label: "Ayurveda" },
           { value: "tcm", label: "Traditional Chinese Medicine (TCM)" },

@@ -1,4 +1,4 @@
-// validations/user.validations.js
+
 import Joi from "joi";
 import mongoose from "mongoose";
 
@@ -14,12 +14,11 @@ const createUserSchema = Joi.object({
   username: Joi.string().trim().required(),
   email: Joi.string().email().trim().lowercase().required(),
   password: Joi.string().min(8).required(),
-
   accessLevel: Joi.string().valid("user", "admin", "moderator", "writer").default("user"),
   geographicRegion: Joi.string().default("global"),
   lastLogin: Joi.date().optional(),
   isActive: Joi.boolean().default(false),
-  emailVerified: Joi.boolean().default(false),
+  emailVerified: Joi.boolean().default(true),
   twoFactorStatus: Joi.string().valid("disabled", "pending", "enabled").default("disabled"),
   profileImage: Joi.string().optional().default("/user/default.png"),
 
@@ -58,7 +57,7 @@ const updateUserSchema = Joi.object({
   accessLevel: Joi.string().valid("user", "admin", "moderator", "writer"),
   geographicRegion: Joi.string(),
   isActive: Joi.boolean(),
-  emailVerified: Joi.boolean(),
+  emailVerified: Joi.boolean().default(true),
   twoFactorStatus: Joi.string().valid("disabled", "pending", "enabled"),
   profileImage: Joi.string().optional(),
   status: Joi.string().valid("active", "suspended", "warning"),

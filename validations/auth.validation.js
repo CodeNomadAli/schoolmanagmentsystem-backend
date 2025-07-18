@@ -19,7 +19,7 @@ const registerValidation = Joi.object({
   accessLevel: Joi.string().valid("user", "admin","moderator","writer").optional(),
   geographicRegion: Joi.string().optional(),
   isActive: Joi.boolean(),
-  emailVerified: Joi.boolean(),
+  emailVerified: Joi.boolean().default(true),
   twoFactorStatus: Joi.string(),
 });
 

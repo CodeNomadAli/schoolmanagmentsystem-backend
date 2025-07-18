@@ -14,8 +14,6 @@ import adminMiddleware from "./middleware/staff.middleware.js";
 import adminRouter from "./routes/portal/admin.route.js";
 import uploadRouter from "./routes/upload.routes.js";
 import ModeratorRoute from "./routes/moderator.route.js";
-
-
 import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
 import userPorfileRoute from "./routes/userProfile.route.js";
@@ -27,6 +25,7 @@ import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
 import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
+import freeUserRoutes from "./routes/user-client/free-user.route.js";
 
 const app = express();
 
@@ -52,6 +51,8 @@ app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
+app.use("/api/v1/freeuser",freeUserRoutes);
+
 app.use("/api/v1/user",auth,userPorfileRoute);
 // remedy routes
 app.use("/api/v1/remedy", auth, remedyRouter);
