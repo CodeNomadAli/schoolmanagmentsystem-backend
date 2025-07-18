@@ -6,15 +6,15 @@ dotenv.config();
 
 const remedyTypes = [
   {
-    name: "pharmaceutical",
+    name: "Pharmaceutical",
     description: "Doctor-prescribed or over-the-counter chemical-based remedies.",
   },
   {
-    name: "alternative",
+    name: "Alternative",
     description: "Non-conventional treatments like herbal or holistic remedies.",
   },
   {
-    name: "community",
+    name: "Community",
     description: "Traditionally passed-down community/home remedies.",
   },
 ];

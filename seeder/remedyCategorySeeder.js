@@ -8,154 +8,72 @@ dotenv.config();
 const remedyCategories = [
   {
     name: "Community Remedies",
-    description: "Traditional remedies passed down through generations.",
-    relatedQuestions: [
-      {
-        question: "What remedy did your elders use for this condition?",
-        is_required: true,
-        input_type: "textarea"
-      },
-      {
-        question: "Do you still use this remedy today?",
-        is_required: true,
-        input_type: "radio",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" }
-        ]
-      }
-    ]
+    description: "Remedies from traditional or alternative health systems.",
+    relatedQuestions: []
   },
   {
-    name: "Pain Relief",
-    description: "Treatments for headaches, muscle pain, etc.",
+    name: "Alternative Remedies",
+    description: "Remedies from traditional or alternative health systems.",
     relatedQuestions: [
       {
-        question: "Where is the pain located?",
-        is_required: true,
-        input_type: "text"
-      },
-      {
-        question: "Rate your pain level",
+        question: "Select the primary traditional or alternative health system this remedy originates from.",
         is_required: true,
         input_type: "select",
         multiple:true,
         options: [
-          { value: "1", label: "Mild" },
-          { value: "2", label: "Moderate" },
-          { value: "3", label: "Severe" }
+          { value: "ayurveda", label: "Ayurveda" },
+          { value: "tcm", label: "Traditional Chinese Medicine (TCM)" },
+          { value: "herbalism", label: "Herbalism" },
+          { value: "homeopathy", label: "Homeopathy" },
+          { value: "folk_tradition", label: "Folk Tradition" },
+          { value: "other", label: "Other" }
         ]
       }
     ]
   },
   {
-    name: "Digestive",
-    description: "Helps with digestion issues like bloating or constipation.",
+    name: "Lifestyle Remedies",
+    description: "Remedies to support various aspects of lifestyle.",
     relatedQuestions: [
       {
-        question: "Do you experience bloating after meals?",
+        question: "Select one or more areas of lifestyle this remedy primarily addresses.",
         is_required: true,
-        input_type: "radio",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" }
-        ]
-      },
-      {
-        question: "Which symptoms apply to you?",
-        is_required: false,
         input_type: "checkbox",
         options: [
-          { value: "bloating", label: "Bloating" },
-          { value: "gas", label: "Gas" },
-          { value: "constipation", label: "Constipation" }
+          { value: "sleep", label: "Sleep" },
+          { value: "stress_management", label: "Stress Management" },
+          { value: "energy", label: "Energy" },
+          { value: "focus", label: "Focus" },
+          { value: "mood", label: "Mood" },
+          { value: "productivity", label: "Productivity" },
+          { value: "hydration", label: "Hydration" },
+          { value: "mindfulness", label: "Mindfulness" },
+          { value: "habit_formation", label: "Habit Formation" },
+          { value: "personal_growth", label: "Personal Growth" },
+          { value: "physical_activity", label: "Physical Activity" },
+          { value: "nutrition", label: "Nutrition (General Wellness)" }
         ]
       }
     ]
   },
   {
-    name: "Respiratory",
-    description: "Supports breathing, colds, and sinus relief.",
+    name: "Home & Comfort Remedies",
+    description: "Remedies for home maintenance or personal comfort.",
     relatedQuestions: [
       {
-        question: "How often do you experience breathing difficulty?",
-        is_required: false,
-        input_type: "text"
-      },
-      {
-        question: "Describe any recent respiratory issues.",
-        is_required: false,
-        input_type: "textarea"
-      }
-    ]
-  },
-  {
-    name: "Immune Support",
-    description: "Boosts immune system and overall health.",
-    relatedQuestions: [
-      {
-        question: "Do you take supplements regularly?",
+        question: "Select one or more areas of your home or comfort this remedy benefits.",
         is_required: true,
-        input_type: "radio",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" }
-        ]
-      },
-      {
-        question: "Select the supplements you take:",
-        is_required: false,
         input_type: "checkbox",
         options: [
-          { value: "vitamin_c", label: "Vitamin C" },
-          { value: "zinc", label: "Zinc" },
-          { value: "elderberry", label: "Elderberry" }
-        ]
-      }
-    ]
-  },
-  {
-    name: "Sleep Aid",
-    description: "Helps improve sleep quality.",
-    relatedQuestions: [
-      {
-        question: "How many hours do you sleep daily?",
-        is_required: true,
-        input_type: "text"
-      },
-      {
-        question: "Do you use any of these natural sleep aids?",
-        is_required: false,
-        input_type: "checkbox",
-        options: [
-          { value: "melatonin", label: "Melatonin" },
-          { value: "chamomile", label: "Chamomile" },
-          { value: "valerian_root", label: "Valerian Root" }
-        ]
-      }
-    ]
-  },
-  {
-    name: "Skin Care",
-    description: "Treats skin issues like acne, dryness, or rashes.",
-    relatedQuestions: [
-      {
-        question: "Do you have sensitive skin?",
-        is_required: true,
-        input_type: "radio",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" }
-        ]
-      },
-      {
-        question: "Select any skin issues you experience:",
-        is_required: false,
-        input_type: "checkbox",
-        options: [
-          { value: "acne", label: "Acne" },
-          { value: "dryness", label: "Dryness" },
-          { value: "rash", label: "Rash" }
+          { value: "cleaning", label: "Cleaning" },
+          { value: "air_quality", label: "Air Quality" },
+          { value: "organization", label: "Organization" },
+          { value: "relaxation", label: "Relaxation" },
+          { value: "pet_care", label: "Pet Care" },
+          { value: "gardening", label: "Gardening" },
+          { value: "diy_projects", label: "DIY Projects" },
+          { value: "ambiance", label: "Ambiance" },
+          { value: "personal_comfort", label: "Personal Comfort" }
         ]
       }
     ]
