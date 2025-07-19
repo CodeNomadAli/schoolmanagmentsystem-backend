@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { multipleOf } from "zod/v4";
+
 
 const RemedyCategorySchema = new mongoose.Schema(
   {

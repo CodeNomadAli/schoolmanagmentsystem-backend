@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 import RemedyCategory from "../models/remedy_categories.model.js";
 import dotenv from "dotenv";
-import { multipleOf } from "zod/v4";
-
 dotenv.config();
-
 const remedyCategories = [
   {
     name: "Community Remedies",
     description: "Remedies from traditional or alternative health systems.",
-    relatedQuestions: []
+    relatedQuestions: [
+      {
+        question: "Describe the traditional or cultural background of this remedy.",
+        is_required: true,
+        input_type: "textarea"
+      }
+    ]
   },
   {
     name: "Alternative Remedies",
@@ -19,7 +22,7 @@ const remedyCategories = [
         question: "Select the primary traditional or alternative health system this remedy originates from.",
         is_required: true,
         input_type: "select",
-        multiple:true,
+        multiple: true,
         options: [
           { value: "ayurveda", label: "Ayurveda" },
           { value: "tcm", label: "Traditional Chinese Medicine (TCM)" },
@@ -39,6 +42,7 @@ const remedyCategories = [
         question: "Select one or more areas of lifestyle this remedy primarily addresses.",
         is_required: true,
         input_type: "checkbox",
+        multiple: true,
         options: [
           { value: "sleep", label: "Sleep" },
           { value: "stress_management", label: "Stress Management" },
@@ -64,6 +68,7 @@ const remedyCategories = [
         question: "Select one or more areas of your home or comfort this remedy benefits.",
         is_required: true,
         input_type: "checkbox",
+        multiple: true,
         options: [
           { value: "cleaning", label: "Cleaning" },
           { value: "air_quality", label: "Air Quality" },
@@ -79,18 +84,16 @@ const remedyCategories = [
     ]
   }
 ];
-
 const seedRemedyCategories = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     await RemedyCategory.deleteMany();
     await RemedyCategory.insertMany(remedyCategories);
-    console.log("✅ Remedy categories and questions seeded");
+    console.log(":white_check_mark: Remedy categories and questions seeded");
     process.exit();
   } catch (error) {
-    console.error("❌ Error seeding remedy categories:", error);
+    console.error(":x: Error seeding remedy categories:", error);
     process.exit(1);
   }
 };
-
 seedRemedyCategories();

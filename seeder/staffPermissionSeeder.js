@@ -12,6 +12,8 @@ const groupIds = {
   category: uuidv4(),
   article: uuidv4(),
   articleCategory: uuidv4(),
+  ailment: uuidv4(),
+
 };
 
 const permissions = [
@@ -56,6 +58,14 @@ const permissions = [
   { name: "Create Article Category", slug: "create-article-category", description: "Can create article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
   { name: "Update Article Category", slug: "update-article-category", description: "Can update article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
   { name: "Delete Article Category", slug: "delete-article-category", description: "Can delete article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
+
+  //ailment 
+  { name: "Read Ailment", slug: "read-ailment", description: "Can read ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
+  { name: "Create Ailment", slug: "create-ailment", description: "Can create ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
+  { name: "Update Ailment", slug: "update-ailment", description: "Can update ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
+  { name: "Delete Ailment", slug: "delete-ailment", description: "Can delete ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
+
+
 ];
 
 async function connectToDatabase() {
@@ -76,8 +86,7 @@ const seedPermissions = async () => {
 
     await StaffPermission.deleteMany();
 
-    // Track created and skipped permissions
-    let createdCount = 0;
+       let createdCount = 0;
     let skippedCount = 0;
 
     // Iterate through permissions array
