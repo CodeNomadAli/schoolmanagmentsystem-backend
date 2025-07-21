@@ -29,7 +29,7 @@ const createPrivacyPolicy = async  (req,res) =>{
     }
 }
 
- const getAllPrivacyPolicies = async (req, res) => {
+const getAllPrivacyPolicies = async (req, res) => {
   try {
     const v = req.query.v;
     const search = req.query.search || "";
@@ -49,21 +49,18 @@ const createPrivacyPolicy = async  (req,res) =>{
       return res.status(200).json(apiResponse(200, { policies }, "Fetched all privacy policies"));
     }
 
-    
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
 
-    const [webPolicies, total] = await Promise.all([
-      webPolicies.find(searchQuery)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit),
-      webPolicies.countDocuments(searchQuery),
+    
+    const [policies, total] = await Promise.all([
+      Webpolices.find(searchQuery).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Webpolices.countDocuments(searchQuery),
     ]);
 
     const data = {
-      webPolicies,
+      policies,
       pagination: {
         total,
         page,
@@ -78,6 +75,7 @@ const createPrivacyPolicy = async  (req,res) =>{
     return res.status(500).json(apiResponse(500, null, "Internal server error"));
   }
 };
+
 
 
 const getPrivacyPolicyById = async (req, res) => {

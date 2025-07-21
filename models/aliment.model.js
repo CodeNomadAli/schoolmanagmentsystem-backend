@@ -23,11 +23,7 @@ const AilmentSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
-    remedies: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Remedy",
-      default: null,
-    },
+    
     isActive: {
       type: Boolean,
       default: true,

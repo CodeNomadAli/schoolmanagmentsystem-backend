@@ -1,4 +1,4 @@
-import Ailment from "../../models/aliments.model.js";
+import Ailment from "../../models/aliment.model.js";
 import { apiResponse } from "../../helper.js";
 import mongoose from "mongoose";
 
@@ -48,7 +48,6 @@ export const getAllAilments = async (req, res) => {
 
     const [ailments, total] = await Promise.all([
       Ailment.find(searchQuery)
-        .populate("remedies")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),

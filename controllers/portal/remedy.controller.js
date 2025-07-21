@@ -7,16 +7,27 @@ import Comment from "../../models/comment.model.js";
 import RemedyCategory from "../../models/remedy_categories.model.js";
 import User from "../../models/user.model.js";
 import RemedyType from "../../models/remedy_types.model.js";
+import Ailment from "../../models/aliment.model.js";
 import {
   createCommentValidation,
   moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
+import slugify from "../../utils/slugify.js";
+
 
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
-    const { name, description, category, remedyType, ailments, answeredQuestions, ...rest } = req.body;
+    const {
+      name,
+      description,
+      category,
+      remedyType,
+      ailments,
+      answeredQuestions,
+      ...rest
+    } = req.body;
 
     const { error } = remedyValidation.validate(req.body);
     if (error) {
@@ -26,26 +37,44 @@ const createRemedy = async (req, res) => {
         errors: error.details.map((d) => d.message),
       });
     }
-      
+
+    const ailmentIds = [];
+    for (const ailmentName of ailments) {
+      let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
+
+      console.log(existing)
+
+      if (!existing) {
+        existing = await Ailment.create({
+          name: ailmentName.trim(),
+          createdBy: user.id,
+        });
+      }
+
+      ailmentIds.push(existing._id);
+    }
+
+    console.log("Ailment IDs:", ailmentIds);
+
     const newRemedy = await Remedy.create({
       name,
       description,
       category,
       remedyType,
       createdBy: user.id,
-      ailments,
+      ailments: ailmentIds,
       answeredQuestions,
       ...rest,
     });
 
+    
+     
     return res
       .status(201)
-      .json(
-        apiResponse(201,  newRemedy , "Remedy successfully created")
-      );
+      .json(apiResponse(201, newRemedy, "Remedy successfully created"));
   } catch (error) {
     console.error("Error creating remedy:", error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Internal server error",
       error: error.message,
       success: false,
@@ -74,7 +103,6 @@ const getAllRemedies = async (req, res) => {
         .populate([
           {
             path: "createdBy",
-            
           },
           {
             path: "category",
@@ -121,7 +149,7 @@ const getRemedyById = async (req, res) => {
     const remedy = await Remedy.findById(id).populate([
       {
         path: "createdBy",
-        select:"firstName lastName email"
+        select: "firstName lastName email",
       },
       {
         path: "category",
@@ -139,7 +167,7 @@ const getRemedyById = async (req, res) => {
 
     res
       .status(200)
-      .json(apiResponse(200, remedy , "Successfully fetched remedy"));
+      .json(apiResponse(200, remedy, "Successfully fetched remedy"));
   } catch (error) {
     res.status(500).json({
       message: "Internal server error",
@@ -190,7 +218,7 @@ const updateRemedy = async (req, res) => {
 
     res
       .status(200)
-      .json(apiResponse(200,  remedy , "Successfully updated remedy"));
+      .json(apiResponse(200, remedy, "Successfully updated remedy"));
   } catch (error) {
     console.error("Error updating remedy:", error);
     res.status(500).json({
