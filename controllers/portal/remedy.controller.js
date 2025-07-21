@@ -16,8 +16,7 @@ import { apiResponse } from "../../helper.js";
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
-    const { name, description, category, remedyType, answeredQuestions, ...rest } =
-      req.body;
+    const { name, description, category, remedyType, ailments, answeredQuestions, ...rest } = req.body;
 
     const { error } = remedyValidation.validate(req.body);
     if (error) {
@@ -34,6 +33,7 @@ const createRemedy = async (req, res) => {
       category,
       remedyType,
       createdBy: user.id,
+      ailments,
       answeredQuestions,
       ...rest,
     });
