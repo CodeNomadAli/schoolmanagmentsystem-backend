@@ -51,24 +51,22 @@ async function seedRole() {
         await staffPermission.findOne({ slug: "read-remedy" }),
         await staffPermission.findOne({ slug: "update-remedy" }),
         await staffPermission.findOne({ slug: "delete-remedy" }),
-
-        // Category
+        
         await staffPermission.findOne({ slug: "create-category" }),
         await staffPermission.findOne({ slug: "read-category" }),
         await staffPermission.findOne({ slug: "update-category" }),
         await staffPermission.findOne({ slug: "delete-category" }),
+        
+        await staffPermission.findOne({ slug: "create-article"}),
+        await staffPermission.findOne({ slug: "read-article"}),
+        await staffPermission.findOne({ slug: "update-article"}),
+        await staffPermission.findOne({ slug: "delete-article"}),
 
-        // Article
-        await staffPermission.findOne({ slug: "create-article" }),
-        await staffPermission.findOne({ slug: "read-article" }),
-        await staffPermission.findOne({ slug: "update-article" }),
-        await staffPermission.findOne({ slug: "delete-article" }),
-
-        // Article Category
-        await staffPermission.findOne({ slug: "create-article-category" }),
-        await staffPermission.findOne({ slug: "read-article-category" }),
-        await staffPermission.findOne({ slug: "update-article-category" }),
-        await staffPermission.findOne({ slug: "delete-article-category" }),
+        await staffPermission.findOne({ slug: "create-ailment"}),
+        await staffPermission.findOne({ slug: "read-ailment"}),
+        await staffPermission.findOne({ slug: "update-ailment"}),
+        await staffPermission.findOne({ slug: "delete-ailment"}),
+        ,
       ],
     },
     {
