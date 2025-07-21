@@ -27,7 +27,7 @@ import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import freeUserRoutes from "./routes/user-client/free-user.route.js";
 import Aliments from "./routes/portal/ailment.route.js"
-import privacyRouter from "./routes/portal/Privacy.route.js";
+import privacyRouter from "./routes/portal/Web-Policy.route.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';

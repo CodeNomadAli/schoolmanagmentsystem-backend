@@ -3,10 +3,9 @@ import {
   getPrivacyPolicyById,
   createPrivacyPolicy,
   updatePrivacyPolicy,
-    deletePrivacyPolicy,
-    getAllPrivacyPolicies
-  
-} from "../../controllers/portal/Privacy.controller.js";
+  deletePrivacyPolicy,
+  getAllPrivacyPolicies
+} from "../../controllers/portal/web-policy.controller.js";
 import checkPermission from "../../middleware/check_permission.middleware.js";
 
 
