@@ -47,7 +47,7 @@ const remedyValidation = Joi.object({
     type: Joi.string()
       .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
       .optional(),
-    source: Joi.string().trim().uri().optional(),
+    source: Joi.string().trim().optional(),
   }).optional(),
 
   relatedQuestions: Joi.array().items(
