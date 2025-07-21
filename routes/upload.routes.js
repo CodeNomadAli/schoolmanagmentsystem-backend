@@ -8,8 +8,8 @@ const router = express.Router();
 const spacesEndpoint = new AWS.Endpoint("tor1.digitaloceanspaces.com");
 const s3 = new AWS.S3({
   endpoint: spacesEndpoint,
-  accessKeyId: "DO801XJVR7VHHZQ86AND",
-  secretAccessKey: "S8AZbv/4O2bl4/iATO8lxyrfK1Yvhm3RpCmqmsiWV14",
+  accessKeyId: process.env.DO_SPACES_KEY,
+  secretAccessKey: process.env.DO_SPACES_SECRET,
   region: "us-east-1",
   signatureVersion: "v4",
 });
