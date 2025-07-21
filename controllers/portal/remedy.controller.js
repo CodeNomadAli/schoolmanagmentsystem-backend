@@ -54,7 +54,7 @@ const createRemedy = async (req, res) => {
       ailmentIds.push(existing._id);
     }
 
-    console.log("Ailment IDs:", ailmentIds);
+    
 
     const newRemedy = await Remedy.create({
       name,
