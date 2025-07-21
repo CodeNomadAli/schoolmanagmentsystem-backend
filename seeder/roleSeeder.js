@@ -66,6 +66,11 @@ async function seedRole() {
         await staffPermission.findOne({ slug: "read-ailment"}),
         await staffPermission.findOne({ slug: "update-ailment"}),
         await staffPermission.findOne({ slug: "delete-ailment"}),
+        await staffPermission.findOne({ slug: "create-privacy-policy"}),
+        await staffPermission.findOne({ slug: "read-privacy-policy"}),
+        await staffPermission.findOne({ slug: "update-privacy-policy"}),
+        await staffPermission.findOne({ slug: "delete-privacy-policy"}),
+      
         ,
       ],
     },
