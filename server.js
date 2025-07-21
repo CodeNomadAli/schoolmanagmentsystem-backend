@@ -26,6 +26,7 @@ import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import Aliments from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
+import UploadFile from "./routes/upload.routes.js";
 
 const app = express();
 
@@ -59,7 +60,6 @@ app.use("/api/v1/remedy", auth, remedyRouter);
 // admin Routes
 app.use("/api/v1/admin", auth, adminMiddleware, adminRouter);
 // upload files (images,etc)
-app.use("/api/v1/upload", auth, uploadRouter)
 // moderator routes
 app.use("/api/v1/moderator", auth, ModeratorRoute);
 // writer routes
@@ -71,6 +71,8 @@ app.use("/api/v1/articles", ArticleRoute)
 // staff routes
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
+
+app.use(PORTAL_ROUTE_PREFIX + "/upload", staffAuth, uploadRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth,Aliments)
 

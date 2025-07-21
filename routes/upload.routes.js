@@ -1,55 +1,75 @@
 import express from "express";
 import multer from "multer";
-import { uploadToCloudinary } from "../controllers/upload.controller.js";
-import {storage} from "./../config/cloudinary.config.js"
+import AWS from "aws-sdk";
+import crypto from "crypto";
 
-const uploadRouter = express.Router();
+const router = express.Router();
 
-// Configure multer
+const spacesEndpoint = new AWS.Endpoint("tor1.digitaloceanspaces.com");
+const s3 = new AWS.S3({
+  endpoint: spacesEndpoint,
+  accessKeyId: "DO801XJVR7VHHZQ86AND",
+  secretAccessKey: "S8AZbv/4O2bl4/iATO8lxyrfK1Yvhm3RpCmqmsiWV14",
+  region: "us-east-1",
+  signatureVersion: "v4",
+});
+
+const BUCKET_NAME = "remedy-bucket";
+
 const upload = multer({
-  storage,
-  limits: { 
-    fileSize: 10 * 1024 * 1024, // 10 MB per file
-    files: 10 // Maximum 10 files
-  },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, 
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
-      "image/jpeg", "image/png", "image/webp", "image/jpg",
-      "application/vnd.ms-excel", // .xls
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-      "text/csv"
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/jpg",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/csv",
     ];
-
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error(`Unsupported file type: ${file.mimetype}`), false);
+      cb(new Error("Unsupported file type"), false);
     }
+  },
+});
+
+router.post("/file", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
+
+    const file = req.file;
+    const ext = file.originalname.split(".").pop();
+    const uniqueName = `uploads/${Date.now()}-${crypto.randomBytes(8).toString("hex")}.${ext}`;
+
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: uniqueName,
+      Body: file.buffer,
+      ACL: "public-read",
+      ContentType: file.mimetype,
+    };
+
+    const data = await s3.upload(params).promise();
+
+    res.status(200).json({
+      success: true,
+      message: "File uploaded successfully to DigitalOcean Spaces",
+      file: {
+        key: data.Key,
+        url: data.Location,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+      },
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Route to upload multiple files
-uploadRouter.post("/multiple", 
-  (req, res, next) => {
-    upload.array("files", 10)(req, res, (err) => {
-      console.log(req.body)
-      if (err) {
-        return handleMulterError(err, req, res, next);
-      }
-      next();
-    });
-  },
-  uploadToCloudinary
-);
-
-// General error handler
-uploadRouter.use((error, req, res, next) => {
-  console.error('Upload error:', error);
-  res.status(500).json({
-    success: false,
-    message: error.message || 'An error occurred during file upload',
-    error: error.name || 'UPLOAD_ERROR'
-  });
-});
-
-export default uploadRouter;
+export default router;
