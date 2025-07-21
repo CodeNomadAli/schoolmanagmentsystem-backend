@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 export const createAilment = async (req, res) => {
   try {
-    const { name, description, remedies } = req.body;
+    const { name, description } = req.body;
     const createdBy = req.user?._id; 
 
     const existing = await Ailment.findOne({ name: name.trim() });
