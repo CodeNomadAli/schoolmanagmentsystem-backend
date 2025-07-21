@@ -93,7 +93,7 @@ export const getAilment = async (req, res) => {
       return res.status(404).json(apiResponse(404, null, "Ailment not found"));
     }
 
-    return res.status(200).json(apiResponse(200, { ailment }, "Ailment found"));
+    return res.status(200).json(apiResponse(200,  ailment , "Ailment found"));
   } catch (error) {
     console.error(error);
     return res
