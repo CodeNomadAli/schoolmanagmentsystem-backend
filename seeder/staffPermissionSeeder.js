@@ -67,10 +67,10 @@ const permissions = [
  
   
   // Privacy Policy
-  { name: "Read Privacy Policy", slug: "read-privacy-policy", description: "Can read privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
-  { name: "Create Privacy Policy", slug: "create-privacy-policy", description: "Can create privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
-  { name: "Update Privacy Policy", slug: "update-privacy-policy", description: "Can update privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
-  { name: "Delete Privacy Policy", slug: "delete-privacy-policy", description: "Can delete privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Read Privacy Policy", slug: "read-web-policy", description: "Can read privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Create Privacy Policy", slug: "create-web-policy", description: "Can create privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Update Privacy Policy", slug: "update-web-policy", description: "Can update privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Delete Privacy Policy", slug: "delete-web-policy", description: "Can delete privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
 
 ];
 
