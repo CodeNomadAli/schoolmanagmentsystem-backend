@@ -75,7 +75,7 @@ app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth,Aliments)
 
-app.use(PORTAL_ROUTE_PREFIX + "/privacy-policy", staffAuth,privacyRouter)
+app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth,privacyRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 
