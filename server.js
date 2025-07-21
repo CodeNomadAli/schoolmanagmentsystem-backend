@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.config.js";
 import authRouter from "./routes/auth.route.js";
-// import portalAuthRouter from "./routes/portal/auth.route.js";
 import remedyRouter from "./routes/remedy.route.js";
 import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
@@ -25,9 +24,9 @@ import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
 import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
-import freeUserRoutes from "./routes/user-client/free-user.route.js";
 import Aliments from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
+
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -52,7 +51,7 @@ app.use("/api/v1/users", auth, userRouter);
 
 
 // user profile routes
-app.use("/api/v1/freeuser",freeUserRoutes);
+
 
 app.use("/api/v1/user",auth,userPorfileRoute);
 // remedy routes
