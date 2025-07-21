@@ -64,7 +64,13 @@ const permissions = [
   { name: "Create Ailment", slug: "create-ailment", description: "Can create ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
   { name: "Update Ailment", slug: "update-ailment", description: "Can update ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
   { name: "Delete Ailment", slug: "delete-ailment", description: "Can delete ailment data", groupId: groupIds.ailment, groupName: "Ailment" },
-
+ 
+  
+  // Privacy Policy
+  { name: "Read Privacy Policy", slug: "read-privacy-policy", description: "Can read privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Create Privacy Policy", slug: "create-privacy-policy", description: "Can create privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Update Privacy Policy", slug: "update-privacy-policy", description: "Can update privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
+  { name: "Delete Privacy Policy", slug: "delete-privacy-policy", description: "Can delete privacy policy data", groupId: groupIds.ailment, groupName: "Privacy Policy" },
 
 ];
 

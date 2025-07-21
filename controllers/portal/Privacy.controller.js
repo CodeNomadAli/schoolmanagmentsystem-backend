@@ -1,4 +1,4 @@
-import PrivacyModel from "../../models/Privacy.model";
+import PrivacyModel from "../../models/Privacy.model.js";
 import { apiResponse } from "../../helper.js";
 import mongoose from "mongoose";
 
