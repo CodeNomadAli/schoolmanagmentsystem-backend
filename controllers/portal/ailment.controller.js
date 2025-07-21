@@ -1,10 +1,11 @@
 import Ailment from "../../models/aliments.model.js";
 import { apiResponse } from "../../helper.js";
 import mongoose from "mongoose";
+
 export const createAilment = async (req, res) => {
   try {
     const { name, description, remedies } = req.body;
-    const createdBy = req.user?._id; // safely extract user ID
+    const createdBy = req.user?._id; 
 
     const existing = await Ailment.findOne({ name: name.trim() });
     if (existing) {
@@ -35,7 +36,7 @@ export const getAllAilments = async (req, res) => {
       .populate({path:"remedies"}) 
       .sort({ createdAt: -1 });
 
-    return res.status(200).json(apiResponse(200, ailments, "All ailments"));
+    return res.status(200).json(apiResponse(200, { ailments }, "All ailments"));
   } catch (error) {
     console.error(error);
     return res
@@ -60,7 +61,7 @@ export const getAilment = async (req, res) => {
       return res.status(404).json(apiResponse(404, null, "Ailment not found"));
     }
 
-    return res.status(200).json(apiResponse(200, ailment, "Ailment found"));
+    return res.status(200).json(apiResponse(200, { ailment }, "Ailment found"));
   } catch (error) {
     console.error(error);
     return res

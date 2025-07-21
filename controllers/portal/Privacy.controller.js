@@ -1,0 +1,130 @@
+import PrivacyModel from "../../models/Privacy.model";
+import { apiResponse } from "../../helper.js";
+import mongoose from "mongoose";
+
+const createPrivacyPolicy = async  (req,res) =>{
+    try {
+        const { title, description } = req.body;
+        const createdBy = req.user?._id; 
+    
+        const existing = await PrivacyModel.findOne({ title: title.trim() });
+        if (existing) {
+        return res
+            .status(409)
+            .json(apiResponse(409, null, "Privacy policy with this title already exists"));
+        }
+    
+        const privacyPolicy = await PrivacyModel.create({
+        title,
+        description,
+        createdBy,
+        });
+    
+        return res.status(201).json(apiResponse(201, privacyPolicy, "Privacy policy created"));
+    } catch (error) {
+        console.error(error);
+        return res
+        .status(500)
+        .json(apiResponse(500, null, "Internal server error"));
+    }
+}
+
+const getAllPrivacyPolicies = async (req, res) => {
+    try {
+        const policies = await PrivacyModel.find({ isActive: true })
+        .sort({ createdAt: -1 });
+
+        return res.status(200).json(apiResponse(200, policies, "All privacy policies"));
+    } catch (error) {
+        console.error(error);
+        return res
+        .status(500)
+        .json(apiResponse(500, null, "Internal server error"));
+    }
+}
+
+const getPrivacyPolicyById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json(apiResponse(400, null, "Invalid policy ID"));
+        }
+
+        const policy = await PrivacyModel.findById(id);
+
+        if (!policy) {
+            return res.status(404).json(apiResponse(404, null, "Privacy policy not found"));
+        }
+
+        return res.status(200).json(apiResponse(200, policy, "Privacy policy details"));
+    } catch (error) {
+        console.error(error);
+        return res
+        .status(500)
+        .json(apiResponse(500, null, "Internal server error"));
+    }
+}
+
+ const updatePrivacyPolicy = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description } = req.body;
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json(apiResponse(400, null, "Invalid policy ID"));
+        }
+
+        const policy = await PrivacyModel.findByIdAndUpdate(
+            id,
+            { title, description },
+            { new: true }
+        );
+
+        if (!policy) {
+            return res.status(404).json(apiResponse(404, null, "Privacy policy not found"));
+        }
+
+        return res.status(200).json(apiResponse(200, policy, "Privacy policy updated"));
+    } catch (error) {
+        console.error(error);
+        return res
+        .status(500)
+        .json(apiResponse(500, null, "Internal server error"));
+    }
+}
+
+const deletePrivacyPolicy = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json(apiResponse(400, null, "Invalid policy ID"));
+        }
+
+        const policy = await PrivacyModel.findByIdAndUpdate(
+            id,
+            { isActive: false },
+            { new: true }
+        );
+
+        if (!policy) {
+            return res.status(404).json(apiResponse(404, null, "Privacy policy not found"));
+        }
+
+        return res.status(200).json(apiResponse(200, policy, "Privacy policy deleted"));
+    } catch (error) {
+        console.error(error);
+        return res
+        .status(500)
+        .json(apiResponse(500, null, "Internal server error"));
+    }
+}
+
+export {
+    createPrivacyPolicy,
+    getAllPrivacyPolicies,
+    getPrivacyPolicyById,
+    updatePrivacyPolicy,
+    deletePrivacyPolicy
+}
