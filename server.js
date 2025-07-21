@@ -27,6 +27,7 @@ import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import freeUserRoutes from "./routes/user-client/free-user.route.js";
 import Aliments from "./routes/portal/ailment.route.js"
+import privacyRouter from "./routes/portal/Privacy.route.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -71,7 +72,10 @@ app.use("/api/v1/articles", ArticleRoute)
 // staff routes
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
-app.use(PORTAL_ROUTE_PREFIX + "/aliments", staffAuth,Aliments)
+
+app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth,Aliments)
+
+app.use(PORTAL_ROUTE_PREFIX + "/PrivacyPolicy", staffAuth,privacyRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 

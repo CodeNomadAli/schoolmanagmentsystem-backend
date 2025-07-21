@@ -32,18 +32,50 @@ export const createAilment = async (req, res) => {
 
 export const getAllAilments = async (req, res) => {
   try {
-     const ailments = await Ailment.find({ isActive: true })
-      .populate({path:"remedies"}) 
-      .sort({ createdAt: -1 });
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const skip = (page - 1) * limit;
+    const search = req.query.search || "";
 
-    return res.status(200).json(apiResponse(200, { ailments }, "All ailments"));
+    const searchQuery = { isActive: true };
+
+    if (search) {
+      searchQuery.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const [ailments, total] = await Promise.all([
+      Ailment.find(searchQuery)
+        .populate("remedies")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Ailment.countDocuments(searchQuery),
+    ]);
+
+    const data = {
+      ailments,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    };
+
+    return res
+      .status(200)
+      .json(apiResponse(200, data, "Successfully fetched ailments"));
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching ailments:", error);
     return res
       .status(500)
       .json(apiResponse(500, null, "Internal server error"));
   }
 };
+
 
 export const getAilment = async (req, res) => {
   try {
