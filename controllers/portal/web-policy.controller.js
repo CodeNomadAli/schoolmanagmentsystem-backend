@@ -1,20 +1,20 @@
-import PrivacyModel from "../../models/Privacy.model.js";
+import Webpolices from "../../models/web_Policy.model.js";
 import { apiResponse } from "../../helper.js";
 import mongoose from "mongoose";
-
+   
 const createPrivacyPolicy = async  (req,res) =>{
     try {
         const { title, description } = req.body;
         const createdBy = req.user?._id; 
     
-        const existing = await PrivacyModel.findOne({ title: title.trim() });
+        const existing = await Webpolices.findOne({ title: title.trim() });
         if (existing) {
         return res
             .status(409)
             .json(apiResponse(409, null, "Privacy policy with this title already exists"));
         }
     
-        const privacyPolicy = await PrivacyModel.create({
+        const privacyPolicy = await Webpolices.create({
         title,
         description,
         createdBy,
@@ -45,7 +45,7 @@ const createPrivacyPolicy = async  (req,res) =>{
 
     
     if (v === "all") {
-      const policies = await PrivacyModel.find(searchQuery).sort({ createdAt: -1 });
+      const policies = await Webpolices.find(searchQuery).sort({ createdAt: -1 });
       return res.status(200).json(apiResponse(200, { policies }, "Fetched all privacy policies"));
     }
 
@@ -55,11 +55,11 @@ const createPrivacyPolicy = async  (req,res) =>{
     const skip = (page - 1) * limit;
 
     const [policies, total] = await Promise.all([
-      PrivacyModel.find(searchQuery)
+      Webpolices.find(searchQuery)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
-      PrivacyModel.countDocuments(searchQuery),
+      Webpolices.countDocuments(searchQuery),
     ]);
 
     const data = {
@@ -88,7 +88,7 @@ const getPrivacyPolicyById = async (req, res) => {
             return res.status(400).json(apiResponse(400, null, "Invalid policy ID"));
         }
 
-        const policy = await PrivacyModel.findById(id);
+        const policy = await Webpolices.findById(id);
 
         if (!policy) {
             return res.status(404).json(apiResponse(404, null, "Privacy policy not found"));
@@ -112,7 +112,7 @@ const getPrivacyPolicyById = async (req, res) => {
             return res.status(400).json(apiResponse(400, null, "Invalid policy ID"));
         }
 
-        const policy = await PrivacyModel.findByIdAndUpdate(
+        const policy = await Webpolices.findByIdAndUpdate(
             id,
             { title, description },
             { new: true }
@@ -139,7 +139,7 @@ const deletePrivacyPolicy = async (req, res) => {
             return res.status(400).json(apiResponse(400, null, "Invalid policy ID"));
         }
 
-        const policy = await PrivacyModel.findByIdAndUpdate(
+        const policy = await Webpolices.findByIdAndUpdate(
             id,
             { isActive: false },
             { new: true }

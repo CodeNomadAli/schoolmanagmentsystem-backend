@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 
 
-const policySchema = new mongoose.Schema({
+const WebPoliciesSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -31,4 +31,4 @@ const policySchema = new mongoose.Schema({
   },
 )
 
-export default mongoose.model('PrivacyPolicy', policySchema)
+export default mongoose.model('WebPolicies', WebPoliciesSchema)

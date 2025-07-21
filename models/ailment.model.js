@@ -44,7 +44,7 @@ const AilmentSchema = new mongoose.Schema({
     }],
     severity: {
         type: String,
-        enum: ['mild', 'moderate', 'severe'], // Example severity levels
+        enum: ['mild', 'moderate', 'severe'], 
     },
     isContagious: {
         type: Boolean,
