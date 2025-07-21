@@ -54,16 +54,16 @@ const createPrivacyPolicy = async  (req,res) =>{
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
 
-    const [policies, total] = await Promise.all([
-      Webpolices.find(searchQuery)
+    const [webPolicies, total] = await Promise.all([
+      webPolicies.find(searchQuery)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
-      Webpolices.countDocuments(searchQuery),
+      webPolicies.countDocuments(searchQuery),
     ]);
 
     const data = {
-      policies,
+      webPolicies,
       pagination: {
         total,
         page,
