@@ -26,12 +26,10 @@ const upload = multer({
   },
 });
 
-console.log("File upload route initialized");
+
 router.post("/upload", upload.single("file"), uploadFile);
 router.delete("/delete/:path", deleteFile);
 router.get("/:path", getFile);
-
-
 
 router.use((err, req, res, next) => {
   console.error("Error in file upload middleware:", err);

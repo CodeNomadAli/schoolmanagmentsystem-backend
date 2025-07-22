@@ -8,12 +8,12 @@ const ModerationStatusSchema = new mongoose.Schema(
     },
     contentType: {
       type: String,
-      enum: ["Remedy", "Review", "AiFeedback"], // maybe update this in future
+      enum: ["Remedy", "Review", "AiFeedback"], 
       required: true,
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"], // maybe update this in future
+      enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
     moderatorNotes: {

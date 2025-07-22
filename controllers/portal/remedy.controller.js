@@ -4,13 +4,9 @@ import { remedyValidation } from "../../validations/remedy.validation.js";
 import ModerationStatus from "../../models/moderation_status.model.js";
 import Flag from "../../models/flag.model.js";
 import Comment from "../../models/comment.model.js";
-import RemedyCategory from "../../models/remedy_categories.model.js";
-import User from "../../models/user.model.js";
-import RemedyType from "../../models/remedy_types.model.js";
 import Ailment from "../../models/aliment.model.js";
 import {
   createCommentValidation,
-  moderateCommentValidation,
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
@@ -76,6 +72,7 @@ const createRemedy = async (req, res) => {
     });
   }
 };
+
 
 const getAllRemedies = async (req, res) => {
   try {
