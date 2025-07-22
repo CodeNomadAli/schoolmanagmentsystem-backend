@@ -2,8 +2,11 @@ import { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sd
 import s3 from "../../utils/s3.config.js";
 import crypto from "crypto";
 import { apiResponse } from "../../helper.js";
+
 const BUCKET = process.env.DO_SPACES_BUCKET;
 const ENDPOINT = process.env.DO_SPACES_ENDPOINT;
+const key = process.env.DO_SPACES_ACCESS_KEY_ID 
+
 
 export const uploadFile = async (req, res) => {
   try {
@@ -18,9 +21,11 @@ export const uploadFile = async (req, res) => {
     const command = new PutObjectCommand({
       Bucket: BUCKET,
       Key: path,
+      key: key,
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
       Region: process.env.DO_SPACES_REGION,
+
       ACL: "public-read",
     });
 
