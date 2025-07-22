@@ -46,9 +46,9 @@ const RemedySchema = new mongoose.Schema(
         type: String,
       },
     },
-    sideEffects: {
+    sideEffects: [{
       type: String,
-    },
+    }],
     preparationTime: {
       type: String,
     },
@@ -67,20 +67,17 @@ const RemedySchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    
     scientificReferences: {
       type: [String],
       default: [],
     },
+    
     geographicRestrictions: {
       type: [String],
       default: [],
     },
-    remedyType: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "RemedyType",
-      required: true,
-    },
-
+    
     isPublic: {
       type: Boolean,
       default: false,
@@ -91,28 +88,35 @@ const RemedySchema = new mongoose.Schema(
       ref: "staff",
       required: true,
     },
+
     viewCount: {
       type: Number,
       default: 0,
     },
+    
     equipments: {
       type: String,
     },
+    
     howToTakeIt: {
       type: String,
     },
+    
     dosageAndUsage: {
       type: String,
     },
+    
     storageInstructions: {
       type: String,
     },
+    
     averageRating: {
       type: Number,
       default: 0,
       min: 0,
       max: 5,
     },
+    
     isActive: {
       type: Boolean,
       default: true,
@@ -135,7 +139,13 @@ const RemedySchema = new mongoose.Schema(
         ref: "Ailment",
       },
     ],
+
+    whyItWorks: {
+      type: String,
+      default: "",
+    },
   },
+
   { timestamps: true }
 );
 

@@ -21,6 +21,8 @@ const createRemedy = async (req, res) => {
       remedyType,
       ailments,
       answeredQuestions,
+      sideEffects,
+      whyItWorks,
       ...rest
     } = req.body;
 
@@ -53,10 +55,11 @@ const createRemedy = async (req, res) => {
       name,
       description,
       category,
-      remedyType,
       createdBy: user.id,
       ailments: ailmentIds,
       answeredQuestions,
+      sideEffects,
+      whyItWorks,
       ...rest,
     });
 
@@ -99,12 +102,11 @@ const getAllRemedies = async (req, res) => {
           {
             path: "category",
           },
-          {
-            path: "remedyType",
-          },
+          
           {
             path: "ailments",
           },
+
         ])
         .sort({ createdAt: -1 })
         .skip(skip)

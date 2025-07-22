@@ -5,7 +5,7 @@ const remedyValidation = Joi.object({
   description: Joi.string().trim().min(10).required(),
 
   category: Joi.string().trim().required(),
-  remedyType: Joi.string().trim().required(),
+  
 
   ailments: Joi.array().items(Joi.string().min(1).required()).optional(),
 
@@ -22,7 +22,7 @@ const remedyValidation = Joi.object({
   dosageAndUsage: Joi.string().trim().optional(),
   storageInstructions: Joi.string().trim().optional(),
 
-  sideEffects: Joi.string().trim().optional(),
+  sideEffects: Joi.array().items(Joi.string().trim()).optional(),
 
   aiConfidenceScore: Joi.number().min(0).max(100).default(0),
   isAIGenerated: Joi.boolean().default(false),
@@ -69,5 +69,7 @@ const remedyValidation = Joi.object({
   ).optional(),
 
   isPublic: Joi.boolean().default(false),
+  whyitworks: Joi.string().trim().optional(),
+
 });
 export { remedyValidation };

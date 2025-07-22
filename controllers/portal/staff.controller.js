@@ -68,9 +68,9 @@ export const staffLogin = async (req, res) => {
 
 export const createStaff = async (req, res) => {
   try {
-    console.log("Request Body:", req.body); // 👈 check incoming data
+    
 
-    const { email, password, ...rest } = req.body;
+    const { email, password, profileImage, ...rest } = req.body;
 
     const existing = await Staff.findOne({ email });
     if (existing) {
@@ -78,7 +78,7 @@ export const createStaff = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newStaff = await Staff.create({ email, password: hashedPassword, ...rest });
+    const newStaff = await Staff.create({ email, password: hashedPassword, profileImage, ...rest });
 
     return res.status(201).json({ message: "Staff created", success: true, data: newStaff });
   } catch (error) {
