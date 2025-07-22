@@ -1,13 +1,12 @@
 import express from "express";
 import multer from "multer";
-
-import { uploadFile, getFile, deleteFile } from "../controllers/portal/file.controller.js";
+import { uploadFile } from "../controllers/portal/file.controller.js";
 
 const router = express.Router();
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "image/jpeg",
@@ -27,7 +26,13 @@ const upload = multer({
 });
 
 router.post("/upload", upload.single("file"), uploadFile);
-router.get("/:key", getFile);
-router.delete("/:key", deleteFile);
+
+
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message === "Unsupported file type") {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next(err);
+});
 
 export default router;
