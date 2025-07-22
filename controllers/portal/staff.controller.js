@@ -4,7 +4,7 @@ import generateToken from "../../utils/generateToken.js";
 import { getClientInfo } from "../../utils/clientInfo.js";
 import Session from "../../models/session.model.js";
 import { apiResponse } from "../../helper.js";
-
+import companyNotify from "../../helper/emailLogger.js";
 
 export const staffLogin = async (req, res) => {
   try {
@@ -48,7 +48,12 @@ export const staffLogin = async (req, res) => {
     });
 
     const { password: _, ...staffData } = staff.toObject();
-
+    console.log("Staff login successful:", staffData);
+    await companyNotify(
+          staff.email,
+          "Login Notification",
+          "You have successfully logged in. If this was not you, please contact support immediately."
+        );
     return res.status(200).json({
       message: "Login successful",
       success: true,

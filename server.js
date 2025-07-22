@@ -26,7 +26,7 @@ import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import Aliments from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
 import UploadFile from "./routes/file.routes.js";
-import sendEmail from "./routes/portal/email.route.js";
+
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -73,7 +73,7 @@ app.use("/api/v1/articles", ArticleRoute)
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX + "/email", staffAuth, sendEmail)
+
 
 app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, UploadFile)
 
