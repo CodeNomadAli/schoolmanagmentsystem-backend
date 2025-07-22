@@ -1,4 +1,9 @@
-import { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"; 
 import s3 from "../../utils/s3.config.js";
 import crypto from "crypto";
 import { apiResponse } from "../../helper.js";
@@ -10,7 +15,9 @@ export const uploadFile = async (req, res) => {
   try {
     console.log("File upload request received:", req.file);
     if (!req.file) {
-      return res.status(400).json(apiResponse(400, null, "No file uploaded"));
+      return res
+        .status(400)
+        .json(apiResponse(400, null, "No file uploaded"));
     }
 
     const ext = req.file.originalname.split(".").pop();
@@ -27,19 +34,21 @@ export const uploadFile = async (req, res) => {
     await s3.send(command);
 
     const url = `https://${BUCKET}.${ENDPOINT}/${path}`;
-     
-    
 
-    return res.status(200).json(apiResponse(200, {
-      path,
-      url,
-      originalname: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
-    }, "File uploaded successfully"));
+    return res.status(200).json(
+      apiResponse(200, {
+        path,
+        url,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+      }, "File uploaded successfully")
+    );
   } catch (error) {
     console.error("Upload error:", error);
-    return res.status(500).json(apiResponse(500, null, error.message || "Internal Server Error"));
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message || "Internal Server Error"));
   }
 };
 
@@ -48,7 +57,9 @@ export const deleteFile = async (req, res) => {
     const { path } = req.params;
     console.log("File delete request received:", path);
     if (!path) {
-      return res.status(400).json(apiResponse(400, null, "File path is required"));
+      return res
+        .status(400)
+        .json(apiResponse(400, null, "File path is required"));
     }
 
     const command = new DeleteObjectCommand({
@@ -58,10 +69,14 @@ export const deleteFile = async (req, res) => {
 
     await s3.send(command);
 
-    return res.status(200).json(apiResponse(200, null, "File deleted successfully"));
+    return res
+      .status(200)
+      .json(apiResponse(200, null, "File deleted successfully"));
   } catch (error) {
     console.error("Delete error:", error);
-    return res.status(500).json(apiResponse(500, null, error.message || "Internal Server Error"));
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message || "Internal Server Error"));
   }
 };
 
@@ -69,21 +84,27 @@ export const getFile = async (req, res) => {
   try {
     const { path } = req.params;
     if (!path) {
-      return res.status(400).json(apiResponse(400, null, "File path is required"));
+      return res
+        .status(400)
+        .json(apiResponse(400, null, "File path is required"));
     }
 
     const command = new GetObjectCommand({
       Bucket: BUCKET,
-      Key: path,
+      Key: decodeURIComponent(path),
     });
 
-    const data = await s3.send(command);
+    const url = await getSignedUrl(s3, command,  { expiresIn: 60 * 60 * 24 * 7 }); // 7 days
 
-    res.setHeader("Content-Type", data.ContentType);
-    res.setHeader("Content-Disposition", `attachment; filename="${path}"`);
-    data.Body.pipe(res);
+    const filename = path.split("/").pop();
+
+    return res
+      .status(200)
+      .json(apiResponse(200, { url, name: filename }, "File URL generated successfully"));
   } catch (error) {
     console.error("Get file error:", error);
-    return res.status(500).json(apiResponse(500, null, error.message || "Internal Server Error"));
+    return res
+      .status(500)
+      .json(apiResponse(500, null, error.message || "Internal Server Error"));
   }
 };

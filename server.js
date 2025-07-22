@@ -11,7 +11,6 @@ import auth from "./middleware/auth.middleware.js";
 import reviewRouter from './routes/review.route.js';
 import adminMiddleware from "./middleware/staff.middleware.js";
 import adminRouter from "./routes/portal/admin.route.js";
-
 import ModeratorRoute from "./routes/moderator.route.js";
 import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
@@ -27,7 +26,7 @@ import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import Aliments from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
 import UploadFile from "./routes/file.routes.js";
-
+import sendEmail from "./routes/portal/email.route.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -47,11 +46,11 @@ connectDB(); // connect to Database
 
 app.use("/api/v1/auth", authRouter);
 
-// user routes
+
 app.use("/api/v1/users", auth, userRouter);
 
 
-// user profile routes
+
 
 
 app.use("/api/v1/user",auth,userPorfileRoute);
@@ -70,13 +69,17 @@ app.use("/api/v1/articles", ArticleRoute)
 
 // staff routes
 
+
+
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
+
+app.use(PORTAL_ROUTE_PREFIX + "/email", staffAuth, sendEmail)
 
 app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, UploadFile)
 
-app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth,Aliments)
+app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, Aliments)
 
-app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth,privacyRouter)
+app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth, privacyRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 
@@ -94,7 +97,7 @@ app.use(PORTAL_ROUTE_PREFIX + "/remedy", remedyRoutes);
 app.use(PORTAL_ROUTE_PREFIX + "/remedy-types", remedyTypeRoutes);
 app.use(PORTAL_ROUTE_PREFIX + "/remedy-categories", remedyCategoryRoutes);
 
-// main();
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,5 +1,5 @@
 export const apiResponse = (status, data = null, message = '') => {
-  // Validate status code (ensure it’s a number and a valid HTTP status)
+  // Validate status code
   if (!Number.isInteger(status) || status < 100 || status > 599) {
     throw new Error('Invalid HTTP status code');
   }
