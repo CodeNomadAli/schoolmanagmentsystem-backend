@@ -5,9 +5,6 @@ import { apiResponse } from "../../helper.js";
 
 const BUCKET = process.env.DO_SPACES_BUCKET;
 const ENDPOINT = process.env.DO_SPACES_ENDPOINT;
-const key = process.env.DO_ACCESS_KEY_ID;
-const secret = process.env.DO_SECRET_ACCESS_KEY;
-
 
 export const uploadFile = async (req, res) => {
   try {
@@ -22,12 +19,8 @@ export const uploadFile = async (req, res) => {
     const command = new PutObjectCommand({
       Bucket: BUCKET,
       Key: path,
-      secretAccessKey: secret,
-      accessKeyId: key,
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
-      Region: process.env.DO_SPACES_REGION,
-
       ACL: "public-read",
     });
 

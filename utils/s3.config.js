@@ -5,6 +5,10 @@ const s3 = new S3Client({
   region: process.env.DO_SPACES_REGION,
   credentials: fromEnv(),
   endpoint: `https://${process.env.DO_SPACES_ENDPOINT}`,
+  credentials: {
+    accessKeyId: process.env.DO_ACCESS_KEY_ID,
+    secretAccessKey: process.env.DO_SECRET_ACCESS_KEY,
+  },
   forcePathStyle: false,
 });
 
