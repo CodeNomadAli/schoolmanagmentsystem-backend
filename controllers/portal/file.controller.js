@@ -20,6 +20,7 @@ export const uploadFile = async (req, res) => {
       Key: path,
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
+      Region: process.env.DO_SPACES_REGION,
       ACL: "public-read",
     });
 
