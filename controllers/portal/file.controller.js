@@ -67,20 +67,20 @@ export const deleteFile = async (req, res) => {
 
 export const getFile = async (req, res) => {
   try {
-    const { key } = req.params;
-    if (!key) {
-      return res.status(400).json(apiResponse(400, null, "File key is required"));
+    const { path } = req.params;
+    if (!path) {
+      return res.status(400).json(apiResponse(400, null, "File path is required"));
     }
 
     const command = new GetObjectCommand({
       Bucket: BUCKET,
-      Key: key,
+      Key: path,
     });
 
     const data = await s3.send(command);
 
     res.setHeader("Content-Type", data.ContentType);
-    res.setHeader("Content-Disposition", `attachment; filename="${key}"`);
+    res.setHeader("Content-Disposition", `attachment; filename="${path}"`);
     data.Body.pipe(res);
   } catch (error) {
     console.error("Get file error:", error);

@@ -11,7 +11,7 @@ import auth from "./middleware/auth.middleware.js";
 import reviewRouter from './routes/review.route.js';
 import adminMiddleware from "./middleware/staff.middleware.js";
 import adminRouter from "./routes/portal/admin.route.js";
-import uploadRouter from "./routes/upload.routes.js";
+
 import ModeratorRoute from "./routes/moderator.route.js";
 import ArticleRoute from "./routes/article.route.js";
 import staffRoutes from "./routes/portal/staff.route.js";
@@ -26,7 +26,7 @@ import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import Aliments from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
-import UploadFile from "./routes/upload.routes.js";
+import UploadFile from "./routes/file.routes.js";
 
 const app = express();
 
@@ -72,7 +72,7 @@ app.use("/api/v1/articles", ArticleRoute)
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, uploadRouter)
+app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, UploadFile)
 
 app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth,Aliments)
 
