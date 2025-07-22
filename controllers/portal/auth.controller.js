@@ -14,7 +14,7 @@ import UserProfile from "../../models/user_profile.model.js";
 import admin from "../../config/firebase.config.js";
 import hashPassword from "../../utils/hashPassword.js";
 import Staff from "../../models/staff.model.js"
-
+import companyNotify from "../../helper/emailLogger.js";
 
 const staffLogin = async (req, res) => {
   try {
@@ -88,6 +88,12 @@ const staffLogin = async (req, res) => {
 
     // Prepare safe staff data
     const { password: _, ...staffData } = staff.toObject();
+  
+    await companyNotify(
+      staff.email,
+      "Login Notification",
+      "You have successfully logged in. If this was not you, please contact support immediately."
+    );
 
     return res.status(200).json({
       message: "Login successful",
@@ -362,7 +368,7 @@ const login = async (req, res) => {
       sessionToken: token,
       metadata: { browser, os },
     });
-
+     
     // Check if user has filled health profile
     const userHealthProfile = await UserProfile.findOne({ userId: user._id });
 

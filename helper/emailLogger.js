@@ -1,22 +1,27 @@
-import nodemailer from "nodemailer";
 
-  export const sendEmailHelper = async ({ to, subject, html }) => {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+import { sendMail } from "../services/sendMail.service.js";
 
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
+const companyNotify = async (to, subject, body) => {
+  try {
+    await sendMail({
       to,
       subject,
-      html,
-    };
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color:#007bff;">${subject}</h2>
+          <p style="color:#333;">${body}</p>
+          <br />
+          <p style="font-size: 0.9rem; color: #888;">
+            You're receiving this email from Remloy.
+          </p>
+        </div>
+      `,
+    });
 
-    return transporter.sendMail(mailOptions);
+    console.log(`✅ Email sent to ${to} | Subject: ${subject}`);
+  } catch (error) {
+    console.error(`❌ Email to ${to} failed:`, error.message);
+  }
 };
+
+export default companyNotify;

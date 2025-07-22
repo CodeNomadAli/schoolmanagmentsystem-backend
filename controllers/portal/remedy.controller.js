@@ -10,7 +10,7 @@ import {
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
-
+import companyNotify from "../../helper/emailLogger.js"; 
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
@@ -21,6 +21,8 @@ const createRemedy = async (req, res) => {
       remedyType,
       ailments,
       answeredQuestions,
+      sideEffects,
+      whyItWorks,
       ...rest
     } = req.body;
 
@@ -53,10 +55,11 @@ const createRemedy = async (req, res) => {
       name,
       description,
       category,
-      remedyType,
       createdBy: user.id,
       ailments: ailmentIds,
       answeredQuestions,
+      sideEffects,
+      whyItWorks,
       ...rest,
     });
 
@@ -99,12 +102,11 @@ const getAllRemedies = async (req, res) => {
           {
             path: "category",
           },
-          {
-            path: "remedyType",
-          },
+          
           {
             path: "ailments",
           },
+
         ])
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -121,7 +123,11 @@ const getAllRemedies = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
     };
-
+     await companyNotify(
+      "ourwebsolutions@gmail.com",
+      "📦 Remedies Fetched",
+      `Remedies list successfully fetched by admin.<br/>Total remedies: <b>${total}</b>`
+    );
     res
       .status(200)
       .json(apiResponse(200, data, "Successfully fetched remedies"));

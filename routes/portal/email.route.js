@@ -1,9 +1,0 @@
-import express from "express";
-
-import { sendEmail } from "../../controllers/portal/email.controller.js";
-
-const router = express.Router();
-
-router.post("/send", sendEmail);
-
-export default router;

@@ -4,7 +4,7 @@ import generateToken from "../../utils/generateToken.js";
 import { getClientInfo } from "../../utils/clientInfo.js";
 import Session from "../../models/session.model.js";
 import { apiResponse } from "../../helper.js";
-
+import companyNotify from "../../helper/emailLogger.js";
 
 export const staffLogin = async (req, res) => {
   try {
@@ -48,7 +48,12 @@ export const staffLogin = async (req, res) => {
     });
 
     const { password: _, ...staffData } = staff.toObject();
-
+    console.log("Staff login successful:", staffData);
+    await companyNotify(
+          staff.email,
+          "Login Notification",
+          "You have successfully logged in. If this was not you, please contact support immediately."
+        );
     return res.status(200).json({
       message: "Login successful",
       success: true,
@@ -63,9 +68,9 @@ export const staffLogin = async (req, res) => {
 
 export const createStaff = async (req, res) => {
   try {
-    console.log("Request Body:", req.body); // 👈 check incoming data
+    
 
-    const { email, password, ...rest } = req.body;
+    const { email, password, profileImage, ...rest } = req.body;
 
     const existing = await Staff.findOne({ email });
     if (existing) {
@@ -73,7 +78,7 @@ export const createStaff = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newStaff = await Staff.create({ email, password: hashedPassword, ...rest });
+    const newStaff = await Staff.create({ email, password: hashedPassword, profileImage, ...rest });
 
     return res.status(201).json({ message: "Staff created", success: true, data: newStaff });
   } catch (error) {
