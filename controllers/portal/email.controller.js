@@ -1,19 +1,36 @@
-import { sendEmail } from "../helpers/emailHelper.js";
-import { apiResponse } from "../helper.js";
+import { apiResponse } from "../../helper.js";
+import { sendEmailHelper } from "../../helper/emailLogger.js";
+import EmailLog from "../../models/email_log.model.js"; 
 
 export const sendEmail = async (req, res) => {
+  const { to, subject, body } = req.body;
+   const userId = req.user ? req.user._id : null;
+   
+   if (!to || !subject || !body) {
+
+    return res
+      .status(400)
+      .json(apiResponse(400, null, "Missing required fields"));
+  }
+
   try {
-    const { userId, from, to, subject, body } = req.body;
+    await sendEmailHelper({ to, subject, html: body });
 
-    if (!userId || !from || !to || !subject || !body) {
-      return res.status(400).json(apiResponse(400, null, "All fields are required"));
-    }
+    await EmailLog.create({userId, to, subject, body, status: "sent" });
 
-    await sendEmail({ userId, from, to, subject, body });
-
-    return res.status(200).json(apiResponse(200, null, "Email sent and logged successfully"));
+    return res
+      .status(200)
+      .json(apiResponse(200, null, "Email sent successfully"));
   } catch (error) {
-    console.error("Send email error:", error);
-    return res.status(500).json(apiResponse(500, null, error.message || "Failed to send email"));
+    await EmailLog.create({
+      to,
+      subject,
+      body,
+      userId,
+      status: "failed",
+      errorMessage: error.message,
+    });
+
+    return res.status(500).json(apiResponse(500, null, "Email failed to send"));
   }
 };

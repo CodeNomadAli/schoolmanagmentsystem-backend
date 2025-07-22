@@ -22,9 +22,9 @@ export const registerUser = async (req, res) => {
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
-    const { username, email, password } = req.body;
+    const { username, email, password, profileImage } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !profileImage) {
       return res.status(400).json({ message: "All fields are required", success: false });
     }
 
@@ -38,6 +38,7 @@ export const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      profileImage
     });
 
     const { password: _, ...userData } = newUser.toObject();
