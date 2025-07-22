@@ -42,6 +42,9 @@ const RemedySchema = new mongoose.Schema(
       source: {
         type: String,
       },
+      originalName: {
+        type: String,
+      },
     },
     sideEffects: {
       type: String,

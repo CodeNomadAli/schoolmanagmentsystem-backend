@@ -157,7 +157,7 @@ const getRemedyById = async (req, res) => {
       },
       {
         path: "ailments",
-        select: "name slug description ",
+        select: "name slug",
       },
     ]);
 

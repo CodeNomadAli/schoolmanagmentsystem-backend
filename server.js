@@ -72,7 +72,7 @@ app.use("/api/v1/articles", ArticleRoute)
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX + "/upload", staffAuth, uploadRouter)
+app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, uploadRouter)
 
 app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth,Aliments)
 
