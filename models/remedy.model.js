@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const RemedySchema = new mongoose.Schema(
   {
     name: {
@@ -18,7 +17,7 @@ const RemedySchema = new mongoose.Schema(
       ref: "RemedyCategory",
       required: true,
     },
-  
+
     ingredients: {
       type: String,
     },
@@ -62,7 +61,7 @@ const RemedySchema = new mongoose.Schema(
     },
     moderationStatus: {
       type: String,
-      enum: ["pending", "approved", "rejected"], 
+      enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
     scientificReferences: {
@@ -127,12 +126,12 @@ const RemedySchema = new mongoose.Schema(
       default: [],
     },
 
-    ailments: [{
-      id: {
+    ailments: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Ailment',
+        ref: "Ailment",
       },
-    }],
+    ],
   },
   { timestamps: true }
 );

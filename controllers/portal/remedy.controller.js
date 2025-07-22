@@ -15,7 +15,6 @@ import {
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
 
-
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
@@ -42,7 +41,7 @@ const createRemedy = async (req, res) => {
     for (const ailmentName of ailments) {
       let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
 
-      console.log(existing)
+      console.log(existing);
 
       if (!existing) {
         existing = await Ailment.create({
@@ -53,8 +52,6 @@ const createRemedy = async (req, res) => {
 
       ailmentIds.push(existing._id);
     }
-
-    
 
     const newRemedy = await Remedy.create({
       name,
@@ -67,8 +64,6 @@ const createRemedy = async (req, res) => {
       ...rest,
     });
 
-    
-     
     return res
       .status(201)
       .json(apiResponse(201, newRemedy, "Remedy successfully created"));
@@ -109,6 +104,9 @@ const getAllRemedies = async (req, res) => {
           },
           {
             path: "remedyType",
+          },
+          {
+            path: "ailments",
           },
         ])
         .sort({ createdAt: -1 })
@@ -156,6 +154,10 @@ const getRemedyById = async (req, res) => {
       },
       {
         path: "remedyType",
+      },
+      {
+        path: "ailments",
+        select: "name slug description ",
       },
     ]);
 
