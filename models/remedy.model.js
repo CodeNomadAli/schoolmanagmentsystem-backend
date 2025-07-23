@@ -40,6 +40,7 @@ const RemedySchema = new mongoose.Schema(
       },
       originalName: {
         type: String,
+        required: false,
       },
     },
     sideEffects: [{
