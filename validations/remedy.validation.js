@@ -40,7 +40,7 @@ const remedyValidation = Joi.object({
 
   viewCount: Joi.number().min(0).default(0),
   averageRating: Joi.number().min(0).max(5).default(0),
-  isActive: Joi.boolean().default(true),
+  isActive: Joi.boolean().default(false),
 
   media: Joi.object({
     type: Joi.string()

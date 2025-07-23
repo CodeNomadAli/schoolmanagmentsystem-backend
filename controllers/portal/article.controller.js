@@ -414,6 +414,57 @@ const generateSlug = async (req, res) => {
     });
   }
 };
+ 
+
+// const approvedArticle = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {moderationStatus} = req.body
+//         if (!moderationStatus) {
+//           return res.status(400).json({
+//             message: "Moderation status is required and must be either 'approved' or 'rejected'",
+//             success: false,
+//           });
+//         }
+    
+//         if (!mongoose.Types.ObjectId.isValid(id)) {
+//           return res.status(400).json({ message: "Invalid Article ID", success: false });
+//         }
+//     const article = await Article.findById(id);
+//     if (!article) {
+//       return res.status(404).json({
+//         message: "Article not found",
+//         success: false,
+//       });
+//     }
+//     if (moderationStatus === "approved") {
+//       article.status = "published";
+//     } else if (moderationStatus === "rejected") {
+//       article.status = "archived";
+//     } else if (moderationStatus === "pending") {
+//       article.status = "review";
+//     } else {
+//       return res.status(400).json({
+//       message: "Invalid moderation status",
+//       success: false,
+//       });
+//     }
+//     await article.save();
+//     return res.status(200).json({
+//       message: `Article ${moderationStatus} successfully`,
+//       success: true,
+//       article,
+//     });
+//   } catch (error) {
+//     console.error("Error approving article:", error);
+//     return res.status(500).json({
+//       message: "Internal server error",
+//       success: false,
+//       error: error.message,
+//     });
+//   }
+// };
+
 
 export {
   createArticle,
@@ -425,4 +476,5 @@ export {
   deleteArticle,
   checkSlugUniqueness,
   generateSlug,
+  // approvedArticle
 };

@@ -41,6 +41,7 @@ const permissions = [
   { name: "Read Remedy", slug: "read-remedy", description: "Can read remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
   { name: "Update Remedy", slug: "update-remedy", description: "Can update remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
   { name: "Delete Remedy", slug: "delete-remedy", description: "Can delete remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
+  { name: "Approve Remedy", slug: "approve-remedy", description: "Can approve remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
 
   // Category CRUD
   { name: "Create Category", slug: "create-category", description: "Can create category data", groupId: groupIds.category, groupName: "Category" },
@@ -53,6 +54,7 @@ const permissions = [
   { name: "Read Article", slug: "read-article", description: "Can read article data", groupId: groupIds.article, groupName: "Article" },
   { name: "Update Article", slug: "update-article", description: "Can update article data", groupId: groupIds.article, groupName: "Article" },
   { name: "Delete Article", slug: "delete-article", description: "Can delete article data", groupId: groupIds.article, groupName: "Article" },
+  
   
   { name: "Read Article Category", slug: "read-article-category", description: "Can read article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
   { name: "Create Article Category", slug: "create-article-category", description: "Can create article category data", groupId: groupIds.articleCategory, groupName: "Article Category" },
@@ -67,12 +69,14 @@ const permissions = [
  
   
   // Privacy Policy
-  { name: "Read web Policy", slug: "read-web-policy", description: "Can read web policy data", groupId: groupIds.ailment, groupName: "Web Policy" },
+  { name: "Read web Policy",   slug: "read-web-policy", description: "Can read web policy data", groupId: groupIds.ailment, groupName: "Web Policy" },
   { name: "Create web Policy", slug: "create-web-policy", description: "Can create web policy data", groupId: groupIds.ailment, groupName: "Web Policy" },
   { name: "Update web Policy", slug: "update-web-policy", description: "Can update web policy data", groupId: groupIds.ailment, groupName: "Web Policy" },
   { name: "Delete web Policy", slug: "delete-web-policy", description: "Can delete web policy data", groupId: groupIds.ailment, groupName: "Web Policy" },
-
+   
+   
 ];
+
 
 async function connectToDatabase() {
   try {
@@ -117,4 +121,4 @@ const seedPermissions = async () => {
 
 
 
-export default seedPermissions();
+export default seedPermissions;

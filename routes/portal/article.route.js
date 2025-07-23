@@ -17,6 +17,7 @@ const ArticleRouter = express.Router();
 ArticleRouter.post("/create",checkPermission('create-article'), createArticle);
 // delete article route
 ArticleRouter.delete("/:id",checkPermission('delete-article'), deleteArticle);
+
 // get all articles with author
 ArticleRouter.get("/author",checkPermission('read-article'), getArticlesByWriterId);
 // get single article route

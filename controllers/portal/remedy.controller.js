@@ -411,6 +411,53 @@ const createComment = async (req, res) => {
   }
 };
 
+export const approveRemedy = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {moderationStatus} = req.body
+    if (!moderationStatus) {
+      return res.status(400).json({
+        message: "Moderation status is required and must be either 'approved' or 'rejected'",
+        success: false,
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid remedy ID", success: false });
+    }
+
+    const remedy = await Remedy.findById(id);
+    if (!remedy) {
+      return res.status(404).json({ message: "Remedy not found", success: false });
+    }
+
+    remedy.moderationStatus = moderationStatus;
+    if (moderationStatus === "approved") {
+      remedy.isActive = true;
+    } else if (moderationStatus === "rejected") {
+      remedy.isActive = false;
+    } else if (moderationStatus === "pending") {
+      remedy.isActive = false;
+    }
+    else {
+      return res.status(400).json({
+        message: "Invalid moderation status. Must be 'approved', 'rejected', or 'pending'",
+        success: false,
+      });
+    }
+    await remedy.save();
+
+    res.status(200).json(apiResponse(200, remedy, "Remedy approved successfully"));
+  } catch (error) {
+    console.error("Error approving remedy:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+      success: false,
+    });
+  }
+};
+
 export {
   flagRemedy,
   createRemedy,
