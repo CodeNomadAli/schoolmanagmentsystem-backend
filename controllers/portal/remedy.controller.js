@@ -4,7 +4,7 @@ import { remedyValidation } from "../../validations/remedy.validation.js";
 import ModerationStatus from "../../models/moderation_status.model.js";
 import Flag from "../../models/flag.model.js";
 import Comment from "../../models/comment.model.js";
-import Ailment from "../../models/aliment.model.js";
+import Ailment from "../../models/ailment.model.js";
 import {
   createCommentValidation,
 } from "../../validations/comment.validation.js";

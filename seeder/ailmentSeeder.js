@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import Ailment from '../models/ailment.model.js';
-
+import Ailment from  "../models/ailment.model.js"
+import slugify from "../utils/slugify.js";
 const ailments = [
     { name: 'Acid Reflux', description: 'Burning sensation in the chest due to stomach acid.' },
     { name: 'Diarrhea', description: 'Frequent, loose, or watery bowel movements.' },
@@ -155,29 +155,46 @@ const ailments = [
 ];
 
 async function seedAilments() {
-    try {
-        await mongoose.connect('mongodb://localhost:27017/remedy', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+  try {
+    await mongoose.connect('mongodb://localhost:27017/remedy', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    
+     
 
-        const existingAilments = await Ailment.find({}, 'name').lean();
-        const existingNames = new Set(existingAilments.map(a => a.name));
+    const existingAilments = await Ailment.find({}, 'name slug').lean();
+    const existingNames = new Set(existingAilments.map(a => a.name));
+    const existingSlugs = new Set(existingAilments.map(a => a.slug));
 
-        const ailmentsToInsert = ailments.filter(ailment => !existingNames.has(ailment.name));
+    const ailmentsToInsert = [];
 
-        if (ailmentsToInsert.length > 0) {
-            await Ailment.insertMany(ailmentsToInsert);
-            console.log(`${ailmentsToInsert.length} new ailments seeded successfully!`);
-        } else {
-            console.log('No new ailments to seed; all ailments already exist.');
-        }
+    for (const ailment of ailments) {
+      const name = ailment.name.trim();
+      const slug = slugify(name, { lower: true, strict: true });
 
-        await mongoose.connection.close();
-    } catch (err) {
-        console.error('Error seeding ailments:', err);
-        process.exit(1);
+      if (existingNames.has(name) || existingSlugs.has(slug)) {
+        console.log(`⏭️ Skipping duplicate: ${name}`);
+        continue;
+      }
+
+      ailmentsToInsert.push({ ...ailment, slug });
+      existingNames.add(name);
+      existingSlugs.add(slug);
     }
+
+    if (ailmentsToInsert.length > 0) {
+      await Ailment.insertMany(ailmentsToInsert);
+      console.log(`✅ ${ailmentsToInsert.length} new ailments seeded successfully!`);
+    } else {
+      console.log('⚠️ No new ailments to seed; all already exist.');
+    }
+
+    await mongoose.connection.close();
+  } catch (err) {
+    console.error('❌ Error seeding ailments:', err);
+    process.exit(1);
+  }
 }
 
 seedAilments();

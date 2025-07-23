@@ -14,7 +14,6 @@ const remedyValidation = Joi.object({
   preparationMethod: Joi.string().trim().min(5).optional(),
   preparationTime: Joi.string().trim().optional(),
   brandName: Joi.string().trim().optional(),
-  instructions: Joi.string().trim().min(5).required(),
   content: Joi.string().trim().optional(),
 
   equipments: Joi.string().trim().optional(),
