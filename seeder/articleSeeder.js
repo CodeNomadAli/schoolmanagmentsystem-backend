@@ -14,7 +14,8 @@ const articlesToSeed = [
         slug: "understanding-async-await",
         author: "60f7c0a345d2b942d4a7f713",
 
-        category: "JavaScript",
+        category: "64a72b2bcd7d1e3a12345678",
+
         tags: ["javascript", "async", "programming"],
         status: "published",
     },
@@ -24,7 +25,8 @@ const articlesToSeed = [
         shortDescription: "Master Node.js streams.",
         slug: "nodejs-streams-guide",
         author: "60f7c0a345d2b942d4a7f712",
-        category: "Node.js",
+        category: "64a72b2bcd7d1e3a12345678",
+
         tags: ["nodejs", "streams", "backend"],
         status: "draft",
     },
@@ -32,33 +34,43 @@ const articlesToSeed = [
 ];
 
 const seedArticles = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("✅ MongoDB connected");
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ MongoDB connected");
 
-        let successCount = 0;
-        let errorCount = 0;
+    let successCount = 0;
+    let skippedCount = 0;
+    let errorCount = 0;
 
-        for (const articleData of articlesToSeed) {
-            const { error, value } = articleValidationSchema.validate(articleData);
-            if (error) {
-                console.error("❌ Validation failed for:", articleData.title);
-                console.error("Errors:", error.details.map(e => e.message));
-                errorCount++;
-                continue;
-            }
+    for (const articleData of articlesToSeed) {
+      const { error, value } = articleValidationSchema.validate(articleData);
+      if (error) {
+        console.error("❌ Validation failed for:", articleData.title);
+        console.error("Errors:", error.details.map(e => e.message));
+        errorCount++;
+        continue;
+      }
 
-            await Article.create(value);
-            console.log(`✅ Inserted: ${value.title}`);
-            successCount++;
-        }
+      
+      const existingArticle = await Article.findOne({ title: value.title });
+      if (existingArticle) {
+        console.log(`⏭️ Skipped existing article: ${value.title}`);
+        skippedCount++;
+        continue;
+      }
 
-        console.log(`\n🌱 Seeding complete: ${successCount} inserted, ${errorCount} failed\n`);
-        process.exit(0);
-    } catch (err) {
-        console.error("❌ Seeding error:", err.message);
-        process.exit(1);
+      await Article.create(value);
+      console.log(`✅ Inserted: ${value.title}`);
+      successCount++;
     }
+
+    console.log(`\n🌱 Seeding complete: ${successCount} inserted, ${skippedCount} skipped, ${errorCount} failed\n`);
+    process.exit(0);
+  } catch (err) {
+    console.error("❌ Seeding error:", err.message);
+    process.exit(1);
+  }
 };
+
 
 seedArticles();

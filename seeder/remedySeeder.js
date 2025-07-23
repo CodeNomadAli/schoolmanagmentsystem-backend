@@ -96,7 +96,7 @@ const seedRemedies = async (user) => {
     return;
   }
 
-  await Remedy.deleteMany(); // Clear previous remedies
+  
 
   const remedies = [
     {
@@ -141,5 +141,5 @@ const runSeeder = async () => {
   process.exit(0);
 };
 
-runSeeder();
+
 export default runSeeder();
