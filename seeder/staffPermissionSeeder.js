@@ -90,23 +90,17 @@ const seedPermissions = async () => {
   try {
     await connectToDatabase();
 
-    await StaffPermission.deleteMany();
-
-       let createdCount = 0;
+    let createdCount = 0;
     let skippedCount = 0;
 
-    // Iterate through permissions array
     for (const permission of permissions) {
-      // Check if permission with the same slug exists
       const existingPermission = await StaffPermission.findOne({ slug: permission.slug });
 
       if (!existingPermission) {
-        // If permission doesn't exist, create it
         await StaffPermission.create(permission);
         createdCount++;
         console.log(`✅ Created permission: ${permission.name} (Group: ${permission.groupName})`);
       } else {
-        // If permission exists, skip it
         skippedCount++;
         console.log(`⏭️ Skipped permission: ${permission.name} (already exists)`);
       }

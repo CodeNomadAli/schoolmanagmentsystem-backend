@@ -22,14 +22,31 @@ const remedyTypes = [
 const seedRemedyTypes = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    await RemedyType.deleteMany(); // Optional: clear existing types
-    await RemedyType.insertMany(remedyTypes);
-    console.log("✅ Remedy types seeded");
-    process.exit();
+
+    let createdCount = 0;
+    let skippedCount = 0;
+
+    for (const remedyType of remedyTypes) {
+      const existing = await RemedyType.findOne({ name: remedyType.name });
+      if (existing) {
+        console.log(`⏭️ Skipped existing remedy type: ${remedyType.name}`);
+        skippedCount++;
+        continue;
+      }
+
+      await RemedyType.create(remedyType);
+      console.log(`✅ Inserted remedy type: ${remedyType.name}`);
+      createdCount++;
+    }
+
+    console.log(`🌱 Remedy types seeding complete: ${createdCount} inserted, ${skippedCount} skipped`);
+
+    process.exit(0);
   } catch (error) {
     console.error("❌ Error seeding remedy types:", error);
     process.exit(1);
   }
 };
 
-export default seedRemedyTypes;
+
+export default seedRemedyTypes();

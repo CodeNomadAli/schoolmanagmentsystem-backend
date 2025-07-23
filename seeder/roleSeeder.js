@@ -20,8 +20,8 @@ async function seedRole() {
   await connectToDatabase();
 
   // Optional: Clear existing data
-  await StaffRole.deleteMany({});
-  console.log("Cleared existing roles");
+  
+ 
 
   // Define seed data
   const roles = [
@@ -93,11 +93,19 @@ async function seedRole() {
     { name: "User", description: "Manager role with limited access" },
   ];
 
-  // Create and save the roles
-  try {
-    await StaffRole.insertMany(roles);
-    console.log("Roles seeded successfully");
-  } catch (error) {
+  
+ try {
+  for (const role of roles) {
+    const existing = await StaffRole.findOne({ name: role.name });
+    if (existing) {
+      console.log(`Skipping existing role: ${role.name}`);
+      continue;
+    }
+    await StaffRole.create(role);
+    console.log(`Inserted role: ${role.name}`);
+  }
+  console.log("Roles seeded successfully");
+} catch (error) {
     console.error("Error seeding roles:", error);
   }
 

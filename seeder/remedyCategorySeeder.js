@@ -87,9 +87,16 @@ const remedyCategories = [
 const seedRemedyCategories = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    await RemedyCategory.deleteMany();
-    await RemedyCategory.insertMany(remedyCategories);
-    console.log(":white_check_mark: Remedy categories and questions seeded");
+    for (const category of remedyCategories) {
+      const existingCategory = await RemedyCategory.findOne({ name: category.name });
+      if (existingCategory) {
+        console.log(`Skipping existing category: ${category.name}`);
+        continue;
+      }
+      await RemedyCategory.create(category);
+      console.log(`Inserted category: ${category.name}`);
+    }
+    
     process.exit();
   } catch (error) {
     console.error(":x: Error seeding remedy categories:", error);
@@ -97,3 +104,4 @@ const seedRemedyCategories = async () => {
   }
 };
 seedRemedyCategories();
+  
