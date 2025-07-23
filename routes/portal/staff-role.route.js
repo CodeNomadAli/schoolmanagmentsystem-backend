@@ -10,7 +10,6 @@ import {
 
 const router = express.Router();
 
-
 router.post("/", createStaffRole);         
 router.get("/", getAllStaffRoles);          
 router.get("/:id", fetchRoleById);      
