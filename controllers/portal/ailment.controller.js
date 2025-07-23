@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 export const createAilment = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const createdBy = req.user?._id; 
+    const createdBy = req.user?._id;
 
     const existing = await Ailment.findOne({ name: name.trim() });
     if (existing) {
@@ -32,9 +32,14 @@ export const createAilment = async (req, res) => {
 
 export const getAllAilments = async (req, res) => {
   try {
-    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
-    const page = Math.max(parseInt(req.query.page) || 1, 1);
-    const skip = (page - 1) * limit;
+    const limit = req.query.limit
+      ? Math.min(Math.max(parseInt(req.query.limit), 1), 100)
+      : undefined;
+    const page = req.query.page
+      ? Math.max(parseInt(req.query.page), 1)
+      : undefined;
+    const skip = page && limit ? (page - 1) * limit : undefined;
+
     const search = req.query.search || "";
 
     const searchQuery = { isActive: true };
@@ -47,10 +52,7 @@ export const getAllAilments = async (req, res) => {
     }
 
     const [ailments, total] = await Promise.all([
-      Ailment.find(searchQuery)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit),
+      Ailment.find(searchQuery).sort({ createdAt: -1 }).skip(skip).limit(limit),
       Ailment.countDocuments(searchQuery),
     ]);
 
@@ -75,24 +77,23 @@ export const getAllAilments = async (req, res) => {
   }
 };
 
-
 export const getAilment = async (req, res) => {
   try {
-    const { id } = req.params; 
-  
-   const query = mongoose.Types.ObjectId.isValid(id)
+    const { id } = req.params;
+
+    const query = mongoose.Types.ObjectId.isValid(id)
       ? { _id: id }
       : { slug: id };
-     
+
     const ailment = await Ailment.findOne(query)
-      .populate({path: "remedies"}) 
+      .populate({ path: "remedies" })
       .exec();
 
     if (!ailment) {
       return res.status(404).json(apiResponse(404, null, "Ailment not found"));
     }
 
-    return res.status(200).json(apiResponse(200,  ailment , "Ailment found"));
+    return res.status(200).json(apiResponse(200, ailment, "Ailment found"));
   } catch (error) {
     console.error(error);
     return res
@@ -100,7 +101,6 @@ export const getAilment = async (req, res) => {
       .json(apiResponse(500, null, "Internal server error"));
   }
 };
-
 
 export const updateAilment = async (req, res) => {
   try {
@@ -120,7 +120,7 @@ export const updateAilment = async (req, res) => {
     if (updates.remedies) ailment.remedies = updates.remedies;
     if (updates.createdBy) ailment.createdBy = updates.createdBy;
 
-    await ailment.save(); 
+    await ailment.save();
     return res.status(200).json(apiResponse(200, ailment, "Ailment updated"));
   } catch (error) {
     console.error(error);
