@@ -33,9 +33,13 @@ export const createRemedyCategory = async (req, res) => {
 
 export const getAllRemedyCategories = async (req, res) => {
   try {
-    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50); 
-    const page = Math.max(parseInt(req.query.page) || 1, 1);
-    const skip = (page - 1) * limit;
+    const limit = req.query.limit
+      ? Math.min(Math.max(parseInt(req.query.limit), 1), 100)
+      : undefined;
+    const page = req.query.page
+      ? Math.max(parseInt(req.query.page), 1)
+      : undefined;
+    const skip = page && limit ? (page - 1) * limit : undefined;
 
     const [categories, total] = await Promise.all([
       RemedyCategory.find()

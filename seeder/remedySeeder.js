@@ -142,4 +142,4 @@ const runSeeder = async () => {
 };
 
 runSeeder();
-export default runSeeder;
+export default runSeeder();

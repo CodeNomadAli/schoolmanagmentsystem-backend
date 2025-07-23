@@ -123,4 +123,4 @@ const seedPermissions = async () => {
 
 
 
-export default seedPermissions;
+export default seedPermissions();
