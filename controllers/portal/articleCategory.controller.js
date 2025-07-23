@@ -15,9 +15,13 @@ export const createArticleCategory = async (req, res) => {
 // Get all
 export const getAllArticleCategories = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const limit = req.query.limit
+      ? Math.min(Math.max(parseInt(req.query.limit), 1), 100)
+      : undefined;
+    const page = req.query.page
+      ? Math.max(parseInt(req.query.page), 1)
+      : undefined;
+    const skip = page && limit ? (page - 1) * limit : undefined;
 
     const categories = await ArticleCategory.find()
       .sort({ createdAt: -1 })
@@ -26,7 +30,7 @@ export const getAllArticleCategories = async (req, res) => {
 
     const total = await ArticleCategory.countDocuments();
 
-    res.status(200).json(apiResponse(200,{
+    res.status(200).json(apiResponse(200, {
         categories,
         pagination: {
           page,
