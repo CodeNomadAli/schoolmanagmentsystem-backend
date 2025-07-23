@@ -68,7 +68,7 @@ const remedyValidation = Joi.object({
   ).optional(),
 
   isPublic: Joi.boolean().default(false),
-  whyitworks: Joi.string().trim().optional(),
+  whyItWorks: Joi.string().trim().optional(),
 
 });
 export { remedyValidation };
