@@ -59,6 +59,11 @@ const RemedySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    
+    usageInstructions: {
+      type: String,
+      required: true,
+    },
     moderationStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],
