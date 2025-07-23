@@ -181,21 +181,18 @@ const getRemedyById = async (req, res) => {
   }
 };
 
+
 const updateRemedy = async (req, res) => {
   try {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid remedy ID", success: false });
+      return res.status(400).json({ message: "Invalid remedy ID", success: false });
     }
 
     const remedy = await Remedy.findById(id);
     if (!remedy) {
-      return res
-        .status(404)
-        .json({ message: "Remedy not found or inactive", success: false });
+      return res.status(404).json({ message: "Remedy not found or inactive", success: false });
     }
 
     const user = req.user;
@@ -203,24 +200,35 @@ const updateRemedy = async (req, res) => {
       user.id.toString() !== remedy.createdBy.toString() &&
       user.role !== "admin"
     ) {
-      return res
-        .status(403)
-        .json({ message: "Permission denied", success: false });
+      return res.status(403).json({ message: "Permission denied", success: false });
     }
 
-    // ✅ Only keep valid ObjectIds in ailments
-    if (req.body.ailments && Array.isArray(req.body.ailments)) {
-      req.body.ailments = req.body.ailments.filter((id) =>
-        mongoose.Types.ObjectId.isValid(id)
-      );
+    const { ailments } = req.body;
+    const ailmentIds = [];
+
+    if (Array.isArray(ailments)) {
+      for (const ailmentName of ailments) {
+        if (!ailmentName || typeof ailmentName !== "string") continue;
+
+        let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
+
+        if (!existing) {
+          existing = await Ailment.create({
+            name: ailmentName.trim(),
+            createdBy: user.id,
+          });
+        }
+
+        ailmentIds.push(existing._id);
+      }
+
+      req.body.ailments = ailmentIds;
     }
 
     Object.assign(remedy, req.body);
     await remedy.save();
 
-    res
-      .status(200)
-      .json(apiResponse(200, remedy, "Successfully updated remedy"));
+    res.status(200).json(apiResponse(200, remedy, "Successfully updated remedy"));
   } catch (error) {
     console.error("Error updating remedy:", error);
     res.status(500).json({
@@ -230,6 +238,7 @@ const updateRemedy = async (req, res) => {
     });
   }
 };
+
 
 
 const deleteRemedy = async (req, res) => {
