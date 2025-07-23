@@ -10,7 +10,7 @@ const remedyValidation = Joi.object({
   ailments: Joi.array().items(Joi.string().min(1).required()).optional(),
 
   ingredients: Joi.string().trim().optional(),
-
+  usageInstructions: Joi.string().trim().required(),
   preparationMethod: Joi.string().trim().min(5).optional(),
   preparationTime: Joi.string().trim().optional(),
   brandName: Joi.string().trim().optional(),
