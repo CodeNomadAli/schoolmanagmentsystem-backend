@@ -10,7 +10,7 @@ import {
 } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
-import companyNotify from "../../helper/emailLogger.js"; 
+import EmailNotify from "../../helper/emailLogger.js"; 
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
@@ -123,10 +123,11 @@ const getAllRemedies = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
     };
-     await companyNotify(
+     await EmailNotify(
       "ourwebsolutions@gmail.com",
       "📦 Remedies Fetched",
-      `Remedies list successfully fetched by admin.<br/>Total remedies: <b>${total}</b>`
+      `Remedies list successfully fetched by admin.<br/>Total remedies: <b>${total}</b>`,
+      req.user.id
     );
     res
       .status(200)
@@ -150,17 +151,15 @@ const getRemedyById = async (req, res) => {
     const remedy = await Remedy.findById(id).populate([
       {
         path: "createdBy",
-        select: "firstName lastName email",
+        
       },
       {
         path: "category",
       },
-      {
-        path: "remedyType",
-      },
+      
       {
         path: "ailments",
-        select: "name slug",
+        
       },
     ]);
 
