@@ -162,7 +162,6 @@ async function seedAilments() {
     });
     
      
-
     const existingAilments = await Ailment.find({}, 'name slug').lean();
     const existingNames = new Set(existingAilments.map(a => a.name));
     const existingSlugs = new Set(existingAilments.map(a => a.slug));
