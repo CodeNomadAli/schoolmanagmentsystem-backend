@@ -27,10 +27,6 @@ const RemedySchema = new mongoose.Schema(
     brandName: {
       type: String,
     },
-    instructions: {
-      type: String,
-      default: "",
-    },
     content: {
       type: String,
     },
