@@ -40,7 +40,7 @@ const staffLogin = async (req, res) => {
       })
       .exec();
 
-    console.log(email)
+    
 
     if (!staff) {
       return res.status(401).json({
@@ -49,7 +49,7 @@ const staffLogin = async (req, res) => {
       });
     }
 
-    // Check if password matches
+    
     const isMatch = await staff.matchPassword(password);
 
     if (!isMatch) {
@@ -88,7 +88,7 @@ const staffLogin = async (req, res) => {
 
     // Prepare safe staff data
     const { password: _, ...staffData } = staff.toObject();
-
+    console.log(staffData," staff data");
     return res.status(200).json({
       message: "Login successful",
       success: true,
@@ -360,6 +360,7 @@ const login = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
+      
       metadata: { browser, os },
     });
 

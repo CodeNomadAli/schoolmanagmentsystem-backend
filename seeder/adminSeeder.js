@@ -42,7 +42,7 @@ async function seedRole() {
       lastName: 'Admin',
       email: 'superadmin@gmail.com',
       password: await hashPassword('admin123'),
-      staffRoleId: adminRole.id,
+      
         
     },
     {

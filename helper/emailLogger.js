@@ -1,7 +1,7 @@
-
+import EmailLog from "../models/email_log.model.js";
 import { sendMail } from "../services/sendMail.service.js";
 
-const companyNotify = async (to, subject, body) => {
+const emailNotify = async (to, subject, body) => {
   try {
     await sendMail({
       to,
@@ -18,10 +18,12 @@ const companyNotify = async (to, subject, body) => {
       `,
     });
 
+    
+
     console.log(`✅ Email sent to ${to} | Subject: ${subject}`);
   } catch (error) {
     console.error(`❌ Email to ${to} failed:`, error.message);
   }
 };
 
-export default companyNotify;
+export default emailNotify;
