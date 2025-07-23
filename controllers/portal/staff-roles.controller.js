@@ -55,7 +55,7 @@ export const fetchRoleById = async (req, res) => {
     }
 
     const role = await StaffRole.findById(id)
-      .populate({ path: "permissions", select: "name description" })
+      .populate({ path: "permissions"})
 
       .lean()
       .exec();
