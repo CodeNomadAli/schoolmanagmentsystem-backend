@@ -1,4 +1,4 @@
-import Ailment from "../../models/aliment.model.js";
+import Ailment from "../../models/ailment.model.js";
 import { apiResponse } from "../../helper.js";
 import mongoose from "mongoose";
 
