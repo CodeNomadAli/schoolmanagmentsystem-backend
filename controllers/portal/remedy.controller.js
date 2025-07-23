@@ -191,15 +191,6 @@ const updateRemedy = async (req, res) => {
         .json({ message: "Invalid remedy ID", success: false });
     }
 
-    // const { error } = remedyValidation.validate(req.body);
-    // if (error) {
-    //   return res.status(400).json({
-    //     message: "Validation error",
-    //     rorros: error.details,
-    //     success: false,
-    //   });
-    // }
-
     const remedy = await Remedy.findById(id);
     if (!remedy) {
       return res
@@ -217,6 +208,13 @@ const updateRemedy = async (req, res) => {
         .json({ message: "Permission denied", success: false });
     }
 
+    // ✅ Only keep valid ObjectIds in ailments
+    if (req.body.ailments && Array.isArray(req.body.ailments)) {
+      req.body.ailments = req.body.ailments.filter((id) =>
+        mongoose.Types.ObjectId.isValid(id)
+      );
+    }
+
     Object.assign(remedy, req.body);
     await remedy.save();
 
@@ -232,6 +230,7 @@ const updateRemedy = async (req, res) => {
     });
   }
 };
+
 
 const deleteRemedy = async (req, res) => {
   try {
