@@ -41,8 +41,8 @@ AilmentSchema.pre("save", function (next) {
   next();
 });
 
-AilmentSchema.index({ name: 1 }, { unique: true });
-AilmentSchema.index({ slug: 1 }, { unique: true });
+
+
 
 const Ailment = mongoose.model("Ailment", AilmentSchema);
 export default Ailment;
