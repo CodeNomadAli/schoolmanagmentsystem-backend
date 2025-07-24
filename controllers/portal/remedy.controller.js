@@ -28,9 +28,9 @@ const createRemedy = async (req, res) => {
       abortEarly: false,
     });
     if (error) {
+      
       console.log(error.details.map((d) => d.message));
       return res.status(400).json({
-        message: "Validation error",
         errors: error.details.map((d) => d.message),
         success: false,
       }); 
