@@ -7,7 +7,8 @@ import {
   getRemedyById,
   updateRemedy,
   createComment,
-  approveRemedy
+  approveRemedy,
+  updateStatus
 } from "../../controllers/portal/remedy.controller.js";
 
 import checkPermission from "../../middleware/check_permission.middleware.js";
@@ -29,6 +30,7 @@ RemedyRouter.delete("/:id", checkPermission("delete-remedy"), deleteRemedy);
 
 RemedyRouter.put("/approve/:id", checkPermission("approve-remedy"), approveRemedy);
 
+RemedyRouter.put("/status/:id", checkPermission("approve-remedy"), updateStatus);
 // add comment or reply to remedy
 RemedyRouter.post("/comment", checkPermission("create-remedy"), createComment);
 

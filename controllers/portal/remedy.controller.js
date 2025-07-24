@@ -445,19 +445,7 @@ export const approveRemedy = async (req, res) => {
     }
 
     remedy.moderationStatus = moderationStatus;
-    if (moderationStatus === "approved") {
-      remedy.isActive = true;
-    } else if (moderationStatus === "rejected") {
-      remedy.isActive = false;
-    } else if (moderationStatus === "pending") {
-      remedy.isActive = false;
-    } else {
-      return res.status(400).json({
-        message:
-          "Invalid moderation status. Must be 'approved', 'rejected', or 'pending'",
-        success: false,
-      });
-    }
+    
     await remedy.save();
 
     res
@@ -465,6 +453,43 @@ export const approveRemedy = async (req, res) => {
       .json(apiResponse(200, remedy, "Remedy approved successfully"));
   } catch (error) {
     console.error("Error approving remedy:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+      success: false,
+    });
+  }
+};
+
+
+ const updateStatus = async (req, res) => {
+  try { 
+    const { id } = req.params;
+    const { isActive } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid remedy ID",
+        success: false,
+      });
+    }
+
+    const remedy = await Remedy.findById(id);
+    if (!remedy) {
+      return res.status(404).json({
+        message: "Remedy not found",
+        success: false,
+      });
+    }
+
+    remedy.isActive = isActive;
+    await remedy.save();
+
+    res
+      .status(200)
+      .json(apiResponse(200, remedy, "Remedy status updated successfully"));
+  } catch (error) {
+    console.error("Error updating remedy status:", error);
     res.status(500).json({
       message: "Internal server error",
       error: error.message,
@@ -481,4 +506,5 @@ export {
   getRemedyById,
   updateRemedy,
   deleteRemedy,
+  updateStatus,
 };
