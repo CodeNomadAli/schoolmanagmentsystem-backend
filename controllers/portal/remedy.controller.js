@@ -9,6 +9,7 @@ import { createCommentValidation } from "../../validations/comment.validation.js
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
 import EmailNotify from "../../helper/emailLogger.js";
+
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
@@ -27,10 +28,15 @@ const createRemedy = async (req, res) => {
     const { error } = remedyValidation.validate(req.body, {
       abortEarly: false,
     });
+
+
+
+    
     if (error) {
       
       console.log(error.details.map((d) => d.message));
-      return res.status(400).json({
+      return res.status(422).json({
+
         errors: error.details.map((d) => d.message),
         success: false,
       }); 
@@ -39,8 +45,7 @@ const createRemedy = async (req, res) => {
     const ailmentIds = [];
     for (const ailmentName of ailments) {
       let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
-
-      console.log(existing);
+[]
 
       if (!existing) {
         existing = await Ailment.create({
@@ -207,6 +212,7 @@ const updateRemedy = async (req, res) => {
 
     const { ailments } = req.body;
     const ailmentIds = [];
+      console.log(ailments);
 
     if (Array.isArray(ailments)) {
       for (const ailmentName of ailments) {

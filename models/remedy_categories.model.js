@@ -53,4 +53,5 @@ const RemedyCategorySchema = new mongoose.Schema(
 );
 
 const RemedyCategory = mongoose.model("RemedyCategory", RemedyCategorySchema);
+
 export default RemedyCategory;

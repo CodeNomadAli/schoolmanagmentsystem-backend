@@ -28,8 +28,9 @@ const remedyValidation = Joi.object({
       "string.min": "Ailment too short",
       "any.required": "Ailment required if provided",
       "string.base": "Ailment must be text",
+      "array.includesRequiredUnknowns": "Ailment must be a valid string",
     })
-  ).optional(),
+  ).required(),
 
   ingredients: Joi.string().trim().optional().messages({
     "string.base": "Ingredients must be text",
@@ -187,8 +188,7 @@ media: Joi.object({
         is_required: Joi.boolean().optional().messages({
           "boolean.base": "is_required must be true or false",
         }),
-      })
-    )
+      }))
     .optional(),
 
   isPublic: Joi.boolean().default(false).messages({
@@ -197,6 +197,7 @@ media: Joi.object({
 
   whyItWorks: Joi.string().trim().optional().messages({
     "string.base": "Why It Works must be text",
+    "string.empty": "Why It Works cannot be empty",
   }),
 });
 

@@ -11,6 +11,7 @@ export const createAilment = async (req, res) => {
     if (existing) {
       return res
         .status(409)
+        
         .json(apiResponse(409, null, "Ailment with this name already exists"));
     }
 
