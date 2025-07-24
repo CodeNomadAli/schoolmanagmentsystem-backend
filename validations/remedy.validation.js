@@ -130,21 +130,29 @@ const remedyValidation = Joi.object({
     "boolean.base": "Is Active must be true or false",
   }),
 
-  media: Joi.object({
-    type: Joi.string()
-      .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
-      .optional()
-      .messages({
-        "any.only": "Media type must be jpeg, jpg, png, or gif",
-        "string.base": "Media type must be text",
-      }),
-    source: Joi.string().trim().optional().messages({
-      "string.base": "Media source must be text",
+media: Joi.object({
+  type: Joi.string()
+    .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
+    .optional()
+    .messages({
+      "any.only": "Media type must be jpeg, jpg, png, or gif",
+      "string.base": "Media type must be text",
     }),
-    originalName: Joi.string().trim().optional().messages({
-      "string.base": "Media original name must be text",
+  source: Joi.string()
+    .trim()
+    .required()
+    .messages({
+      "any.required": "remedy image  is required",
+      "string.empty": "remedy image   cannot be empty",
+      "string.base": "remedy image   must be text",
     }),
-  }).optional(),
+  originalName: Joi.string().trim().optional().messages({
+    "string.base": "remedy image  original name must be text",
+  }),
+}).required().messages({
+  "object.base": "remedy image  must be an object",
+  "object.required": "remedy image  is required",
+}),
 
   relatedQuestions: Joi.array()
     .items(
