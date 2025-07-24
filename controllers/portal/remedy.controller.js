@@ -165,7 +165,7 @@ const getRemedyById = async (req, res) => {
       },
     ]);
 
-    if (!remedy || !remedy.isActive) {
+    if (!remedy) {
       return res
         .status(404)
         .json({ message: "Remedy not found or deleted", success: false });
@@ -251,9 +251,10 @@ const updateRemedy = async (req, res) => {
 
 const deleteRemedy = async (req, res) => {
   try {
+    console.log(req.params,"he");
     const { id } = req.params;
     const remedy = await Remedy.findById(id);
-    if (!remedy || !remedy.isActive) {
+    if (!remedy ) {
       return res.status(404).json({
         message: "Remedy not found or already deleted",
         success: false,
