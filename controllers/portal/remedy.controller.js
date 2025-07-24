@@ -5,12 +5,10 @@ import ModerationStatus from "../../models/moderation_status.model.js";
 import Flag from "../../models/flag.model.js";
 import Comment from "../../models/comment.model.js";
 import Ailment from "../../models/ailment.model.js";
-import {
-  createCommentValidation,
-} from "../../validations/comment.validation.js";
+import { createCommentValidation } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
-import EmailNotify from "../../helper/emailLogger.js"; 
+import EmailNotify from "../../helper/emailLogger.js";
 const createRemedy = async (req, res) => {
   try {
     const user = req.user;
@@ -26,13 +24,16 @@ const createRemedy = async (req, res) => {
       ...rest
     } = req.body;
 
-    const { error } = remedyValidation.validate(req.body);
+    const { error } = remedyValidation.validate(req.body, {
+      abortEarly: false,
+    });
     if (error) {
-      return res.status(422).json({
+      console.log(error.details.map((d) => d.message));
+      return res.status(400).json({
         message: "Validation error",
-        success: false,
         errors: error.details.map((d) => d.message),
-      });
+        success: false,
+      }); 
     }
 
     const ailmentIds = [];
@@ -76,7 +77,6 @@ const createRemedy = async (req, res) => {
   }
 };
 
-
 const getAllRemedies = async (req, res) => {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
@@ -102,11 +102,10 @@ const getAllRemedies = async (req, res) => {
           {
             path: "category",
           },
-          
+
           {
             path: "ailments",
           },
-
         ])
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -123,7 +122,7 @@ const getAllRemedies = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
     };
-     await EmailNotify(
+    await EmailNotify(
       "ourwebsolutions@gmail.com",
       "📦 Remedies Fetched",
       `Remedies list successfully fetched by admin.<br/>Total remedies: <b>${total}</b>`,
@@ -151,15 +150,13 @@ const getRemedyById = async (req, res) => {
     const remedy = await Remedy.findById(id).populate([
       {
         path: "createdBy",
-        
       },
       {
         path: "category",
       },
-      
+
       {
         path: "ailments",
-        
       },
     ]);
 
@@ -181,18 +178,21 @@ const getRemedyById = async (req, res) => {
   }
 };
 
-
 const updateRemedy = async (req, res) => {
   try {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid remedy ID", success: false });
+      return res
+        .status(400)
+        .json({ message: "Invalid remedy ID", success: false });
     }
 
     const remedy = await Remedy.findById(id);
     if (!remedy) {
-      return res.status(404).json({ message: "Remedy not found or inactive", success: false });
+      return res
+        .status(404)
+        .json({ message: "Remedy not found or inactive", success: false });
     }
 
     const user = req.user;
@@ -200,7 +200,9 @@ const updateRemedy = async (req, res) => {
       user.id.toString() !== remedy.createdBy.toString() &&
       user.role !== "admin"
     ) {
-      return res.status(403).json({ message: "Permission denied", success: false });
+      return res
+        .status(403)
+        .json({ message: "Permission denied", success: false });
     }
 
     const { ailments } = req.body;
@@ -228,7 +230,9 @@ const updateRemedy = async (req, res) => {
     Object.assign(remedy, req.body);
     await remedy.save();
 
-    res.status(200).json(apiResponse(200, remedy, "Successfully updated remedy"));
+    res
+      .status(200)
+      .json(apiResponse(200, remedy, "Successfully updated remedy"));
   } catch (error) {
     console.error("Error updating remedy:", error);
     res.status(500).json({
@@ -238,8 +242,6 @@ const updateRemedy = async (req, res) => {
     });
   }
 };
-
-
 
 const deleteRemedy = async (req, res) => {
   try {
@@ -414,21 +416,26 @@ const createComment = async (req, res) => {
 export const approveRemedy = async (req, res) => {
   try {
     const { id } = req.params;
-    const {moderationStatus} = req.body
+    const { moderationStatus } = req.body;
     if (!moderationStatus) {
       return res.status(400).json({
-        message: "Moderation status is required and must be either 'approved' or 'rejected'",
+        message:
+          "Moderation status is required and must be either 'approved' or 'rejected'",
         success: false,
       });
     }
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid remedy ID", success: false });
+      return res
+        .status(400)
+        .json({ message: "Invalid remedy ID", success: false });
     }
 
     const remedy = await Remedy.findById(id);
     if (!remedy) {
-      return res.status(404).json({ message: "Remedy not found", success: false });
+      return res
+        .status(404)
+        .json({ message: "Remedy not found", success: false });
     }
 
     remedy.moderationStatus = moderationStatus;
@@ -438,16 +445,18 @@ export const approveRemedy = async (req, res) => {
       remedy.isActive = false;
     } else if (moderationStatus === "pending") {
       remedy.isActive = false;
-    }
-    else {
+    } else {
       return res.status(400).json({
-        message: "Invalid moderation status. Must be 'approved', 'rejected', or 'pending'",
+        message:
+          "Invalid moderation status. Must be 'approved', 'rejected', or 'pending'",
         success: false,
       });
     }
     await remedy.save();
 
-    res.status(200).json(apiResponse(200, remedy, "Remedy approved successfully"));
+    res
+      .status(200)
+      .json(apiResponse(200, remedy, "Remedy approved successfully"));
   } catch (error) {
     console.error("Error approving remedy:", error);
     res.status(500).json({
