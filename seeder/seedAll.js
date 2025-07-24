@@ -16,7 +16,7 @@ async function runAllSeeders() {
     console.log("🟢 Roles seeded successfully")
     await adminSeeder()
     console.log("🟢 Admin seeder ran successfully")
-    // await seedRemedyCategories()
+    
 
 
     console.log("🎉 All seeders ran successfully")
