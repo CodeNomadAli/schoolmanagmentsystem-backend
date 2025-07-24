@@ -1,6 +1,6 @@
-import Joi from "joi";
+  import Joi from "joi";
 
-const remedyValidation = Joi.object({
+  const remedyValidation = Joi.object({
   name: Joi.string().trim().min(2).max(100).required().messages({
     "any.required": "Name is required",
     "string.empty": "Name cannot be empty",
@@ -22,18 +22,27 @@ const remedyValidation = Joi.object({
     "string.base": "Category must be text",
   }),
 
-  ailments: Joi.array().items(
-    Joi.string().min(1).required().messages({
-      "string.empty": "Ailment cannot be empty",
-      "string.min": "Ailment too short",
-      "any.required": "Ailment required if provided",
-      "string.base": "Ailment must be text",
-      "array.includesRequiredUnknowns": "Ailment must be a valid string",
-    })
-  ).required(),
+  ailments: Joi.array()
+    .items(
+      Joi.string().min(1).required().messages({
+        "string.min": "Ailment too short",
+        "any.required": "Ailment is required",
+        "string.base": "Ailment must be text",
+        "string.empty": "Ailment cannot be empty",
+      })
+    )
+    .min(1)
+    .required()
+    .messages({
+      "any.required": "Ailments are required",
+      "array.base": "Ailments must be an array of strings",
+      "array.min": "At least one ailment is required",
+      "array.includesRequiredUnknowns": "Each ailment must be a valid string",
+    }),
 
-  ingredients: Joi.string().trim().optional().messages({
+  ingredients: Joi.string().trim().empty('').optional().messages({
     "string.base": "Ingredients must be text",
+    "string.empty": "Ingredients cannot be empty",
   }),
 
   usageInstructions: Joi.string().trim().required().messages({
@@ -42,44 +51,58 @@ const remedyValidation = Joi.object({
     "string.base": "Usage Instructions must be text",
   }),
 
-  preparationMethod: Joi.string().trim().min(5).optional().messages({
+  preparationMethod: Joi.string().trim().empty('').min(5).optional().messages({
     "string.min": "Preparation Method too short",
     "string.base": "Preparation Method must be text",
+    "string.empty": "Preparation Method cannot be empty",
   }),
 
-  preparationTime: Joi.string().trim().optional().messages({
+  preparationTime: Joi.string().trim().empty('').optional().messages({
     "string.base": "Preparation Time must be text",
+    "string.empty": "Preparation Time cannot be empty",
   }),
 
-  brandName: Joi.string().trim().optional().messages({
+  brandName: Joi.string().trim().empty('').optional().messages({
     "string.base": "Brand Name must be text",
+    "string.empty": "Brand Name cannot be empty",
   }),
 
-  content: Joi.string().trim().optional().messages({
+  content: Joi.string().trim().empty('').optional().messages({
     "string.base": "Content must be text",
+    "string.empty": "Content cannot be empty",
   }),
 
-  equipments: Joi.string().trim().optional().messages({
+  equipments: Joi.string().trim().empty('').optional().messages({
     "string.base": "Equipments must be text",
+    "string.empty": "Equipments cannot be empty",
   }),
 
-  howToTakeIt: Joi.string().trim().optional().messages({
+  howToTakeIt: Joi.string().trim().empty('').optional().messages({
     "string.base": "How To Take It must be text",
+    "string.empty": "How To Take It cannot be empty",
   }),
 
-  dosageAndUsage: Joi.string().trim().optional().messages({
+  dosageAndUsage: Joi.string().trim().empty('').optional().messages({
     "string.base": "Dosage And Usage must be text",
+    "string.empty": "Dosage And Usage cannot be empty",
   }),
 
-  storageInstructions: Joi.string().trim().optional().messages({
+  storageInstructions: Joi.string().trim().empty('').optional().messages({
     "string.base": "Storage Instructions must be text",
+    "string.empty": "Storage Instructions cannot be empty",
   }),
 
-  sideEffects: Joi.array().items(
-    Joi.string().trim().messages({
-      "string.base": "Side Effects must be text",
-    })
-  ).optional(),
+  sideEffects: Joi.array()
+    .items(
+      Joi.string().trim().empty('').messages({
+        "string.base": "Side effect must be text",
+        "string.empty": "Side effect cannot be empty",
+      })
+    )
+    .optional()
+    .messages({
+      "array.base": "Side Effects must be an array of strings",
+    }),
 
   aiConfidenceScore: Joi.number().min(0).max(100).default(0).messages({
     "number.base": "AI Confidence Score must be a number",
@@ -102,19 +125,26 @@ const remedyValidation = Joi.object({
   scientificReferences: Joi.array()
     .items(
       Joi.string().trim().uri().messages({
-        "string.uri": "Scientific References must be valid URLs",
-        "string.base": "Scientific References must be text",
+        "string.uri": "Scientific Reference must be a valid URL",
+        "string.base": "Scientific Reference must be text",
       })
     )
-    .default([]),
+    .default([])
+    .messages({
+      "array.base": "Scientific References must be an array",
+    }),
 
   geographicRestrictions: Joi.array()
     .items(
-      Joi.string().trim().messages({
-        "string.base": "Geographic Restrictions must be text",
+      Joi.string().trim().empty('').messages({
+        "string.base": "Geographic Restriction must be text",
+        "string.empty": "Geographic Restriction cannot be empty",
       })
     )
-    .default([]),
+    .default([])
+    .messages({
+      "array.base": "Geographic Restrictions must be an array of strings",
+    }),
 
   viewCount: Joi.number().min(0).default(0).messages({
     "number.base": "View Count must be a number",
@@ -131,71 +161,88 @@ const remedyValidation = Joi.object({
     "boolean.base": "Is Active must be true or false",
   }),
 
-media: Joi.object({
-  type: Joi.string()
-    .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
-    .optional()
-    .messages({
-      "any.only": "Media type must be jpeg, jpg, png, or gif",
-      "string.base": "Media type must be text",
+  media: Joi.object({
+    type: Joi.string()
+      .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
+      .optional()
+      .messages({
+        "any.only": "Media type must be jpeg, jpg, png, or gif",
+        "string.base": "Media type must be text",
+      }),
+
+    source: Joi.string().trim().required().messages({
+      "any.required": "Remedy image is required",
+      "string.empty": "Remedy image cannot be empty",
+      "string.base": "Remedy image must be text",
     }),
-  source: Joi.string()
-    .trim()
+
+    originalName: Joi.string().trim().empty('').optional().messages({
+      "string.base": "Remedy image original name must be text",
+      "string.empty": "Remedy image original name cannot be empty",
+    }),
+  })
     .required()
     .messages({
-      "any.required": "remedy image  is required",
-      "string.empty": "remedy image   cannot be empty",
-      "string.base": "remedy image   must be text",
+      "object.base": "Media must be an object",
+      "any.required": "Media is required",
     }),
-  originalName: Joi.string().trim().optional().messages({
-    "string.base": "remedy image  original name must be text",
-  }),
-}).required().messages({
-  "object.base": "remedy image  must be an object",
-  "object.required": "remedy image  is required",
-}),
 
   relatedQuestions: Joi.array()
     .items(
       Joi.object({
-        question: Joi.string().trim().optional().messages({
+        question: Joi.string().trim().empty('').optional().messages({
           "string.base": "Related question must be text",
+          "string.empty": "Related question cannot be empty",
         }),
-        answer: Joi.string().trim().optional().messages({
+        answer: Joi.string().trim().empty('').optional().messages({
           "string.base": "Related answer must be text",
+          "string.empty": "Related answer cannot be empty",
         }),
       })
     )
-    .optional(),
+    .optional()
+    .messages({
+      "array.base": "Related Questions must be an array",
+    }),
 
   answers: Joi.array()
     .items(
-      Joi.string().trim().messages({
+      Joi.string().trim().empty('').messages({
         "string.base": "Answer must be text",
+        "string.empty": "Answer cannot be empty",
       })
     )
-    .optional(),
+    .optional()
+    .messages({
+      "array.base": "Answers must be an array",
+    }),
 
   answeredQuestions: Joi.array()
     .items(
       Joi.object({
         question: Joi.string().trim().optional().messages({
           "string.base": "Answered question must be text",
+          "string.empty": "Answered question cannot be empty",
         }),
         answer: Joi.string().trim().optional().messages({
           "string.base": "Answered answer must be text",
+          "string.empty": "Answered answer cannot be empty",
         }),
         is_required: Joi.boolean().optional().messages({
           "boolean.base": "is_required must be true or false",
         }),
-      }))
-    .optional(),
+      })
+    )
+    .optional()
+    .messages({
+      "array.base": "Answered Questions must be an array",
+    }),
 
   isPublic: Joi.boolean().default(false).messages({
     "boolean.base": "Is Public must be true or false",
   }),
 
-  whyItWorks: Joi.string().trim().optional().messages({
+  whyItWorks: Joi.string().trim().empty('').optional().messages({
     "string.base": "Why It Works must be text",
     "string.empty": "Why It Works cannot be empty",
   }),

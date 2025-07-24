@@ -127,12 +127,7 @@ const getAllRemedies = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
     };
-    await EmailNotify(
-      "ourwebsolutions@gmail.com",
-      "📦 Remedies Fetched",
-      `Remedies list successfully fetched by admin.<br/>Total remedies: <b>${total}</b>`,
-      req.user.id
-    );
+    
     res
       .status(200)
       .json(apiResponse(200, data, "Successfully fetched remedies"));
