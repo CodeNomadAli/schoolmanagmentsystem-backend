@@ -64,8 +64,8 @@ async function seedRole() {
     {
       firstName: 'Ahmed',
       lastName: 'Zahid',
-      email: 'ahmed.zahid@example.com',
-      password: await hashPassword('user123'),
+      email: 'saadshb@gmail.com',
+      password: await hashPassword('saad123'),
       staffRoleId: userRole.id,
     }
   ];
