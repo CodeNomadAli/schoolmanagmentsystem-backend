@@ -5,7 +5,7 @@ import {
   updateRemedyCategory,
   deleteRemedyCategory,
     getCategoriesById,
-} from "../../controllers/portal/remedyCategory.controller.js";
+} from "../../controllers/portal/remedy-category.controller.js";
 import checkPermission from "../../middleware/check_permission.middleware.js";
 
 const router = express.Router();

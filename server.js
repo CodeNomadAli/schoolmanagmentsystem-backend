@@ -26,7 +26,9 @@ import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
 import Aliments from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
 import UploadFile from "./routes/file.routes.js";
-
+import WebHookRoute  from "./routes/portal/webhook.route.js"
+import Subcription from "./routes/portal/subscription.routes.js"
+import Card from "./routes/card.route.js"
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -40,14 +42,19 @@ app.use(cors({
   credentials: true,
 }));
 
-validateEnv(); // check all env variable is available
-connectDB(); // connect to Database
+validateEnv(); 
+connectDB(); 
 
 
 app.use("/api/v1/auth", authRouter);
 
 
 app.use("/api/v1/users", auth, userRouter);
+
+app.use("/api/v1/plan", auth, Subcription);
+
+app.use("/api/v1/stripe", WebHookRoute);
+app.use("/api/v1/card", Card);
 
 
 

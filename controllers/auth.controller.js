@@ -14,7 +14,11 @@ import UserProfile from "../models/user_profile.model.js";
 import admin from "../config/firebase.config.js";
 import hashPassword from "../utils/hashPassword.js";
 import Staff from "../models/staff.model.js"
+import Stripe from "stripe";
+import { v4 as uuidv4 } from "uuid"; 
 
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const staffLogin = async (req, res) => {
   try {
@@ -108,41 +112,64 @@ const staffLogin = async (req, res) => {
 
 
 
-// Register user
+
 const register = async (req, res) => {
   try {
+    
     const { error } = registerValidation.validate(req.body);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
-
-    const { password, email } = req.body;
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({
-        message: "Email already in use try with different email",
+      return res.status(400).json({
         success: false,
+        message: error.details[0].message,
       });
     }
 
+    const { email, password, username } = req.body;
+
+    
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already in use. Try a different one.",
+      });
+    }
+
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
-      ...req.body,
-      password: hashedPassword,
+    
+    const clientId = uuidv4();
+    const stripeCustomer = await stripe.customers.create({
+      email,
+      name: username,
+      metadata: { clientId },
     });
 
+    if (!stripeCustomer?.id) {
+      throw new Error("Stripe customer creation failed");
+    }
+     console.log("Stripe customer created:", stripeCustomer.id);
+
+    const newUser = await User.create({
+      ...req.body,
+      password: hashedPassword,
+      stripeCustomerId: stripeCustomer.id,
+      clientId,
+    });
+
+    console.log("User registered successfully:", newUser.email);
+
     return res.status(201).json({
-      message: "Registration successful. Please verify your email.",
       success: true,
-      req: req.body,
+      message: "Registration successful. Please verify your email.",
     });
   } catch (err) {
     console.error("Register error:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", success: false });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
