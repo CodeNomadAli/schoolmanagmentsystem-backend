@@ -4,13 +4,14 @@ import Card from "../models/card.model.js";
 // ✅ Add new card
 export const addCard = async (req, res) => {
   try {
-    const { userId, type, cardName, token } = req.body;
+    
+    const { userId, type, cardName, token,lastDigit } = req.body;
        console.log(req.body)       
     if (!userId || !type  || !token) {
       return res.status(400).json({ error: "All card fields are required." });
     }
 
-    const card = await Card.create({ userId, type, cardName, token });
+    const card = await Card.create({ userId, type, cardName, token ,lastDigits});
     res.status(201).json({ message: "Card added successfully", card });
   } catch (err) {
     console.error("Add card error:", err.message);

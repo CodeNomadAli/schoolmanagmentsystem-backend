@@ -19,7 +19,7 @@ export const createCheckoutSession = async (req, res) => {
       return res.status(404).json({ error: "User not found." });
     }
 
-    // Retrieve price details
+
     const price = await stripe.prices.retrieve(planId);
     console.log(price)
     if (!price) {
@@ -31,7 +31,7 @@ export const createCheckoutSession = async (req, res) => {
     }
 
     if (type === "payment") {
-      // One-time payment with saved card (off_session)
+
       const paymentIntent = await stripe.paymentIntents.create({
         amount: price.unit_amount,
         currency: price.currency,
@@ -41,7 +41,7 @@ export const createCheckoutSession = async (req, res) => {
         confirm: true,
       });
 
-      user.stripeToken = token; // optional save
+      user.stripeToken = token; 
       await user.save();
 
       return res.status(200).json({
@@ -49,17 +49,17 @@ export const createCheckoutSession = async (req, res) => {
         paymentIntentId: paymentIntent.id,
       });
     } else if (type === "subscription") {
-      // Attach payment method if needed
+
       await stripe.paymentMethods.attach(token, {
         customer: user.stripeCustomerId,
       });
 
-      // Set default payment method
+
       await stripe.customers.update(user.stripeCustomerId, {
         invoice_settings: { default_payment_method: token },
       });
 
-      // Create subscription, immediate charge
+
       const subscription = await stripe.subscriptions.create({
         customer: user.stripeCustomerId,
         items: [{ price: planId }],
@@ -101,7 +101,7 @@ export const cancelSubscription = async (req, res) => {
       return res.status(400).json({ message: "Subscription ID required." });
     }
 
-    // Cancel Stripe subscription by subscription ID
+
     const cancelled = await stripe.subscriptions.update(subscriptionId, { cancel_at_period_end: true });
 
 

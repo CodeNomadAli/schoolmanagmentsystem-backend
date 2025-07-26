@@ -29,6 +29,8 @@ import UploadFile from "./routes/file.routes.js";
 import WebHookRoute  from "./routes/portal/webhook.route.js"
 import Subcription from "./routes/portal/subscription.routes.js"
 import Card from "./routes/card.route.js"
+import planRoutes from "./routes/plan.route.js";
+
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -53,7 +55,10 @@ app.use("/api/v1/users", auth, userRouter);
 
 app.use("/api/v1/plan", auth, Subcription);
 
+app.use("/api/v1/user-plan", auth, planRoutes);
+
 app.use("/api/v1/stripe", WebHookRoute);
+
 app.use("/api/v1/card", Card);
 
 

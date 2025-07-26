@@ -20,6 +20,10 @@ const cardSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    lastDigits:{
+      type: String,
+      default:null
+    }
   },
   { timestamps: true }
 );
