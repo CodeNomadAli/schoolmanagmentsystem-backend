@@ -92,14 +92,22 @@ export const createCheckoutSession = async (req, res) => {
 
 export const cancelSubscription = async (req, res) => {
   try {
-    const { userId, subscriptionId } = req.body;
+    const { userId } = req.body;
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found." });
+   
+ const subscriptionId = user.stripeSubscriptionId;
+    if (!subscriptionId) {
+      return res.status(400).json({ message: "No active subscription found for this user." });
+    }
 
+ 
     if (!subscriptionId) {
       return res.status(400).json({ message: "Subscription ID required." });
     }
+  
+
 
 
     const cancelled = await stripe.subscriptions.update(subscriptionId, { cancel_at_period_end: true });
