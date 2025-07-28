@@ -3,7 +3,7 @@ import {
   addCard,
   getUserCards,
   deleteCard,
-} from "../controllers/card.controller.js"; // 👈 make sure this points to user controller
+} from "../controllers/card.controller.js"; 
 
 const router = express.Router();
 
@@ -12,6 +12,6 @@ router.put("/add", addCard);
 
 router.get("/:userId", getUserCards);
 
-router.delete("/:cardId", deleteCard);
+router.delete("/:userId/:token", deleteCard);
 
 export default router;
