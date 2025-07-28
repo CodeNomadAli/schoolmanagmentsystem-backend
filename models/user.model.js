@@ -122,6 +122,26 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+
+    answeredQuestions: {
+      type: [
+        {
+          question: { type: String, required: false },
+          answer: { type: String, required: false },
+        },
+      ],
+      default: [],
+    },
+
+  cards: [
+  {
+    subscriptionType: String,
+    cardName: String,
+    token: String,
+    lastDigits: String,
+    createdAt: { type: Date, default: Date.now },
+  }
+],
     
   },
   {
