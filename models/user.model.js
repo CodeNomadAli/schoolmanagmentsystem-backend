@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:null
     },
+    subscriptionType:{
+      type: String,
+      default:"payment"
+    },
     stripeToken:{
       type: String, 
       default :null 
