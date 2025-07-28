@@ -5,89 +5,92 @@ dotenv.config();
 
 const token = process.env.GITHUB_TOKEN;
 const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-4.1";
+const model = "openai/gpt-4.1-turbo-preview"; 
+
+if (!token) {
+  throw new Error("❌ GITHUB_TOKEN is missing from your .env file");
+}
 
 
 const userHealthData = {
-  firstName: "Aliyan",
-  lastName: "Siddiqui",
-  age: 18,
-  sex: "Male",
-  weight: 40,
-  height: 180,
-  bloodType: "O+",
-  allergies: ["Peanuts"],
-  chronicConditions: ["Hypertension"],
-  medications: ["Atenolol"],
-  familyHistory: ["Diabetes"],
-  dataShareConsent: true,
-  preferredLanguage: "en",
+  age: 45,
+  gender: "female",
+  symptoms: ["chest pain", "dizziness"],
+  medicalHistory: ["hypertension", "diabetes"],
+  lifestyle: {
+    smoking: true,
+    exercise: "rarely",
+    diet: "high-fat",
+  },
 };
 
 
-
-
-
-function generatePrompt(data, categories) {
- 
-
-
+function generatePrompt(data) {
   return `
 You are a health questionnaire assistant. Based on the following user health data:
 
 ${JSON.stringify(data, null, 2)}
 
 Generate at least 50 multiple-choice questions, distributed across these categories:
+- Lifestyle Habits
+- Dietary Habits
+- Medical History
+- Environmental Exposure
+- Health Monitoring
 
-"Lifestyle Habits",
-  "Dietary Habits",
-  "Medical History",
-  "Environmental Exposure",
-  "Health Monitoring",
-
-Each category should follow this format:
+Each category must follow this format:
 {
   "title": "Category Name",
-  "description": "One-sentence motivation about why these questions are important",
+  "description": "One-sentence reason why these questions matter",
   "questions": [
     {
-      "question": "Question text?",
+      "question": "Your question here?",
       "options": ["Option A", "Option B", "Option C", "Option D"]
-    },
-    ...
+    }
   ]
 }
 
-Respond only with a valid JSON object that is an array of categories.
-  `.trim();
+Respond **only** with a valid JSON array of category objects.
+`.trim();
 }
+
 
 export async function main() {
-  const client = ModelClient(endpoint, new AzureKeyCredential(token));
-
-  const response = await client.path("/chat/completions").post({
-    body: {
-      messages: [
-        { role: "system", content: "You are a helpful assistant that returns JSON only." },
-        { role: "user", content: generatePrompt(userHealthData, categories) }, // ✅ Dynamic
-      ],
-      temperature: 0.7,
-      top_p: 1,
-      model: model,
-    },
-  });
-
-  if (isUnexpected(response)) {
-    throw response.body.error;
-  }
-
   try {
+    const client = ModelClient(endpoint, new AzureKeyCredential(token));
+
+    const response = await client.path("/chat/completions").post({
+      body: {
+        messages: [
+          { role: "system", content: "You are a helpful assistant that returns JSON only." },
+          { role: "user", content: generatePrompt(userHealthData) },
+        ],
+        temperature: 0.7,
+        top_p: 1,
+        model: model,
+      },
+    });
+
+    if (isUnexpected(response)) {
+      throw new Error(response.body.error?.message || "Unexpected response error");
+    }
+
     const output = response.body.choices[0].message.content;
-    const parsed = JSON.parse(output);
-    console.dir(parsed, { depth: null });
-    console.log("generate")
+
+    try {
+      const parsed = JSON.parse(output);
+      console.dir(parsed, { depth: null });
+      console.log("✅ Questions generated successfully!");
+    } catch (err) {
+      console.error("❌ Failed to parse JSON response:", err);
+      console.log("⚠️ Raw response:\n", output);
+    }
+
   } catch (err) {
-    console.error("Failed to parse JSON response:", err);
-    console.log("Raw response:", response.body.choices[0].message.content);
+    console.error("❌ Fatal error during OpenAI call:", err);
   }
 }
+
+main().catch((err) => {
+  console.error("❌ Unhandled error in main():", err);
+});

@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
@@ -23,8 +22,20 @@ const userSchema = new mongoose.Schema(
     },
     accessLevel: {
       type: String,
-      enum: ["user", "admin","freeuser","prouser"], 
+      enum: ["user", "admin", "freeuser", "prouser"],
       default: "user",
+    },
+    subscriptionStatus: {
+      type: String,
+      default: "inActive",
+    },
+    stripeSubscriptionId:{
+      type: String,
+      default:null
+    },
+    stripeToken:{
+      type: String, 
+      default :null 
     },
     geographicRegion: {
       type: String,
@@ -43,19 +54,20 @@ const userSchema = new mongoose.Schema(
     },
     twoFactorStatus: {
       type: String,
-      enum: ["disabled", "pending", "enabled"], 
+      enum: ["disabled", "pending", "enabled"],
       default: "disabled",
-      
     },
 
-    // user profile image
     profileImage: {
       type: String,
       trim: true,
       default: "/user/default.png",
     },
 
-    // for email verification
+    stripeCustomerId: {
+      type: String,
+      default: null,
+    },
 
     status: {
       type: String,
@@ -106,6 +118,7 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    
   },
   {
     timestamps: true,

@@ -5,12 +5,7 @@ import { apiResponse } from "../helper.js";
 
 const userHealthProfile = async (req, res) => {
   try {
-    // Uncomment this when validation schema is ready
-    // const { error } = userHealthProfileValidation.validate(req.body);
-    // if (error) {
-    //   return res.status(400).json(apiResponse(400, null, "Validation error", error.details));
-    // }
-
+  
     const userId = req.user.id;
     const profileData = req.body;
 
@@ -40,10 +35,7 @@ const userHealthProfile = async (req, res) => {
 const getUserHealthQuestionBaseOnHealthProfile = async (req, res) => {
   try {
     
-    // const { error } = userHealthProfileValidation.validate(req.body);
-    // if (error) {
-    //   return res.status(400).json(apiResponse(400, null, "Validation error", error.details));
-    // }
+   
 
     const healthQuestions = await generateHealthQuestions(req.body);
 
