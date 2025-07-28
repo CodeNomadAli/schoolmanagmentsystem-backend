@@ -72,33 +72,35 @@ export const getUserCards = async (req, res) => {
 
 export const deleteCard = async (req, res) => {
   try {
-    const { userId, token } = req.params;
+    const { cardId } = req.params;
 
-    const user = await User.findById(userId);
+    
+    const user = await User.findOne({ "cards._id": cardId });
     if (!user) {
-      return res.status(404).json({ error: "User not found." });
+      return res.status(404).json({ error: "User with this card not found." });
     }
 
-    // Find the card
-    const card = user.cards.find((c) => c.token === token);
+
+    const card = user.cards.id(cardId);
     if (!card) {
       return res.status(404).json({ error: "Card not found." });
     }
 
-    // Detach from Stripe
-    const paymentMethod = await stripe.paymentMethods.retrieve(token);
-    if (paymentMethod.customer) {
-      await stripe.paymentMethods.detach(token);
+    if (card.token) {
+      const paymentMethod = await stripe.paymentMethods.retrieve(card.token);
+      if (paymentMethod.customer) {
+        await stripe.paymentMethods.detach(card.token);
+      }
     }
 
-    // Remove card from user.cards array
-    user.cards = user.cards.filter((c) => c.token !== token);
+    card.remove();
     await user.save();
 
     res.status(200).json({ message: "Card detached and removed successfully." });
   } catch (err) {
-    console.error("Delete card error:", err.message);
+    console.error("Delete card by ID error:", err.message);
     res.status(500).json({ error: "Internal server error." });
   }
 };
+
 
