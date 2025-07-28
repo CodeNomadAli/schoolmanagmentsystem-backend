@@ -1,91 +1,102 @@
 import stripe from "../utils/stripe.js";
-import Card from "../models/card.model.js";
 import User from "../models/user.model.js";
+
+
 export const addCard = async (req, res) => {
   try {
-    const { userId, subscriptionType, cardName, token, lastDigits } = req.body;
- 
-     
-    if (!userId || !subscriptionType || !token) {
+    const {userId, subscriptionType, cardName, token, lastDigits } = req.body;
+  //  console.log(req,"body of req")
+    // console.log(req.body,"helo")
+    if (!subscriptionType || !token) {
       return res.status(400).json({ error: "All card fields are required." });
     }
 
-    
     const user = await User.findById(userId);
+      
+      
     if (!user || !user.stripeCustomerId) {
       return res.status(404).json({ error: "User or Stripe customer not found." });
     }
 
-    
+    // Attach payment method to customer
     await stripe.paymentMethods.attach(token, {
       customer: user.stripeCustomerId,
     });
 
-    
+    // Set as default payment method
     await stripe.customers.update(user.stripeCustomerId, {
       invoice_settings: {
         default_payment_method: token,
       },
     });
 
-    
-    const card = await Card.create({
-      userId,
+    // Add card to embedded array
+    const newCard = {
       subscriptionType,
       cardName,
       token,
       lastDigits,
+    };
+
+    user.cards.push(newCard);
+    await user.save();
+
+    res.status(201).json({
+      message: "Card added and attached successfully",
+      card: newCard,
     });
-
-    res.status(201).json({ message: "Card added and attached successfully", card });
-
   } catch (err) {
     console.error("Add card error:", err.message);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" },err.message);
   }
 };
 
-
+// Get all cards from user's embedded array
 export const getUserCards = async (req, res) => {
   try {
     const { userId } = req.params;
-    const cards = await Card.find({ userId });
-    res.status(200).json(cards);
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json(user.cards);
   } catch (err) {
     console.error("Fetch cards error:", err.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
+// Delete a specific card from user's embedded array
 export const deleteCard = async (req, res) => {
   try {
-    const { cardId } = req.params;
-
-    // 1. Check if the card exists
-    const card = await Card.findById(cardId);
+    const { userId } = req.params;
+ 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    const token= user.cards.token
+    // Find the card
+    const card = user.cards.find((c) => c.token === token);
     if (!card) {
       return res.status(404).json({ error: "Card not found." });
     }
 
-    // 2. Fetch the payment method from Stripe
-    const paymentMethod = await stripe.paymentMethods.retrieve(card.token);
-       console.log(paymentMethod,"payment method")
-    // 3. Check if it's attached to a customer
-    if (!paymentMethod.customer) {
-      return res.status(400).json({ error: "Card is not attached to any customer." });
+    // Detach from Stripe
+    const paymentMethod = await stripe.paymentMethods.retrieve(token);
+    if (paymentMethod.customer) {
+      await stripe.paymentMethods.detach(token);
     }
 
-    // 4. Detach the payment method
-    await stripe.paymentMethods.detach(card.token);
+    // Remove from embedded array
+    user.cards = user.cards.filter((c) => c.token !== token);
+    await user.save();
 
-    // 5. Delete from DB
-    await Card.findByIdAndDelete(cardId);
-
-    return res.status(200).json({ message: "Card successfully detached and deleted." });
-
+    res.status(200).json({ message: "Card detached and removed successfully." });
   } catch (err) {
     console.error("Delete card error:", err.message);
-    return res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error." });
   }
 };
-

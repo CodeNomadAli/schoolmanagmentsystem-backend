@@ -1,20 +1,17 @@
 import express from "express";
-
 import {
   addCard,
   getUserCards,
   deleteCard,
-} from "../controllers/card.controller.js";
+} from "../controllers/card.controller.js"; // 👈 make sure this points to user controller
 
 const router = express.Router();
 
-
-router.post("/add", addCard);
-
+// Change POST to PUT since we’re modifying the User document
+router.put("/add", addCard);
 
 router.get("/:userId", getUserCards);
 
-
-router.delete("/:cardId", deleteCard);
+router.delete("/:userId", deleteCard); 
 
 export default router;
