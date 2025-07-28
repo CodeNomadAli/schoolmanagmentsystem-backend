@@ -5,6 +5,6 @@ import { cancelSubscription ,createCheckoutSession} from '../../controllers/port
 const router = express.Router();
 
 router.post('/subscribe', createCheckoutSession); 
-router.post('/subscribe', createCheckoutSession); 
+router.post('/unsubscribe', cancelSubscription); 
 
 export default router;
