@@ -5,10 +5,10 @@ const planSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      "Monthly",
-      "Annually",
-      "Pay For 5 Remedies",
-      "Pay For 10 Remedies"
+      "monthly",
+      "five-remedies",
+      "ten-remedies",
+      "annually"
     ],
     unique: true,
   },
@@ -24,7 +24,7 @@ const planSchema = new mongoose.Schema({
   interval: {
     type: String,
     required: true,
-    enum: ["month", "year", "one_time"],
+    enum: ["month", "year", "one_time","annually"],
     default: "one_time",
   },
   description: {
