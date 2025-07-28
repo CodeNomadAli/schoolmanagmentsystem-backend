@@ -44,7 +44,7 @@ export const staffLogin = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
-      metadata: { browser, os }
+      
     });
 
     const { password: _, ...staffData } = staff.toObject();

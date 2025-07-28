@@ -83,7 +83,7 @@ const staffLogin = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
-      metadata: { browser, os },
+     
     });
 
     // Prepare safe staff data
@@ -199,7 +199,7 @@ const validatedEmailToken = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: authToken,
-      metadata: { browser, os },
+      
     });
     const userHealthProfile = await UserProfile.findOne({ userId: user._id });
 
@@ -366,7 +366,7 @@ const login = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
-      metadata: { browser, os },
+      
     });
      
     // Check if user has filled health profile
@@ -750,7 +750,7 @@ const socialAuth = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
-      metadata: { browser, os },
+      
     });
 
     const { password: _, ...userData } = user.toObject();

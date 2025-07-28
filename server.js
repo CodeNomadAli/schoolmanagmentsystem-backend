@@ -8,7 +8,7 @@ import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
 import userPortalRoute from "./routes/portal/user-portal.route.js";
 import auth from "./middleware/auth.middleware.js";
-import reviewRouter from './routes/review.route.js';
+
 import adminMiddleware from "./middleware/staff.middleware.js";
 import adminRouter from "./routes/portal/admin.route.js";
 import ModeratorRoute from "./routes/moderator.route.js";
@@ -86,7 +86,6 @@ app.use("/api/v1/articles", ArticleRoute)
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
 
-
 app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, UploadFile)
 
 app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, Aliments)
@@ -98,7 +97,6 @@ app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes)
 app.use(PORTAL_ROUTE_PREFIX + "/staff-permissions", staffAuth, staffPermissionRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/users", staffAuth,userPortalRoute);
-
  
 app.use(PORTAL_ROUTE_PREFIX + "/article-categories", staffAuth,ArticleCategoryRouter)
 
