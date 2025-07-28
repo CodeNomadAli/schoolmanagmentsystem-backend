@@ -1,7 +1,6 @@
-// controllers/card.controller.js
+import stripe from "../utils/stripe.js";
 import Card from "../models/card.model.js";
 
-// ✅ Add new card
 export const addCard = async (req, res) => {
   try {
     const { userId, type, cardName, token,lastDigits } = req.body;
@@ -18,7 +17,6 @@ export const addCard = async (req, res) => {
   }
 };
 
-// ✅ Get all cards of a user
 export const getUserCards = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -30,14 +28,35 @@ export const getUserCards = async (req, res) => {
   }
 };
 
-// ✅ Delete a card by ID
 export const deleteCard = async (req, res) => {
   try {
     const { cardId } = req.params;
+
+    
+    const card = await Card.findById(cardId);
+    if (!card) {
+      return res.status(404).json({ error: "Card not found." });
+    }
+
+    
+    const paymentMethod = await stripe.paymentMethods.retrieve(card.token);
+
+    
+    if (!paymentMethod.customer) {
+      return res.status(400).json({ error: "Card is not attached to any customer." });
+    }
+
+    
+    await stripe.paymentMethods.detach(card.token);
+
+    
     await Card.findByIdAndDelete(cardId);
-    res.status(200).json({ message: "Card deleted successfully" });
+
+    return res.status(200).json({ message: "Card successfully detached and deleted." });
+
   } catch (err) {
     console.error("Delete card error:", err.message);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error." });
   }
 };
+

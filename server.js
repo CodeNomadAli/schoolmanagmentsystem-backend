@@ -30,6 +30,7 @@ import WebHookRoute  from "./routes/portal/webhook.route.js"
 import Subcription from "./routes/portal/subscription.routes.js"
 import Card from "./routes/card.route.js"
 import planRoutes from "./routes/plan.route.js";
+import invoiceRoutes from "./routes/invoice.routes.js";
 
 const app = express();
 
@@ -60,6 +61,8 @@ app.use("/api/v1/user-plan", auth, planRoutes);
 app.use("/api/v1/stripe", WebHookRoute);
 
 app.use("/api/v1/card", Card);
+
+app.use("/api/v1/invoice", invoiceRoutes);
 
 
 
