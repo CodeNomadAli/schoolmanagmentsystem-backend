@@ -12,6 +12,6 @@ router.put("/add", addCard);
 
 router.get("/:userId", getUserCards);
 
-router.delete("/:userId", deleteCard); 
+router.delete("/:userId/:token", deleteCard);
 
 export default router;
