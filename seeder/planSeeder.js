@@ -13,33 +13,37 @@ console.log("✅ MongoDB connected.");
 
 const plans = [
   {
-    name: "Pay For 10 Remedies",
-    planId: "price_1Rp2ZxK9YmpjdcmXZUJnbivU",
-    price: 14.99,
-    interval: "one_time",
-    description: "One-time access to 10 remedies.",
-  },
-  {
-    name: "Pay For 5 Remedies",
-    planId: "price_1Rp2YoK9YmpjdcmXhxPuXGxA",
-    price: 7.99,
-    interval: "one_time",
-    description: "One-time access to 5 remedies.",
-  },
-  {
-    name: "Annually",
+    name: "annually",
     planId: "price_1Rp2UMK9YmpjdcmXr7hgZ1lf",
     price: 89.99,
     interval: "year",
     description: "Annual subscription with full access.",
   },
   {
-    name: "Monthly",
+    name: "monthly",
     planId: "price_1Rp2OGK9YmpjdcmXYq83Zkm0",
     price: 8.99,
     interval: "month",
     description: "Monthly subscription with full access.",
   }
+  ,
+  {
+    name: "ten-remedies",
+    planId: "price_1Rp2ZxK9YmpjdcmXZUJnbivU",
+    price: 14.99,
+    interval: "one_time",
+    description: "One-time access to 10 remedies.",
+  },
+  
+  {
+    name: "five-remedies",
+    planId: "price_1Rp2YoK9YmpjdcmXhxPuXGxA",
+    price: 7.99,
+    interval: "one_time",
+    description: "One-time access to 5 remedies.",
+  },
+  
+  
 ];
 
 const seedPlans = async () => {
