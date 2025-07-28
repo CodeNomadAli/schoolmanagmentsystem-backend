@@ -87,7 +87,7 @@ const staffLogin = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
-      metadata: { browser, os },
+      
     });
 
     // Prepare safe staff data
@@ -143,7 +143,7 @@ const register = async (req, res) => {
     const stripeCustomer = await stripe.customers.create({
       email,
       name: username,
-      metadata: { clientId },
+     
     });
 
     if (!stripeCustomer?.id) {
@@ -220,7 +220,7 @@ const validatedEmailToken = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: authToken,
-      metadata: { browser, os },
+      
     });
     const userHealthProfile = await UserProfile.findOne({ userId: user._id });
 
@@ -389,7 +389,7 @@ const login = async (req, res) => {
       deviceType,
       sessionToken: token,
       
-      metadata: { browser, os },
+      
     });
 
     // Check if user has filled health profile
@@ -773,7 +773,7 @@ const socialAuth = async (req, res) => {
       userAgent: req.headers["user-agent"],
       deviceType,
       sessionToken: token,
-      metadata: { browser, os },
+      
     });
 
     const { password: _, ...userData } = user.toObject();
