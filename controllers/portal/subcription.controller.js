@@ -52,9 +52,6 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
   
-    await Card.create({
-      
-    })
 
     // Set as default payment method
     await stripe.customers.update(user.stripeCustomerId, {
