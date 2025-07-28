@@ -68,16 +68,17 @@ export const getUserCards = async (req, res) => {
   }
 };
 
-// Delete a specific card from user's embedded array
+
+
 export const deleteCard = async (req, res) => {
   try {
-    const { userId } = req.params;
- 
+    const { userId, token } = req.params;
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
-    const token= user.cards.token
+
     // Find the card
     const card = user.cards.find((c) => c.token === token);
     if (!card) {
@@ -90,7 +91,7 @@ export const deleteCard = async (req, res) => {
       await stripe.paymentMethods.detach(token);
     }
 
-    // Remove from embedded array
+    // Remove card from user.cards array
     user.cards = user.cards.filter((c) => c.token !== token);
     await user.save();
 
@@ -100,3 +101,4 @@ export const deleteCard = async (req, res) => {
     res.status(500).json({ error: "Internal server error." });
   }
 };
+
