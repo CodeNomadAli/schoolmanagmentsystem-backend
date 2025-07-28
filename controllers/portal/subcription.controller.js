@@ -1,16 +1,15 @@
 import stripe from "../../utils/stripe.js";
-import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
 
 
 export const createCheckoutSession = async (req, res) => {
-  const { planId, userId, type, token } = req.body;
+  const { planId, userId, subscriptionType, token } = req.body;
   console.log("Create payment request body:", req.body);
 
   try {
-    if (!planId || !userId || !type || !token) {
+    if (!planId || !userId || !subscriptionType || !token) {
       return res.status(400).json({
-        error: "planId, userId, type, and token are required.",
+        error: "planId, userId, subscriptionType, and token are required.",
       });
     }
 
@@ -30,7 +29,7 @@ export const createCheckoutSession = async (req, res) => {
       return res.status(400).json({ error: "User does not have Stripe Customer ID." });
     }
 
-    if (type === "payment") {
+    if (subscriptionType === "payment") {
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: price.unit_amount,
@@ -48,7 +47,7 @@ export const createCheckoutSession = async (req, res) => {
         message: "Payment succeeded.",
         paymentIntentId: paymentIntent.id,
       });
-    } else if (type === "subscription") {
+    } else if (subscriptionType === "subscription") {
 
       await stripe.paymentMethods.attach(token, {
         customer: user.stripeCustomerId,
@@ -70,6 +69,7 @@ export const createCheckoutSession = async (req, res) => {
       user.stripeSubscriptionId = subscription.id;
       user.subscriptionStatus = "active";
       user.stripeToken = token;
+      user.subscriptionType="subscription"
       await user.save();
 
       return res.status(200).json({
