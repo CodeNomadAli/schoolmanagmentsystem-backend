@@ -8,7 +8,7 @@ const cardSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    type: {
+    subscriptionType: {
       type: String,
       required: true,
     },
