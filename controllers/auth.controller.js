@@ -339,7 +339,7 @@ const sendEmailVerification = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log(req.body)
+   
     // Validate request body
     const { error } = loginValidation.validate(req.body);
     if (error) {
