@@ -37,10 +37,10 @@ export const createCheckoutSession = async (req, res) => {
     if (!user.stripeCustomerId) {
       return res.status(400).json({ error: "User does not have Stripe Customer ID." });
     }
-
+       
     // Check if payment method is already attached
     const paymentMethod = await stripe.paymentMethods.retrieve(token);
-
+          
     if (paymentMethod.customer && paymentMethod.customer !== user.stripeCustomerId) {
       return res.status(400).json({ error: "Payment method already attached to another customer." });
     }
@@ -52,8 +52,8 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
   
+  
 
-    // Set as default payment method
     await stripe.customers.update(user.stripeCustomerId, {
       invoice_settings: { default_payment_method: token },
     });
