@@ -68,6 +68,8 @@ export const getInvoices = async (req, res) => {
         .json(apiResponse(404, null, "User not found"));
     }
 
+       
+
     return res
       .status(200)
       .json(apiResponse(200, user.invoices, "Invoices fetched successfully"));
