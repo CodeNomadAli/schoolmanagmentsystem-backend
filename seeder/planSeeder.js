@@ -15,6 +15,7 @@ const plans = [
     price: 0,
     interval: "one_time",
     description: "Free plan with limited remedies access.",
+    subscriptionType:"subscription"
   },
   {
     name: "Annually",
@@ -24,6 +25,7 @@ const plans = [
     price: 89.99,
     interval: "year",
     description: "Annual subscription with full access.",
+  subscriptionType:"subscription"
   },
   {
     name: "Monthly",
@@ -32,6 +34,7 @@ const plans = [
     price: 8.99,
     interval: "month",
     description: "Monthly subscription with full access.",
+  subscriptionType:"subscription"
   },
   {
     name: "Ten Remedies",
@@ -40,6 +43,7 @@ const plans = [
     price: 14.99,
     interval: "one_time",
     description: "One-time access to 10 remedies.",
+    
   },
   {
     name: "Five Remedies",
@@ -48,6 +52,7 @@ const plans = [
     price: 7.99,
     interval: "one_time",
     description: "One-time access to 5 remedies.",
+    
   },
 ];
 

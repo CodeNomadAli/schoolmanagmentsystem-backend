@@ -17,6 +17,10 @@ const planSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    subscriptionType: {
+      type: String,
+      default: "payment",
+    },
     price: {
       type: Number,
       required: true,
