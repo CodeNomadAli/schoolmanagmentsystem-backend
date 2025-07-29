@@ -91,7 +91,7 @@ const getAllArticles = async (req, res) => {
 
 const getArticlesByWriterId = async (req, res) => {
   const author = req.user.id;
-  console.log(author, "auther id sharef")
+  
   try {
     const { status, page = 1, limit = 10, search = "" } = req.query;
 

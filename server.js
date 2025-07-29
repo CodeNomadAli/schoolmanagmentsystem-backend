@@ -23,12 +23,12 @@ import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
 import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
-import Aliments from "./routes/portal/ailment.route.js"
+import alimentsRoutes from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
 import UploadFile from "./routes/file.routes.js";
 import WebHookRoute  from "./routes/portal/webhook.route.js"
-import Subcription from "./routes/portal/subscription.routes.js"
-import Card from "./routes/card.route.js"
+import stripeSubcription from "./routes/portal/subscription.routes.js"
+import cardRoutes from "./routes/credit-card.route.js"
 import planRoutes from "./routes/plan.route.js";
 import invoiceRoutes from "./routes/invoice.routes.js";
 import profileQuestions from "./routes/profile-questions.route.js"
@@ -51,16 +51,15 @@ connectDB();
 
 app.use("/api/v1/auth", authRouter);
 
-
 app.use("/api/v1/users", auth, userRouter);
 
-app.use("/api/v1/plan", auth, Subcription);
+app.use("/api/v1/plan", auth, stripeSubcription);
 
 app.use("/api/v1/user-plan", auth, planRoutes);
 
 app.use("/api/v1/stripe", WebHookRoute);
 
-app.use("/api/v1/card", Card);
+app.use("/api/v1/card", cardRoutes);
 
 
 app.use("/api/v1/user/invoice", invoiceRoutes);
@@ -94,7 +93,7 @@ app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, UploadFile)
 
-app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, Aliments)
+app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, alimentsRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth, privacyRouter)
 

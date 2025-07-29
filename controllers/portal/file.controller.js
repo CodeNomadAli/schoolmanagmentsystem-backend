@@ -13,7 +13,7 @@ const ENDPOINT = process.env.DO_SPACES_ENDPOINT;
 
 export const uploadFile = async (req, res) => {
   try {
-    console.log("File upload request received:", req.file);
+   
     if (!req.file) {
       return res
         .status(400)

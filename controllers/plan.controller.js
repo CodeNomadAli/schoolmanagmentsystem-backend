@@ -29,7 +29,7 @@ export const createPlan = async (req, res) => {
 // Get all plans
 export const getAllPlans = async (req, res) => {
   try {
-    console.log(req.body)
+    
     const plans = await Plan.find();
     return res.status(200).json(apiResponse(200,plans,"plan fetch successfully"));
   } catch (err) {
