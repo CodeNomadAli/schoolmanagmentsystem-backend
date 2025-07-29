@@ -17,7 +17,7 @@ import staffRoutes from "./routes/portal/staff.route.js";
 import userPorfileRoute from "./routes/userProfile.route.js";
 import staffAuth from "./middleware/staff.middleware.js";
 import staffRolesRoutes from "./routes/portal/staff-role.route.js";
-import staffPermissionRoutes from "./routes/portal/staff-permissions.route.js";
+import staffPermissionRoutes from "./routes/portal/staff-permission.route.js";
 import remedyRoutes from "./routes/portal/remedy.route.js";
 import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
