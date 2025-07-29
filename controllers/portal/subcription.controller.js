@@ -19,20 +19,6 @@ export const createCheckoutSession = async (req, res) => {
     const planData = await userPlan.findOne({ planId });
     if (!planData) return res.status(400).json({ error: "Plan not found." });
 
-    const newInvoice = {
-      planId,
-      price: planData.price,
-      planName: planData.name,
-      isActive:true,
-      subscriptionType,
-      startDate: new Date(),
-      createdAt: new Date(),
-    };
-
-    user.invoices.push(newInvoice);
-
-    await user.save();
-
     const price = await stripe.prices.retrieve(planId);
     if (!price) return res.status(400).json({ error: "Invalid planId." });
 
@@ -75,13 +61,26 @@ export const createCheckoutSession = async (req, res) => {
         off_session: true,
         confirm: true,
       });
-      user.subscriptionType="subscription"
+      const newInvoice = {
+        price: planData.price,
+        planName: planData.name,
+        isActive: true,
+        subscriptionType,
+        startDate: new Date(),
+        createdAt: new Date(),
+      };
+
+      user.invoices.push(newInvoice);
+      user.subscriptionType = "subscription";
       user.accessLevel = "prouser";
       user.subscriptionStatus = "active";
       user.stripeToken = token;
       await user.save();
+      
+      
 
-      return res.status(200).json({
+     
+            return res.status(200).json({
         message: "Payment succeeded.",
         paymentIntentId: paymentIntent.id,
       });
@@ -95,7 +94,25 @@ export const createCheckoutSession = async (req, res) => {
         default_payment_method: token,
       });
 
+      const endDate = subscription.current_period_end;
+
+      const newInvoice = {
+        price: planData.price,
+        planName: planData.name,
+        isActive: true,
+        subscriptionType,
+        startDate: new Date(),
+        createdAt: new Date(),
+        endDate: endDate,
+      };
+
+      user.invoices.push(newInvoice);
+
+      await user.save();
+      console.log("success");
+
       user.stripeSubscriptionId = subscription.id;
+      console.log(subscription.id, "id");
       user.accessLevel = "prouser";
       user.subscriptionStatus = "active";
       user.stripeToken = token;
@@ -106,9 +123,6 @@ export const createCheckoutSession = async (req, res) => {
         subscriptionId: subscription.id,
         paymentIntent: subscription.latest_invoice.payment_intent,
       });
-
-
-
     } else {
       return res
         .status(400)
@@ -122,44 +136,45 @@ export const createCheckoutSession = async (req, res) => {
 
 export const cancelSubscription = async (req, res) => {
   try {
-    const { userId, subscriptionId, planId } = req.body;
-
-    if (!userId || !planId) {
-      return res.status(400).json({ message: "userId, planId and subscriptionId are required." });
+    const { userId, subscriptionId, invoiceid } = req.body;
+  
+    if (!userId || !invoiceid) {
+      return res
+        .status(400)
+        .json({
+          message: "userId, invoiceid and subscriptionId are required.",
+        });
     }
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found." });
 
-    // Cancel on Stripe
-    const cancelled = await stripe.subscriptions.update(subscriptionId, {
-      cancel_at_period_end: true,
-    });
+    if (subscriptionId) {
+      // Cancel on Stripe
+      const cancelled = await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+      });
+    }
 
-
-    const targetInvoice = user.invoices.find(invoice => invoice.planId === planId);
+    const targetInvoice = user.invoices.find(
+      (invoice) => invoice.invoiceid === invoiceid
+    );
     if (targetInvoice) {
       targetInvoice.isActive = false;
       targetInvoice.endDate = new Date();
-    } else {
-      console.warn("No matching invoice found for planId:", planId);
-    }
-
+    } 
 
     user.accessLevel = "user";
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;
 
     await user.save();
-
+    
     res.status(200).json({
       message: "Subscription cancelled successfully.",
-      subscription: cancelled,
     });
-
   } catch (error) {
     console.error("Cancel error:", error.message);
     res.status(500).json({ error: `Internal server error: ${error.message}` });
   }
 };
-
