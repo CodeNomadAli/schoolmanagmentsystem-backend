@@ -20,7 +20,7 @@ const staffLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(email, password)
+    
    
     if (!email || !password) {
       return res.status(400).json({
@@ -40,7 +40,7 @@ const staffLogin = async (req, res) => {
       })
       .exec();
 
-    console.log(email)
+   
 
     if (!staff) {
       return res.status(401).json({

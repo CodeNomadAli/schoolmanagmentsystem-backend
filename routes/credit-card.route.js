@@ -3,7 +3,7 @@ import {
   addCard,
   getUserCards,
   deleteCard,
-} from "../controllers/card.controller.js"; 
+} from "../controllers/credit-card.controller.js"; 
 
 const router = express.Router();
 

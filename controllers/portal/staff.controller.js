@@ -48,7 +48,7 @@ export const staffLogin = async (req, res) => {
     });
 
     const { password: _, ...staffData } = staff.toObject();
-    console.log("Staff login successful:", staffData);
+    
     await companyNotify(
           staff.email,
           "Login Notification",

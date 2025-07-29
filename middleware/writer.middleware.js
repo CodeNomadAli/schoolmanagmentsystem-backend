@@ -6,7 +6,7 @@ const writerMiddleware = (req, res, next) => {
       return res.status(403).json({ message: "Access denied. Writers only." });
     }
 
-    console.log(req.user.accessLevel, "Access level checked");
+    
 
     next();
   } catch (error) {

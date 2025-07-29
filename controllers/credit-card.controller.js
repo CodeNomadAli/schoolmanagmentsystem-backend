@@ -5,8 +5,7 @@ import User from "../models/user.model.js";
 export const addCard = async (req, res) => {
   try {
     const {userId,  cardName, token, lastDigits } = req.body;
-  //  console.log(req,"body of req")
-    // console.log(req.body,"helo")
+  
     if (!token) {
       return res.status(400).json({ error: "All card fields are required." });
     }

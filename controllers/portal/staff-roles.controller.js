@@ -87,12 +87,7 @@ export const createStaffRole = async (req, res) => {
 
     const { name, permissions } = req.body;
 
-    console.log(
-      "Creating staff role with name:",
-      name,
-      "and permissions:",
-      permissions
-    );
+   
 
     const validationError = validateRoleInput(name, permissions);
     if (validationError) {

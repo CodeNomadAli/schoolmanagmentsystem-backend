@@ -22,7 +22,7 @@ async function seedRole() {
 
   await Staff.deleteMany({});
   await User.deleteMany({});
-  console.log('Cleared existing staff and user data');
+  
 
   const adminRole = await StaffRole.findOne({ name: 'Super Admin' });
    const writerRole = await StaffRole.findOne({ name: 'Writer' });

@@ -112,7 +112,7 @@ export const createCheckoutSession = async (req, res) => {
       console.log("success");
 
       user.stripeSubscriptionId = subscription.id;
-      console.log(subscription.id, "id");
+      
       user.accessLevel = "prouser";
       user.subscriptionStatus = "active";
       user.stripeToken = token;

@@ -15,7 +15,7 @@ import admin from "../config/firebase.config.js";
 import hashPassword from "../utils/hashPassword.js";
 import Staff from "../models/staff.model.js"
 import Stripe from "stripe";
-import { v4 as uuidv4 } from "uuid"; 
+
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -24,7 +24,7 @@ const staffLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(email, password)
+   
    
     if (!email || !password) {
       return res.status(400).json({
@@ -92,7 +92,7 @@ const staffLogin = async (req, res) => {
 
     // Prepare safe staff data
     const { password: _, ...staffData } = staff.toObject();
-    console.log(staffData," staff data");
+   
     return res.status(200).json({
       message: "Login successful",
       success: true,
@@ -139,7 +139,7 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     
-    const clientId = uuidv4();
+   
     const stripeCustomer = await stripe.customers.create({
       email,
       name: username,
@@ -149,16 +149,16 @@ const register = async (req, res) => {
     if (!stripeCustomer?.id) {
       throw new Error("Stripe customer creation failed");
     }
-     console.log("Stripe customer created:", stripeCustomer.id);
+     
 
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
       stripeCustomerId: stripeCustomer.id,
-      clientId,
+      
     });
 
-    console.log("User registered successfully:", newUser.email);
+   
 
     return res.status(201).json({
       success: true,

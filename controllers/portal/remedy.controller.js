@@ -34,7 +34,7 @@ const createRemedy = async (req, res) => {
     
     if (error) {
       
-      console.log(error.details.map((d) => d.message));
+     
       return res.status(422).json({
 
         errors: error.details.map((d) => d.message),
@@ -207,7 +207,7 @@ const updateRemedy = async (req, res) => {
 
     const { ailments } = req.body;
     const ailmentIds = [];
-      console.log(ailments);
+     
 
     if (Array.isArray(ailments)) {
       for (const ailmentName of ailments) {
@@ -246,7 +246,7 @@ const updateRemedy = async (req, res) => {
 
 const deleteRemedy = async (req, res) => {
   try {
-    console.log(req.params,"he");
+   
     const { id } = req.params;
     const remedy = await Remedy.findById(id);
     if (!remedy ) {
