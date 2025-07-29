@@ -9,35 +9,41 @@ console.log("✅ MongoDB connected.");
 
 const plans = [
   {
-    name: "free",
+    name: "Free",
+    slug: "free",
     planId: "price_free_001",
     price: 0,
     interval: "one_time",
     description: "Free plan with limited remedies access.",
   },
   {
-    name: "annually",
+    name: "Annually",
+    slug: "annually",
+
     planId: "price_1Rp2UMK9YmpjdcmXr7hgZ1lf",
     price: 89.99,
     interval: "year",
     description: "Annual subscription with full access.",
   },
   {
-    name: "monthly",
+    name: "Monthly",
+    slug: "monthly",
     planId: "price_1Rp2OGK9YmpjdcmXYq83Zkm0",
     price: 8.99,
     interval: "month",
     description: "Monthly subscription with full access.",
   },
   {
-    name: "ten-remedies",
+    name: "Ten Remedies",
+    slug: "ten-remedies",
     planId: "price_1Rp2ZxK9YmpjdcmXZUJnbivU",
     price: 14.99,
     interval: "one_time",
     description: "One-time access to 10 remedies.",
   },
   {
-    name: "five-remedies",
+    name: "Five Remedies",
+    slug: "five-remedies",
     planId: "price_1Rp2YoK9YmpjdcmXhxPuXGxA",
     price: 7.99,
     interval: "one_time",
@@ -47,33 +53,76 @@ const plans = [
 
 const planFeatures = {
   free: [
-    { slug: "access-3-remedies-per-ailment", description: ["Access 3 Remedies per Ailment"] },
+    {
+      slug: "access-3-remedies-per-ailment",
+      description: ["Access 3 Remedies per Ailment"],
+    },
     { slug: "rate-review-remedies", description: ["Rate & Review Remedies"] },
     { slug: "save-favorite-remedies", description: ["Save Favorite Remedies"] },
   ],
   annually: [
-    { slug: "unlimited-remedy-access", description: ["Unlimited Remedy Access"] },
-    { slug: "ai-generated-remedy-recommendations", description: ["AI-Generated Remedy Recommendations"] },
-    { slug: "success-rate-ai-confidence", description: ["Success Rate & AI Confidence Scores"] },
+    {
+      slug: "unlimited-remedy-access",
+      description: ["Unlimited Remedy Access"],
+    },
+    {
+      slug: "ai-generated-remedy-recommendations",
+      description: ["AI-Generated Remedy Recommendations"],
+    },
+    {
+      slug: "success-rate-ai-confidence",
+      description: ["Success Rate & AI Confidence Scores"],
+    },
     { slug: "priority-support", description: ["Priority Support"] },
     { slug: "save-favorite-remedies", description: ["Save Favorite Remedies"] },
-    { slug: "personalized-ai-insights", description: ["Personalized AI Insights"] },
+    {
+      slug: "personalized-ai-insights",
+      description: ["Personalized AI Insights"],
+    },
   ],
   monthly: [
-    { slug: "unlimited-remedy-access", description: ["Unlimited Remedy Access"] },
-    { slug: "ai-generated-remedy-recommendations", description: ["AI-Generated Remedy Recommendations"] },
-    { slug: "success-rate-ai-confidence", description: ["Success Rate & AI Confidence Scores"] },
+    {
+      slug: "unlimited-remedy-access",
+      description: ["Unlimited Remedy Access"],
+    },
+    {
+      slug: "ai-generated-remedy-recommendations",
+      description: ["AI-Generated Remedy Recommendations"],
+    },
+    {
+      slug: "success-rate-ai-confidence",
+      description: ["Success Rate & AI Confidence Scores"],
+    },
     { slug: "priority-support", description: ["Priority Support"] },
     { slug: "save-favorite-remedies", description: ["Save Favorite Remedies"] },
-    { slug: "personalized-ai-insights", description: ["Personalized AI Insights"] },
+    {
+      slug: "personalized-ai-insights",
+      description: ["Personalized AI Insights"],
+    },
   ],
   "five-remedies": [
-    { slug: "select-ailment-top-remedies", description: ["Select an ailment, and unlock access to its top remedies"] },
-    { slug: "access-5-remedies", description: ["Access 5 remedies for your selected ailment. One-time purchase."] },
+    {
+      slug: "select-ailment-top-remedies",
+      description: ["Select an ailment, and unlock access to its top remedies"],
+    },
+    {
+      slug: "access-5-remedies",
+      description: [
+        "Access 5 remedies for your selected ailment. One-time purchase.",
+      ],
+    },
   ],
   "ten-remedies": [
-    { slug: "select-ailment-top-remedies", description: ["Select an ailment, and unlock access to its top remedies"] },
-    { slug: "access-10-remedies", description: ["Access 10 remedies for your selected ailment. One-time purchase."] },
+    {
+      slug: "select-ailment-top-remedies",
+      description: ["Select an ailment, and unlock access to its top remedies"],
+    },
+    {
+      slug: "access-10-remedies",
+      description: [
+        "Access 10 remedies for your selected ailment. One-time purchase.",
+      ],
+    },
   ],
 };
 
@@ -85,7 +134,7 @@ const seedPlans = async () => {
     console.log(`✅ Seeded ${insertedPlans.length} plans.`);
 
     for (const plan of insertedPlans) {
-      const features = planFeatures[plan.name] || [];
+      const features = planFeatures[plan.slug] || [];
       await Plan.updateOne({ _id: plan._id }, { $set: { features } });
       console.log(`✅ Updated features for plan: ${plan.name}`);
     }

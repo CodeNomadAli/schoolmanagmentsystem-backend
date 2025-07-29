@@ -4,9 +4,13 @@ const planSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      
+    },
+    slug :{
+      type :String,
       enum: ["free","monthly", "five-remedies", "ten-remedies", "annually"],
       unique: true,
+      default:""
     },
     planId: {
       type: String, // Stripe Price ID
