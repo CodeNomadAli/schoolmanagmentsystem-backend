@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { bool, boolean } from "joi";
 
 const userSchema = new mongoose.Schema(
   {
@@ -147,7 +148,7 @@ const userSchema = new mongoose.Schema(
     planId: String,
     planName: String,
     subscriptionType: String,
-    status:String,
+    isActive:boolean,
     price: Number,
     discount: { type: Number, default: 0 },
     startDate: { type: Date, default: Date.now },
