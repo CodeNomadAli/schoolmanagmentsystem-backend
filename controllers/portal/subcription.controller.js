@@ -95,6 +95,7 @@ export const createCheckoutSession = async (req, res) => {
       });
 
       user.stripeSubscriptionId = subscription.id;
+      user.accessLevel="prouser";
       user.subscriptionStatus = "active";
       user.stripeToken = token;
       await user.save();
