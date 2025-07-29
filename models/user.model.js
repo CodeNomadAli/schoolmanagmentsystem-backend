@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { uuid } from "zod/v4";
 
 
 const userSchema = new mongoose.Schema(
@@ -133,7 +134,6 @@ const userSchema = new mongoose.Schema(
 
     cards: [
       {
-        subscriptionType: String,
         cardName: String,
         token: String,
         lastDigits: String,
@@ -142,7 +142,11 @@ const userSchema = new mongoose.Schema(
     ],
     invoices: [
   {
-    planId: String,
+    invoiceid: {
+      type: String,
+      default: () =>
+        "inv_" + Date.now().toString(36) + Math.random().toString(36).slice(3, 6),
+    },
     planName: String,
     subscriptionType: String,
     isActive: { type: Boolean },
@@ -153,6 +157,7 @@ const userSchema = new mongoose.Schema(
     createdAt: { type: Date, default: Date.now },
   },
 ],
+
 
   },
   {

@@ -20,7 +20,6 @@ const plans = [
   {
     name: "Annually",
     slug: "annually",
-
     planId: "price_1Rp2UMK9YmpjdcmXr7hgZ1lf",
     price: 89.99,
     interval: "year",

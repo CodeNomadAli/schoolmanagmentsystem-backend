@@ -4,10 +4,10 @@ import User from "../models/user.model.js";
 
 export const addCard = async (req, res) => {
   try {
-    const {userId, subscriptionType, cardName, token, lastDigits } = req.body;
+    const {userId,  cardName, token, lastDigits } = req.body;
   //  console.log(req,"body of req")
     // console.log(req.body,"helo")
-    if (!subscriptionType || !token) {
+    if (!token) {
       return res.status(400).json({ error: "All card fields are required." });
     }
 
@@ -32,7 +32,7 @@ export const addCard = async (req, res) => {
 
     // Add card to embedded array
     const newCard = {
-      subscriptionType,
+      
       cardName,
       token,
       lastDigits,
@@ -47,7 +47,7 @@ export const addCard = async (req, res) => {
     });
   } catch (err) {
     console.error("Add card error:", err.message);
-    res.status(500).json({ error: `${err.message}` });
+    res.status(500).json({ error: ` ${err.message}` });
 
   }
 };
