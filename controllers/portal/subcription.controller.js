@@ -1,12 +1,9 @@
 import stripe from "../../utils/stripe.js";
 
-import Card from "../../models/card.model.js";
 import User from "../../models/user.model.js";
 import userPlan from "../../models/plan.model.js";
-import Invoice from "../../models/invoice.model.js";
 
 export const createCheckoutSession = async (req, res) => {
-  
   const { planId, userId, subscriptionType, token } = req.body;
 
   try {
@@ -22,27 +19,40 @@ export const createCheckoutSession = async (req, res) => {
     const planData = await userPlan.findOne({ planId });
     if (!planData) return res.status(400).json({ error: "Plan not found." });
 
-    const invoice = await Invoice.create({
-      userId,
+    const newInvoice = {
       planId,
       price: planData.price,
       planName: planData.name,
       subscriptionType,
-      planStatus: user.subscriptionStatus,
-    });
+      startDate: new Date(),
+      createdAt: new Date(),
+    };
+
+    user.invoices.push(newInvoice);
+
+    await user.save();
 
     const price = await stripe.prices.retrieve(planId);
     if (!price) return res.status(400).json({ error: "Invalid planId." });
 
     if (!user.stripeCustomerId) {
-      return res.status(400).json({ error: "User does not have Stripe Customer ID." });
+      return res
+        .status(400)
+        .json({ error: "User does not have Stripe Customer ID." });
     }
-       
+
     // Check if payment method is already attached
     const paymentMethod = await stripe.paymentMethods.retrieve(token);
-          
-    if (paymentMethod.customer && paymentMethod.customer !== user.stripeCustomerId) {
-      return res.status(400).json({ error: "Payment method already attached to another customer." });
+
+    if (
+      paymentMethod.customer &&
+      paymentMethod.customer !== user.stripeCustomerId
+    ) {
+      return res
+        .status(400)
+        .json({
+          error: "Payment method already attached to another customer.",
+        });
     }
 
     // Attach only if not attached
@@ -51,8 +61,6 @@ export const createCheckoutSession = async (req, res) => {
         customer: user.stripeCustomerId,
       });
     }
-  
-  
 
     await stripe.customers.update(user.stripeCustomerId, {
       invoice_settings: { default_payment_method: token },
@@ -76,7 +84,6 @@ export const createCheckoutSession = async (req, res) => {
         message: "Payment succeeded.",
         paymentIntentId: paymentIntent.id,
       });
-
     } else if (subscriptionType === "subscription") {
       // Subscription
       const subscription = await stripe.subscriptions.create({
@@ -97,22 +104,16 @@ export const createCheckoutSession = async (req, res) => {
         subscriptionId: subscription.id,
         paymentIntent: subscription.latest_invoice.payment_intent,
       });
-
     } else {
-      return res.status(400).json({ error: "Invalid type: must be 'payment' or 'subscription'." });
+      return res
+        .status(400)
+        .json({ error: "Invalid type: must be 'payment' or 'subscription'." });
     }
   } catch (error) {
     console.error("Stripe Payment Error:", error);
     return res.status(500).json({ error: "Payment failed: " + error.message });
   }
 };
-
-
-
-
-
-
-
 
 export const cancelSubscription = async (req, res) => {
   try {
@@ -125,9 +126,9 @@ export const cancelSubscription = async (req, res) => {
       return res.status(400).json({ message: "Subscription ID required." });
     }
 
-
-    const cancelled = await stripe.subscriptions.update(subscriptionId, { cancel_at_period_end: true });
-
+    const cancelled = await stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true,
+    });
 
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;

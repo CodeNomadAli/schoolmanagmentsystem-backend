@@ -29,17 +29,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "inActive",
     },
-    stripeSubscriptionId:{
+    stripeSubscriptionId: {
       type: String,
-      default:null
+      default: null,
     },
-    subscriptionType:{
+    subscriptionType: {
       type: String,
-      default:"payment"
+      default: "payment",
     },
-    stripeToken:{
-      type: String, 
-      default :null 
+    stripeToken: {
+      type: String,
+      default: null,
     },
     geographicRegion: {
       type: String,
@@ -133,16 +133,28 @@ const userSchema = new mongoose.Schema(
       default: [],
     },
 
-  cards: [
+    cards: [
+      {
+        subscriptionType: String,
+        cardName: String,
+        token: String,
+        lastDigits: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    invoices: [
   {
+    planId: String,
+    planName: String,
     subscriptionType: String,
-    cardName: String,
-    token: String,
-    lastDigits: String,
+    price: Number,
+    discount: { type: Number, default: 0 },
+    startDate: { type: Date, default: Date.now },
+    endDate: Date,
     createdAt: { type: Date, default: Date.now },
-  }
+  },
 ],
-    
+
   },
   {
     timestamps: true,
