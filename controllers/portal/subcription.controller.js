@@ -138,9 +138,6 @@ export const cancelSubscription = async (req, res) => {
     };
 
     user.invoices.push(newInvoice);
-
-    await user.save();
-    
     user.accessLevel = "user";
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;
