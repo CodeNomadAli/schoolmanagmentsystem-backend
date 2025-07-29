@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import { bool, boolean } from "joi";
+
 
 const userSchema = new mongoose.Schema(
   {
