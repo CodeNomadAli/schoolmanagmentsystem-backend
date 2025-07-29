@@ -153,6 +153,6 @@ export const cancelSubscription = async (req, res) => {
     });
   } catch (error) {
     console.error("Cancel error:", error.message);
-    res.status(500).json({ message: "Error cancelling subscription" });
+    res.status(500).json({ error: `Internal server error: ${error.message}` });
   }
 };

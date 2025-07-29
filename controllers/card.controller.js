@@ -47,7 +47,8 @@ export const addCard = async (req, res) => {
     });
   } catch (err) {
     console.error("Add card error:", err.message);
-    res.status(500).json({ error: "Internal server error" },err.message);
+    res.status(500).json({ error: `Internal server error: ${err.message}` });
+
   }
 };
 
