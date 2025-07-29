@@ -62,7 +62,8 @@ app.use("/api/v1/stripe", WebHookRoute);
 
 app.use("/api/v1/card", Card);
 
-app.use("/api/v1/invoice", invoiceRoutes);
+
+app.use("/api/v1/user/invoice", invoiceRoutes);
 
 app.use("/api/v1/user", profileQuestions);
 

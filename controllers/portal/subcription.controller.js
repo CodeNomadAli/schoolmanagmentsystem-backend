@@ -1,6 +1,6 @@
 import stripe from "../../utils/stripe.js";
 
-import Card from "../../models/card.model.js";
+
 import User from "../../models/user.model.js";
 import userPlan from "../../models/plan.model.js";
 import Invoice from "../../models/invoice.model.js";
@@ -30,7 +30,7 @@ export const createCheckoutSession = async (req, res) => {
       subscriptionType,
       planStatus: user.subscriptionStatus,
     });
-
+        
     const price = await stripe.prices.retrieve(planId);
     if (!price) return res.status(400).json({ error: "Invalid planId." });
 
