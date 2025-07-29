@@ -106,6 +106,9 @@ export const createCheckoutSession = async (req, res) => {
         subscriptionId: subscription.id,
         paymentIntent: subscription.latest_invoice.payment_intent,
       });
+
+
+
     } else {
       return res
         .status(400)
@@ -121,7 +124,7 @@ export const cancelSubscription = async (req, res) => {
   try {
     const { userId, subscriptionId, planId } = req.body;
 
-    if (!userId || !subscriptionId || !planId) {
+    if (!userId || !planId) {
       return res.status(400).json({ message: "userId, planId and subscriptionId are required." });
     }
 
