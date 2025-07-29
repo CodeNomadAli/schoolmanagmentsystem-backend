@@ -23,7 +23,7 @@ export const createCheckoutSession = async (req, res) => {
       planId,
       price: planData.price,
       planName: planData.name,
-      status:"Active",
+      isActive:true,
       subscriptionType,
       startDate: new Date(),
       createdAt: new Date(),
@@ -75,7 +75,7 @@ export const createCheckoutSession = async (req, res) => {
         off_session: true,
         confirm: true,
       });
-
+      user.subscriptionType="subscription"
       user.accessLevel = "prouser";
       user.subscriptionStatus = "active";
       user.stripeToken = token;
@@ -133,7 +133,7 @@ export const cancelSubscription = async (req, res) => {
     });
     
     const newInvoice = {
-      status:"inActive",
+      isActive:false,
       endDate: new Date(),
     };
 
