@@ -147,6 +147,7 @@ const userSchema = new mongoose.Schema(
     planId: String,
     planName: String,
     subscriptionType: String,
+    status:String,
     price: Number,
     discount: { type: Number, default: 0 },
     startDate: { type: Date, default: Date.now },

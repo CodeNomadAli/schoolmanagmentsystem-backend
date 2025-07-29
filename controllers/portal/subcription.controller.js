@@ -23,6 +23,7 @@ export const createCheckoutSession = async (req, res) => {
       planId,
       price: planData.price,
       planName: planData.name,
+      status:"Active",
       subscriptionType,
       startDate: new Date(),
       createdAt: new Date(),
@@ -130,9 +131,20 @@ export const cancelSubscription = async (req, res) => {
     const cancelled = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     });
-    user.accessLevel = "freeuser";
+    
+    const newInvoice = {
+      status:"inActive",
+      endDate: new Date(),
+    };
+
+    user.invoices.push(newInvoice);
+
+    await user.save();
+    
+    user.accessLevel = "user";
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;
+    
     await user.save();
 
     res.status(200).json({
