@@ -1,3 +1,5 @@
+
+import { apiResponse } from "../helper.js";
 import Plan from "../models/plan.model.js";
 
 // Create a new plan
@@ -29,7 +31,7 @@ export const getAllPlans = async (req, res) => {
   try {
     console.log(req.body)
     const plans = await Plan.find();
-    return res.status(200).json(plans);
+    return res.status(200).json(apiResponse(200,plans,"plan fetch successfully"));
   } catch (err) {
     return res.status(500).json({ error: "Failed to fetch plans" });
   }
