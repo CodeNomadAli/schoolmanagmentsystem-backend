@@ -130,7 +130,7 @@ export const cancelSubscription = async (req, res) => {
     const cancelled = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     });
-
+user.accessLevel="freeuser";
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;
     await user.save();
