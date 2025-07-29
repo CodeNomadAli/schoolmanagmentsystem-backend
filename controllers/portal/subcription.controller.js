@@ -48,11 +48,9 @@ export const createCheckoutSession = async (req, res) => {
       paymentMethod.customer &&
       paymentMethod.customer !== user.stripeCustomerId
     ) {
-      return res
-        .status(400)
-        .json({
-          error: "Payment method already attached to another customer.",
-        });
+      return res.status(400).json({
+        error: "Payment method already attached to another customer.",
+      });
     }
 
     // Attach only if not attached
@@ -77,6 +75,8 @@ export const createCheckoutSession = async (req, res) => {
         confirm: true,
       });
 
+      user.accessLevel = "prouser";
+      user.subscriptionStatus = "active";
       user.stripeToken = token;
       await user.save();
 
@@ -95,7 +95,7 @@ export const createCheckoutSession = async (req, res) => {
       });
 
       user.stripeSubscriptionId = subscription.id;
-      user.accessLevel="prouser";
+      user.accessLevel = "prouser";
       user.subscriptionStatus = "active";
       user.stripeToken = token;
       await user.save();
@@ -130,7 +130,7 @@ export const cancelSubscription = async (req, res) => {
     const cancelled = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     });
-user.accessLevel="freeuser";
+    user.accessLevel = "freeuser";
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;
     await user.save();

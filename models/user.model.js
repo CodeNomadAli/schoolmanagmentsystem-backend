@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema(
     },
     accessLevel: {
       type: String,
-      enum: ["user", "admin", "freeuser", "prouser"],
-      default: "freeuser",
+      enum: ["user", "admin", "prouser"],
+      default: "user",
     },
     subscriptionStatus: {
       type: String,
