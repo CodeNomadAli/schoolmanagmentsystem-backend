@@ -106,6 +106,9 @@ export const createCheckoutSession = async (req, res) => {
         subscriptionId: subscription.id,
         paymentIntent: subscription.latest_invoice.payment_intent,
       });
+
+
+
     } else {
       return res
         .status(400)
@@ -119,37 +122,44 @@ export const createCheckoutSession = async (req, res) => {
 
 export const cancelSubscription = async (req, res) => {
   try {
-    const { userId, subscriptionId } = req.body;
+    const { userId, subscriptionId, planId } = req.body;
+
+    if (!userId || !planId) {
+      return res.status(400).json({ message: "userId, planId and subscriptionId are required." });
+    }
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found." });
 
-    if (!subscriptionId) {
-      return res.status(400).json({ message: "Subscription ID required." });
-    }
-
+    // Cancel on Stripe
     const cancelled = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     });
-    
-    const newInvoice = {
-      isActive:false,
-      endDate: new Date(),
-    };
 
-    user.invoices.push(newInvoice);
+
+    const targetInvoice = user.invoices.find(invoice => invoice.planId === planId);
+    if (targetInvoice) {
+      targetInvoice.isActive = false;
+      targetInvoice.endDate = new Date();
+    } else {
+      console.warn("No matching invoice found for planId:", planId);
+    }
+
+
     user.accessLevel = "user";
     user.subscriptionStatus = "inActive";
     user.stripeSubscriptionId = null;
-    
+
     await user.save();
 
     res.status(200).json({
       message: "Subscription cancelled successfully.",
       subscription: cancelled,
     });
+
   } catch (error) {
     console.error("Cancel error:", error.message);
     res.status(500).json({ error: `Internal server error: ${error.message}` });
   }
 };
+
