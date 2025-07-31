@@ -3,7 +3,10 @@ import articleValidationSchema from "../../validations/article.validation.js";
 import mongoose from "mongoose";
 import { apiResponse } from "../../helper.js";
 const createArticle = async (req, res) => {
+ const session = await mongoose.startSession()
   try {
+
+    session.startTransaction()
     const articleData = req.body;
 
 
@@ -11,23 +14,34 @@ const createArticle = async (req, res) => {
       abortEarly: false,
     });
     if (error) {
+      await session.abortTransaction()
       return res.status(400).json({
         success: false,
         message: "Validation error",
         errors: error.details.map((detail) => detail.message),
       });
     }
-
+      
+    const exists = await Article.findOne({ slug: value.slug });
+       if (exists) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(403).json({
+        success: false,
+        message: "Article already exists. Please change the slug.",
+      });
+    }
         value.author = req.user.id; 
 
-    const data = await Article.create(value);
+    const data = await Article.create([value],{session});
+     
+    await session.commitTransaction()
 
-    res.status(201).json({
-      success: true,
-      message: "Article created successfully",
-      data,
-    });
+    session.endSession()
+     
+    res.status(201).json({success: true, message: "Article created successfully",data,   });
   } catch (error) {
+    await session.abortTransaction()
     console.error("Error creating article:", error);
     res.status(500).json({
       success: false,
@@ -228,6 +242,7 @@ const getArticleBySlug = async (req, res) => {
 };
 
 const getArticleById = async (req, res) => {
+  
   try {
     const { id } = req.params;
 
@@ -262,7 +277,9 @@ const getArticleById = async (req, res) => {
 };
 
 const updateArticle = async (req, res) => {
+  const session= await mongoose.startSession()
   try {
+    session.startTransaction()
     const { id } = req.params;
     const updateData = req.body;
 
@@ -271,6 +288,7 @@ const updateArticle = async (req, res) => {
       abortEarly: false,
     });
     if (error) {
+      await session.abortTransaction()
       return res.status(400).json({
         success: false,
         message: "Validation error",
@@ -281,6 +299,7 @@ const updateArticle = async (req, res) => {
     const article = await Article.findById(id);
 
     if (!article) {
+      await session.abortTransaction()
       return res.status(404).json({
         success: false,
         message: "Article not found",
@@ -293,6 +312,10 @@ const updateArticle = async (req, res) => {
       { $set: value },
       { new: true, runValidators: true }
     );
+
+    await session.commitTransaction()
+
+    session.endSession()
 
     res.status(200).json({
       success: true,
@@ -310,25 +333,35 @@ const updateArticle = async (req, res) => {
 };
 
 const deleteArticle = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     const { id } = req.params;
 
-    const article = await Article.findById(id);
+    const article = await Article.findById(id).session(session);
 
     if (!article) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({
         success: false,
         message: "Article not found",
       });
     }
 
-    await Article.findByIdAndDelete(id);
+    await Article.findByIdAndDelete(id, { session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(200).json({
       success: true,
       message: "Article deleted successfully",
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error("Error deleting article:", error);
     res.status(500).json({
       success: false,
@@ -337,6 +370,7 @@ const deleteArticle = async (req, res) => {
     });
   }
 };
+
 
 const checkSlugUniqueness = async (req, res) => {
   try {
@@ -371,6 +405,7 @@ const checkSlugUniqueness = async (req, res) => {
 
 
 const generateSlug = async (req, res) => {
+const session = await mongoose.startSession()
   try {
     const { title } = req.body;
     let slug;
@@ -400,6 +435,8 @@ const generateSlug = async (req, res) => {
         counter++;
       }
     }
+  
+    
 
     res.status(200).json({
       success: true,

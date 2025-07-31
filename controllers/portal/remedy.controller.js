@@ -8,10 +8,13 @@ import Ailment from "../../models/ailment.model.js";
 import { createCommentValidation } from "../../validations/comment.validation.js";
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
-import EmailNotify from "../../helper/emailLogger.js";
+import User from "../../models/user.model.js";
 
 const createRemedy = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     const user = req.user;
     const {
       name,
@@ -29,23 +32,18 @@ const createRemedy = async (req, res) => {
       abortEarly: false,
     });
 
-
-
-    
     if (error) {
-      
-     
+      await session.abortTransaction();
       return res.status(422).json({
-
         errors: error.details.map((d) => d.message),
         success: false,
-      }); 
+      });
     }
 
     const ailmentIds = [];
     for (const ailmentName of ailments) {
       let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
-[]
+      [];
 
       if (!existing) {
         existing = await Ailment.create({
@@ -57,23 +55,35 @@ const createRemedy = async (req, res) => {
       ailmentIds.push(existing._id);
     }
 
-    const newRemedy = await Remedy.create({
-      name,
-      description,
-      category,
-      createdBy: user.id,
-      ailments: ailmentIds,
-      answeredQuestions,
-      sideEffects,
-      whyItWorks,
-      ...rest,
-    });
+    const newRemedy = await Remedy.create(
+      [
+        {
+          name,
+          description,
+          category,
+          createdBy: user.id,
+          ailments: ailmentIds,
+          answeredQuestions,
+          sideEffects,
+          whyItWorks,
+          ...rest,
+        },
+      ],
+      {
+        session,
+      }
+    );
+
+    await session.commitTransaction();
+
+    session.endSession();
 
     return res
       .status(201)
       .json(apiResponse(201, newRemedy, "Remedy successfully created"));
   } catch (error) {
     console.error("Error creating remedy:", error);
+    await session.abortTransaction();
     return res.status(500).json({
       message: "Internal server error",
       error: error.message,
@@ -84,6 +94,14 @@ const createRemedy = async (req, res) => {
 
 const getAllRemedies = async (req, res) => {
   try {
+    const id = req.user.id;
+ 
+    console.log(id,"user oiod ")
+
+    const user = await User.findById(id); // ✅ Cleaner if you're querying by `_id`
+
+    console.log(user, "user bhi jan ");
+
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
@@ -127,7 +145,7 @@ const getAllRemedies = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
     };
-    
+
     res
       .status(200)
       .json(apiResponse(200, data, "Successfully fetched remedies"));
@@ -179,17 +197,22 @@ const getRemedyById = async (req, res) => {
 };
 
 const updateRemedy = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      await session.abortTransaction();
       return res
         .status(400)
         .json({ message: "Invalid remedy ID", success: false });
     }
 
-    const remedy = await Remedy.findById(id);
+    const remedy = await Remedy.findById(id).session(session);
     if (!remedy) {
+      await session.abortTransaction();
       return res
         .status(404)
         .json({ message: "Remedy not found or inactive", success: false });
@@ -200,6 +223,7 @@ const updateRemedy = async (req, res) => {
       user.id.toString() !== remedy.createdBy.toString() &&
       user.role !== "admin"
     ) {
+      await session.abortTransaction();
       return res
         .status(403)
         .json({ message: "Permission denied", success: false });
@@ -207,19 +231,27 @@ const updateRemedy = async (req, res) => {
 
     const { ailments } = req.body;
     const ailmentIds = [];
-     
 
     if (Array.isArray(ailments)) {
       for (const ailmentName of ailments) {
         if (!ailmentName || typeof ailmentName !== "string") continue;
 
-        let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
+        let existing = await Ailment.findOne({
+          slug: slugify(ailmentName),
+        }).session(session);
 
         if (!existing) {
-          existing = await Ailment.create({
-            name: ailmentName.trim(),
-            createdBy: user.id,
-          });
+          existing = await Ailment.create(
+            [
+              {
+                name: ailmentName.trim(),
+                createdBy: user.id,
+              },
+            ],
+            { session }
+          );
+
+          existing = existing[0]; // Create returns array in transaction mode
         }
 
         ailmentIds.push(existing._id);
@@ -229,13 +261,18 @@ const updateRemedy = async (req, res) => {
     }
 
     Object.assign(remedy, req.body);
-    await remedy.save();
+    await remedy.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     res
       .status(200)
       .json(apiResponse(200, remedy, "Successfully updated remedy"));
   } catch (error) {
     console.error("Error updating remedy:", error);
+    await session.abortTransaction();
+    session.endSession();
     res.status(500).json({
       message: "Internal server error",
       error: error.message,
@@ -245,18 +282,24 @@ const updateRemedy = async (req, res) => {
 };
 
 const deleteRemedy = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
-   
+    session.startTransaction();
+
     const { id } = req.params;
-    const remedy = await Remedy.findById(id);
-    if (!remedy ) {
+    const remedy = await Remedy.findById(id).session(session);
+    if (!remedy) {
+      await session.abortTransaction();
       return res.status(404).json({
         message: "Remedy not found or already deleted",
         success: false,
       });
     }
 
-    const deletedRemedy = await Remedy.findByIdAndDelete(id);
+    const deletedRemedy = await Remedy.findByIdAndDelete(id, { session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(200).json({
       message: "Remedy successfully deleted",
@@ -264,13 +307,14 @@ const deleteRemedy = async (req, res) => {
       id: deletedRemedy._id,
     });
   } catch (error) {
-    console.error("Error soft deleting remedy:", error);
+    console.error("Error deleting remedy:", error);
+    await session.abortTransaction();
+    session.endSession();
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
   }
 };
-
 const flagRemedy = async (req, res) => {
   try {
     const { id } = req.params;
@@ -441,7 +485,7 @@ export const approveRemedy = async (req, res) => {
     }
 
     remedy.moderationStatus = moderationStatus;
-    
+
     await remedy.save();
 
     res
@@ -457,9 +501,8 @@ export const approveRemedy = async (req, res) => {
   }
 };
 
-
- const updateStatus = async (req, res) => {
-  try { 
+const updateStatus = async (req, res) => {
+  try {
     const { id } = req.params;
     const { isActive } = req.body;
 

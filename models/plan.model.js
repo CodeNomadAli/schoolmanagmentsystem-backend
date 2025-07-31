@@ -2,18 +2,17 @@ import mongoose from "mongoose";
 
 const planSchema = new mongoose.Schema(
   {
+
     name: {
-      type: String,
-      
+      type: String
     },
     slug :{
       type :String,
-      enum: ["free","monthly", "five-remedies", "ten-remedies", "annually"],
       unique: true,
       default:""
     },
     planId: {
-      type: String, // Stripe Price ID
+      type: String, 
       required: true,
       unique: true,
     },
@@ -37,25 +36,16 @@ const planSchema = new mongoose.Schema(
     },
 
     features: {
-      type: [
-        {
-          slug: {
-            type: String,
-            required: false,
-            lowercase: true,
-            trim: true,
-          },
-          description: {
-            type: [String],
-            lowercase: true,
-            trim: true,
-            required: false,
-            default: [],
-          },
-        },
-      ],
-      default: [],
-    },
+  type: [
+    {
+      slug: { type: String, required: true },
+      description: { type: String, required: true },
+      remedies: { type: [String], default: [] },
+    }
+  ],
+  default: [],
+}
+
   },
   {
     timestamps: true,

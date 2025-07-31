@@ -5,7 +5,7 @@ import {
   updateRemedyType,
   deleteRemedyType,
   getRemedyTypesById, // Assuming this is to get by ID
-} from "../../controllers/portal/remedyType.controller.js";
+} from "../../controllers/portal/remedy-type.controller.js";
 import checkPermission from "../../middleware/check_permission.middleware.js";
 const router = express.Router();
 

@@ -4,56 +4,64 @@ import mongoose from "mongoose";
 import slugify from "../../utils/slugify.js";
 
 const createPrivacyPolicy = async (req, res) => {
+  const session = await mongoose.startSession(); // Only await once
   try {
+    await session.startTransaction();
+
     const { title, description, slug } = req.body;
     const createdBy = req.user?._id;
 
     if (!title || !slug) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(400)
-        .json(
-          apiResponse(400, null, "Title, description, and slug are required")
-        );
+        .json(apiResponse(400, null, "Title, description, and slug are required"));
     }
 
-    if (
-      await Webpolices.findOne({
-        $or: [
-          { title: title.trim() },
-          { slug: slug ? slug.trim() : undefined }, 
-        ],
-      })
-    ) {
+    const existing = await Webpolices.findOne({
+      $or: [
+        { title: title.trim() },
+        { slug: slug ? slug.trim() : undefined }
+      ]
+    }).session(session);
+
+    if (existing) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(400)
-        .json(
-          apiResponse(
-            400,
-            null,
-            "Privacy policy with this title or slug already exists"
-          )
-        );
+        .json(apiResponse(400, null, "Privacy policy with this title or slug already exists"));
     }
 
     const sluggener = slugify(slug);
 
-    const privacyPolicy = await Webpolices.create({
-      title: title.trim(),
-      slug: sluggener,
-      description: description.trim(),
-      createdBy,
-    });
+    const [privacyPolicy] = await Webpolices.create(
+      [{
+        title: title.trim(),
+        slug: sluggener,
+        description: description.trim(),
+        createdBy,
+      }],
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
 
     return res
       .status(201)
       .json(apiResponse(201, privacyPolicy, "Privacy policy created"));
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error("Error creating privacy policy:", error);
     return res
       .status(500)
       .json(apiResponse(500, null, "Internal server error"));
   }
 };
+
 
 const getAllPrivacyPolicies = async (req, res) => {
   try {

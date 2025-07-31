@@ -17,41 +17,50 @@ const generateToken = (user) => {
 
 
 export const registerUser = async (req, res) => {
-  try {
-      const { error, value } = createUserSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message });
-  }
-    const { username, email, password, profileImage } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    if (!username || !email || !password || !profileImage) {
-      return res.status(400).json({ message: "All fields are required", success: false });
+  try {
+    const { error } = createUserSchema.validate(req.body);
+    if (error) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: error.details[0].message });
     }
 
-    const existing = await User.findOne({ email });
+    const { username, email, password, profileImage } = req.body;
+
+    const existing = await User.findOne({ email }).session(session);
     if (existing) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(409).json({ message: "Email already registered", success: false });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
+    const newUser = await User.create([{
       username,
       email,
       password: hashedPassword,
       profileImage
-    });
+    }], { session });
 
-    const { password: _, ...userData } = newUser.toObject();
+    await session.commitTransaction();
+    session.endSession();
+
+    const { password: _, ...userData } = newUser[0].toObject();
 
     return res.status(201).json({
       message: "User registered",
       success: true,
       user: userData,
-      token: generateToken(newUser),
+      token: generateToken(newUser[0]),
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error("Register error:", error);
-    res.status(500).json({ message: "Internal server error", success: false });
+    return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
 
@@ -133,31 +142,47 @@ export const getUserById = async (req, res) => {
 
 // @desc Update user
 export const updateUser = async (req, res) => {
-  try {
-    const { error, value } = updateUserSchema.validate(req.body);
-   
-    if (error) {
-    return res.status(400).json({ message: error.details[0].message });
-  }
-    const { id } = req.params;
-    const update = { ...req.body };
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    if (update.password) {
-      update.password = await bcrypt.hash(update.password, 10);
+  try {
+    const { id } = req.params;
+
+    const { error } = updateUserSchema.validate(req.body);
+    if (error) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: error.details[0].message });
     }
 
-    const updated = await User.findByIdAndUpdate(id, update, {
+    const updated = await User.findByIdAndUpdate(id, req.body, {
       new: true,
-    }).select("-password");
+      runValidators: true,
+      session
+    });
 
-    if (!updated) return res.status(404).json({ message: "User not found", success: false });
+    if (!updated) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ message: "User not found", success: false });
+    }
 
-    res.json({ message: "User updated", success: true, user: updated });
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(200).json({
+      message: "User updated",
+      success: true,
+      user: updated
+    });
   } catch (error) {
-    console.error("Update user error:", error);
-    res.status(500).json({ message: "Internal server error", success: false });
+    await session.abortTransaction();
+    session.endSession();
+    console.error("Update error:", error);
+    return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+
 
 
 export const deleteUser = async (req, res) => {

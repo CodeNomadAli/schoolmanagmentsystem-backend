@@ -23,15 +23,16 @@ import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
 import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
 import ArticleRouter from "./routes/portal/article.route.js";
 import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
-import alimentsRoutes from "./routes/portal/ailment.route.js"
+import ailmentsRoutes from "./routes/portal/ailment.route.js"
 import privacyRouter from "./routes/portal/Web-Policy.route.js";
-import UploadFile from "./routes/file.routes.js";
-import WebHookRoute  from "./routes/portal/webhook.route.js"
-import stripeSubcription from "./routes/portal/subscription.routes.js"
+import uploadFileRoutes from "./routes/file.routes.js";
+import webHookRoute  from "./routes/webhook.route.js"
+import stripeSubcription from "./routes/subscription.routes.js"
 import cardRoutes from "./routes/credit-card.route.js"
 import planRoutes from "./routes/plan.route.js";
 import invoiceRoutes from "./routes/invoice.routes.js";
 import profileQuestions from "./routes/profile-questions.route.js"
+import userRemedyRoutes from "./routes/user-remedy.route.js"
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -52,16 +53,17 @@ connectDB();
 app.use("/api/v1/auth", authRouter);
 
 app.use("/api/v1/users", auth, userRouter);
+app.use("/api/v1/user-remedy", auth, userRemedyRoutes);
 
 app.use("/api/v1/plan", auth, stripeSubcription);
 
 app.use("/api/v1/user-plan", auth, planRoutes);
 
-app.use("/api/v1/stripe", WebHookRoute);
+app.use("/api/v1/stripe", webHookRoute);
 
 app.use("/api/v1/card", cardRoutes);
 
-
+//todo
 app.use("/api/v1/user/invoice", invoiceRoutes);
 
 app.use("/api/v1/user", profileQuestions);
@@ -91,9 +93,9 @@ app.use("/api/v1/articles", ArticleRoute)
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
 
-app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, UploadFile)
+app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, uploadFileRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, alimentsRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, ailmentsRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth, privacyRouter)
 

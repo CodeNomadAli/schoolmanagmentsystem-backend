@@ -2,6 +2,8 @@ import User from "../models/user.model.js";
 import { apiResponse } from "../helper.js";
 
 export const createInvoice = async (req, res) => {
+  const session = await User.startSession();
+  session.startTransaction();
   try {
     const {
       userId,
@@ -15,13 +17,17 @@ export const createInvoice = async (req, res) => {
     } = req.body;
 
     if (!userId || !planId || !price) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(400)
         .json(apiResponse(400, null, "userId, planId and price are required"));
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).session(session);
     if (!user) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json(apiResponse(404, null, "User not found"));
@@ -39,17 +45,23 @@ export const createInvoice = async (req, res) => {
     };
 
     user.invoices.push(newInvoice);
-    await user.save();
+    await user.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     return res
       .status(201)
       .json(apiResponse(201, newInvoice, "Invoice added to user successfully"));
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     return res
       .status(500)
       .json(apiResponse(500, null, `Failed to add invoice: ${error.message}`));
   }
 };
+
 
 export const getInvoices = async (req, res) => {
   try {
@@ -81,17 +93,23 @@ export const getInvoices = async (req, res) => {
 };
 
 export const deleteInvoice = async (req, res) => {
+  const session = await User.startSession();
+  session.startTransaction();
   try {
     const { userId, invoiceId } = req.params;
 
     if (!userId || !invoiceId) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(400)
         .json(apiResponse(400, null, "userId and invoiceId are required"));
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).session(session);
     if (!user) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json(apiResponse(404, null, "User not found"));
@@ -102,20 +120,28 @@ export const deleteInvoice = async (req, res) => {
     );
 
     if (invoiceIndex === -1) {
+      await session.abortTransaction();
+      session.endSession();
       return res
         .status(404)
         .json(apiResponse(404, null, "Invoice not found"));
     }
 
     user.invoices.splice(invoiceIndex, 1);
-    await user.save();
+    await user.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     return res
       .status(200)
       .json(apiResponse(200, null, "Invoice deleted successfully"));
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     return res
       .status(500)
       .json(apiResponse(500, null, `Failed to delete invoice: ${error.message}`));
   }
 };
+

@@ -3,31 +3,43 @@ import { apiResponse } from "../../helper.js";
 import mongoose from "mongoose";
 
 export const createAilment = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { name, description } = req.body;
     const createdBy = req.user?._id;
 
-    const existing = await Ailment.findOne({ name: name.trim() });
+    const existing = await Ailment.findOne({ name: name.trim() }).session(
+      session
+    );
     if (existing) {
+      await session.abortTransaction();
       return res
         .status(409)
-        
         .json(apiResponse(409, null, "Ailment with this name already exists"));
     }
 
-    const ailment = await Ailment.create({
-      name,
-      description,
-      createdBy,
-      remedies,
-    });
+    const ailment = await Ailment.create(
+      [
+        {
+          name,
+          description,
+          createdBy,
+        },
+      ],
+      { session }
+    );
 
+    await session.commitTransaction();
     return res.status(201).json(apiResponse(201, ailment, "Ailment created"));
   } catch (error) {
+    await session.abortTransaction();
     console.error(error);
     return res
       .status(500)
       .json(apiResponse(500, null, "Internal server error"));
+  } finally {
+    session.endSession();
   }
 };
 
@@ -102,64 +114,79 @@ export const getAilment = async (req, res) => {
       .json(apiResponse(500, null, "Internal server error"));
   }
 };
-
 export const updateAilment = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { id } = req.params;
     const updates = req.body;
 
-    const ailment = await Ailment.findById(id);
+    const ailment = await Ailment.findById(id).session(session);
     if (!ailment) {
+      await session.abortTransaction();
       return res.status(404).json(apiResponse(404, null, "Ailment not found"));
     }
 
-    if (updates.name && updates.name !== ailment.name) {
+    if (updates.name && updates.name !== ailment.name)
       ailment.name = updates.name;
-    }
-
     if (updates.description) ailment.description = updates.description;
     if (updates.remedies) ailment.remedies = updates.remedies;
     if (updates.createdBy) ailment.createdBy = updates.createdBy;
 
-    await ailment.save();
+    await ailment.save({ session });
+
+    await session.commitTransaction();
     return res.status(200).json(apiResponse(200, ailment, "Ailment updated"));
   } catch (error) {
+    await session.abortTransaction();
     console.error(error);
     return res
       .status(500)
       .json(apiResponse(500, null, "Internal server error"));
+  } finally {
+    session.endSession();
   }
 };
 
 export const deleteAilment = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { id } = req.params;
 
     const ailment = await Ailment.findByIdAndUpdate(
       id,
       { isActive: false },
-      { new: true }
+      { new: true, session }
     );
 
     if (!ailment) {
+      await session.abortTransaction();
       return res.status(404).json(apiResponse(404, null, "Ailment not found"));
     }
 
+    await session.commitTransaction();
     return res.status(200).json(apiResponse(200, ailment, "Ailment deleted"));
   } catch (error) {
+    await session.abortTransaction();
     console.error(error);
     return res
       .status(500)
       .json(apiResponse(500, null, "Internal server error"));
+  } finally {
+    session.endSession();
   }
 };
 
 export const searchOrCreateAilment = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { name, description = "" } = req.body;
     const createdBy = req.user ? req.user._id : null;
 
     if (!name || !name.trim()) {
+      await session.abortTransaction();
       return res.status(400).json(apiResponse(400, null, "Name is required"));
     }
 
@@ -167,22 +194,26 @@ export const searchOrCreateAilment = async (req, res) => {
 
     let ailment = await Ailment.findOne({
       name: new RegExp(`^${trimmedName}$`, "i"),
-    });
+    }).session(session);
 
     if (!ailment) {
-      ailment = await Ailment.create({
-        name: trimmedName,
-        description,
-        createdBy,
-      });
+      ailment = await Ailment.create(
+        [{ name: trimmedName, description, createdBy }],
+        { session }
+      );
+      await session.commitTransaction();
       return res.status(201).json(apiResponse(201, ailment, "Ailment created"));
     }
 
+    await session.commitTransaction();
     return res.status(200).json(apiResponse(200, ailment, "Ailment found"));
   } catch (error) {
+    await session.abortTransaction();
     console.error(error);
     return res
       .status(500)
       .json(apiResponse(500, null, "Internal server error"));
+  } finally {
+    session.endSession();
   }
 };
