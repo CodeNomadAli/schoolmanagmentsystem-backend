@@ -33,6 +33,8 @@ import planRoutes from "./routes/plan.route.js";
 import invoiceRoutes from "./routes/invoice.routes.js";
 import profileQuestions from "./routes/profile-questions.route.js"
 import userRemedyRoutes from "./routes/user-remedy.route.js"
+import  askAI  from "./routes/askai.route.js";
+import reviewRemedyRoutes  from "./routes/for-review-remedy.route.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -57,20 +59,22 @@ app.use("/api/v1/user-remedy", auth, userRemedyRoutes);
 
 app.use("/api/v1/plan", auth, stripeSubcription);
 
-app.use("/api/v1/user-plan", auth, planRoutes);
+app.use("/api/v1/user-plan",planRoutes);
 
 app.use("/api/v1/stripe", webHookRoute);
 
 app.use("/api/v1/card", cardRoutes);
+app.use("/api/v1/view/remedy", reviewRemedyRoutes);
 
 //todo
-app.use("/api/v1/user/invoice", invoiceRoutes);
 
 app.use("/api/v1/user", profileQuestions);
 
 
+app.use("/api/v1/user/invoice", invoiceRoutes);
 
 
+app.use("/api/v1/ai", auth, askAI);
 
 app.use("/api/v1/user",auth,userPorfileRoute);
 // remedy routes
@@ -93,7 +97,7 @@ app.use("/api/v1/articles", ArticleRoute)
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
 
-app.use(PORTAL_ROUTE_PREFIX + "/files", staffAuth, uploadFileRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/files", uploadFileRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, ailmentsRoutes)
 

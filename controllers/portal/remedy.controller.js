@@ -1,6 +1,5 @@
-import mongoose from "mongoose";
-import Remedy from "../../models/remedy.model.js";
 import { remedyValidation } from "../../validations/remedy.validation.js";
+import Remedy from "../../models/remedy.model.js";
 import ModerationStatus from "../../models/moderation_status.model.js";
 import Flag from "../../models/flag.model.js";
 import Comment from "../../models/comment.model.js";
@@ -9,7 +8,7 @@ import { createCommentValidation } from "../../validations/comment.validation.js
 import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
 import User from "../../models/user.model.js";
-
+import mongoose from "mongoose";
 const createRemedy = async (req, res) => {
   const session = await mongoose.startSession();
   try {
@@ -89,14 +88,16 @@ const createRemedy = async (req, res) => {
       error: error.message,
       success: false,
     });
+  } finally {
+    session.endSession();
   }
 };
 
 const getAllRemedies = async (req, res) => {
   try {
     const id = req.user.id;
- 
-    console.log(id,"user oiod ")
+
+    console.log(id, "user oiod ");
 
     const user = await User.findById(id); // ✅ Cleaner if you're querying by `_id`
 

@@ -1,28 +1,14 @@
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
 import dotenv from "dotenv";
 dotenv.config();
 
 const token = process.env.GITHUB_TOKEN;
 const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-4.1-turbo-preview"; 
+const model = "openai/gpt-4.1";
 
 if (!token) {
   throw new Error("❌ GITHUB_TOKEN is missing from your .env file");
 }
 
-
-const userHealthData = {
-  age: 45,
-  gender: "female",
-  symptoms: ["chest pain", "dizziness"],
-  medicalHistory: ["hypertension", "diabetes"],
-  lifestyle: {
-    smoking: true,
-    exercise: "rarely",
-    diet: "high-fat",
-  },
-};
 
 
 function generatePrompt(data) {
@@ -54,29 +40,32 @@ Respond **only** with a valid JSON array of category objects.
 `.trim();
 }
 
-
-export async function main() {
+async function main() {
   try {
-    const client = ModelClient(endpoint, new AzureKeyCredential(token));
-
-    const response = await client.path("/chat/completions").post({
-      body: {
+    const res = await fetch(`${endpoint}/v1/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
         messages: [
           { role: "system", content: "You are a helpful assistant that returns JSON only." },
           { role: "user", content: generatePrompt(userHealthData) },
         ],
         temperature: 0.7,
         top_p: 1,
-        model: model,
-      },
+      }),
     });
 
-    if (isUnexpected(response)) {
-      throw new Error(response.body.error?.message || "Unexpected response error");
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(`API Error: ${data?.error?.message || res.statusText}`);
     }
 
-    const output = response.body.choices[0].message.content;
-
+    const output = data.choices?.[0]?.message?.content;
     try {
       const parsed = JSON.parse(output);
       console.dir(parsed, { depth: null });
@@ -87,10 +76,8 @@ export async function main() {
     }
 
   } catch (err) {
-    console.error("❌ Fatal error during OpenAI call:", err);
+    console.error("❌ Fatal error:", err.message || err);
   }
 }
 
-main().catch((err) => {
-  console.error("❌ Unhandled error in main():", err);
-});
+main();
