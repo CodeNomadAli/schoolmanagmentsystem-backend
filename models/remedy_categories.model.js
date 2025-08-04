@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const RemedyCategorySchema = new mongoose.Schema(
   {
     name: {
@@ -22,8 +21,6 @@ const RemedyCategorySchema = new mongoose.Schema(
       default: false,
     },
 
-    
-
     relatedQuestions: {
       type: [
         {
@@ -40,7 +37,6 @@ const RemedyCategorySchema = new mongoose.Schema(
               {
                 value: { type: String, required: true },
                 label: { type: String, required: true },
-                
               },
             ],
           },

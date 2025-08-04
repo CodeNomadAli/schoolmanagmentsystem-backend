@@ -55,7 +55,7 @@ connectDB();
 app.use("/api/v1/auth", authRouter);
 
 app.use("/api/v1/users", auth, userRouter);
-app.use("/api/v1/user-remedy", auth, userRemedyRoutes);
+app.use("/api/v1/user-remedy",userRemedyRoutes);
 
 app.use("/api/v1/plan", auth, stripeSubcription);
 
@@ -99,7 +99,7 @@ app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/files", uploadFileRoutes)
 
-app.use(PORTAL_ROUTE_PREFIX + "/ailments", staffAuth, ailmentsRoutes)
+app.use(PORTAL_ROUTE_PREFIX + "/ailments", auth, ailmentsRoutes)
 
 app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth, privacyRouter)
 
