@@ -163,7 +163,7 @@ const register = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Registration successful. Please verify your email.",
-    });
+    });              
   } catch (err) {
     console.error("Register error:", err);
     return res.status(500).json({

@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const RemedySchema = new mongoose.Schema(
@@ -147,10 +148,12 @@ const RemedySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
   },
 
   { timestamps: true }
 );
 
 const Remedy = mongoose.model("Remedy", RemedySchema);
+
 export default Remedy;

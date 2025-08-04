@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import Plan from "../models/plan.model.js";
+import Remedy from "../models/remedy.model.js"; // <-- make sure this path is correct
 
 dotenv.config();
-
 await mongoose.connect(process.env.MONGO_URI);
 console.log("✅ MongoDB connected.");
 
+// Define plans
 const plans = [
   {
     name: "Free",
@@ -15,7 +16,7 @@ const plans = [
     price: 0,
     interval: "one_time",
     description: "Free plan with limited remedies access.",
-    subscriptionType:"subscription"
+    subscriptionType: "subscription",
   },
   {
     name: "Annually",
@@ -24,7 +25,7 @@ const plans = [
     price: 89.99,
     interval: "year",
     description: "Annual subscription with full access.",
-  subscriptionType:"subscription"
+    subscriptionType: "subscription",
   },
   {
     name: "Monthly",
@@ -33,7 +34,7 @@ const plans = [
     price: 8.99,
     interval: "month",
     description: "Monthly subscription with full access.",
-  subscriptionType:"subscription"
+    subscriptionType: "subscription",
   },
   {
     name: "Ten Remedies",
@@ -42,7 +43,6 @@ const plans = [
     price: 14.99,
     interval: "one_time",
     description: "One-time access to 10 remedies.",
-    
   },
   {
     name: "Five Remedies",
@@ -51,89 +51,83 @@ const plans = [
     price: 7.99,
     interval: "one_time",
     description: "One-time access to 5 remedies.",
-    
   },
 ];
 
-const planFeatures = {
-  free: [
-    {
-      slug: "access-3-remedies-per-ailment",
-      description: ["Access 3 Remedies per Ailment"],
-    },
-    { slug: "rate-review-remedies", description: ["Rate & Review Remedies"] },
-    { slug: "save-favorite-remedies", description: ["Save Favorite Remedies"] },
-  ],
-  annually: [
-    {
-      slug: "unlimited-remedy-access",
-      description: ["Unlimited Remedy Access"],
-    },
-    {
-      slug: "ai-generated-remedy-recommendations",
-      description: ["AI-Generated Remedy Recommendations"],
-    },
-    {
-      slug: "success-rate-ai-confidence",
-      description: ["Success Rate & AI Confidence Scores"],
-    },
-    { slug: "priority-support", description: ["Priority Support"] },
-    { slug: "save-favorite-remedies", description: ["Save Favorite Remedies"] },
-    {
-      slug: "personalized-ai-insights",
-      description: ["Personalized AI Insights"],
-    },
-  ],
-  monthly: [
-    {
-      slug: "unlimited-remedy-access",
-      description: ["Unlimited Remedy Access"],
-    },
-    {
-      slug: "ai-generated-remedy-recommendations",
-      description: ["AI-Generated Remedy Recommendations"],
-    },
-    {
-      slug: "success-rate-ai-confidence",
-      description: ["Success Rate & AI Confidence Scores"],
-    },
-    { slug: "priority-support", description: ["Priority Support"] },
-    { slug: "save-favorite-remedies", description: ["Save Favorite Remedies"] },
-    {
-      slug: "personalized-ai-insights",
-      description: ["Personalized AI Insights"],
-    },
-  ],
-  "five-remedies": [
-    {
-      slug: "select-ailment-top-remedies",
-      description: ["Select an ailment, and unlock access to its top remedies"],
-    },
-    {
-      slug: "access-5-remedies",
-      description: [
-        "Access 5 remedies for your selected ailment. One-time purchase.",
-      ],
-    },
-  ],
-  "ten-remedies": [
-    {
-      slug: "select-ailment-top-remedies",
-      description: ["Select an ailment, and unlock access to its top remedies"],
-    },
-    {
-      slug: "access-10-remedies",
-      description: [
-        "Access 10 remedies for your selected ailment. One-time purchase.",
-      ],
-    },
-  ],
-};
-
 const seedPlans = async () => {
   try {
-    await Plan.deleteMany();
+    // Fetch remedies from DB
+    const remedies = await Remedy.find().limit(18); // Total 3 + 5 + 10 = 18 needed
 
+    if (remedies.length < 18) {
+      throw new Error("❌ Not enough remedies in DB. At least 18 required.");
+    }
+
+    const freeRemedies = remedies.slice(0, 3).map(r => r._id.toString());
+    const fiveRemedies = remedies.slice(3, 8).map(r => r._id.toString());
+    const tenRemedies = remedies.slice(8, 18).map(r => r._id.toString());
+
+    const planFeatures = {
+      free: [
+        {
+          slug: "access-3-remedies-per-ailment",
+          description: "Access 3 Remedies per Ailment",
+          remedies: freeRemedies,
+        },
+        {
+          slug: "rate-review-remedies",
+          description: "Rate & Review Remedies",
+          
+        },
+        {
+          slug: "save-favorite-remedies",
+          description: "Save Favorite Remedies",
+          
+        },
+      ],
+      annually: [
+        { slug: "unlimited-remedy-access", description: "Unlimited Remedy Access" },
+        { slug: "ai-generated-remedy-recommendations", description: "AI-Generated Remedy Recommendations" },
+        { slug: "success-rate-ai-confidence", description: "Success Rate & AI Confidence Scores" },
+        { slug: "priority-support", description: "Priority Support" },
+        { slug: "save-favorite-remedies", description: "Save Favorite Remedies" },
+        { slug: "personalized-ai-insights", description: "Personalized AI Insights" },
+      ],
+      monthly: [
+        { slug: "unlimited-remedy-access", description: "Unlimited Remedy Access" },
+        { slug: "ai-generated-remedy-recommendations", description: "AI-Generated Remedy Recommendations" },
+        { slug: "success-rate-ai-confidence", description: "Success Rate & AI Confidence Scores" },
+        { slug: "priority-support", description: "Priority Support" },
+        { slug: "save-favorite-remedies", description: "Save Favorite Remedies" },
+        { slug: "personalized-ai-insights", description: "Personalized AI Insights" },
+      ],
+      "five-remedies": [
+        {
+          slug: "select-ailment-top-remedies",
+          description: "Select an ailment, and unlock access to its top remedies",
+          remedies: fiveRemedies,
+        },
+        {
+          slug: "access-5-remedies",
+          description: "Access 5 remedies for your selected ailment. One-time purchase.",
+          
+        },
+      ],
+      "ten-remedies": [
+        {
+          slug: "select-ailment-top-remedies",
+          description: "Select an ailment, and unlock access to its top remedies",
+          remedies: tenRemedies,
+        },
+        {
+          slug: "access-10-remedies",
+          description: "Access 10 remedies for your selected ailment. One-time purchase.",
+          
+        },
+      ],
+    };
+
+    await Plan.deleteMany();
     const insertedPlans = await Plan.insertMany(plans);
     console.log(`✅ Seeded ${insertedPlans.length} plans.`);
 

@@ -67,25 +67,34 @@ export const staffLogin = async (req, res) => {
 
 
 export const createStaff = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
     
+    session.startTransaction();
 
     const { email, password, profileImage, ...rest } = req.body;
 
-    const existing = await Staff.findOne({ email });
+    const existing = await Staff.findOne({ email }).session(session);
     if (existing) {
+      await session.abortTransaction();
       return res.status(409).json({ message: "Email already exists", success: false });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newStaff = await Staff.create({ email, password: hashedPassword, profileImage, ...rest });
+    const newStaff = await Staff.create([{ email, password: hashedPassword, profileImage, ...rest }], { session });
 
-    return res.status(201).json({ message: "Staff created", success: true, data: newStaff });
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(201).json({ message: "Staff created", success: true, data: newStaff[0] });
   } catch (error) {
-    console.error("Create staff error:", error); // 👈 log actual error
+    await session.abortTransaction();
+    session.endSession();
+    console.error("Create staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+
 
 
 
@@ -137,7 +146,10 @@ export const getStaffById = async (req, res) => {
 };
 
 export const updateStaff = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     const { id } = req.params;
     const updateData = { ...req.body };
 
@@ -145,32 +157,51 @@ export const updateStaff = async (req, res) => {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
 
-    const updatedStaff = await Staff.findByIdAndUpdate(id, updateData, { new: true }).select("-password");
+    const updatedStaff = await Staff.findByIdAndUpdate(id, updateData, { new: true, session }).select("-password");
 
     if (!updatedStaff) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: "Staff not found", success: false });
     }
 
+    await session.commitTransaction();
+    session.endSession();
+
     return res.status(200).json({ message: "Staff updated", success: true, data: updatedStaff });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error("Update staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
 
 
+
 export const deleteStaff = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     const { id } = req.params;
-    const deleted = await Staff.findByIdAndDelete(id);
+    const deleted = await Staff.findByIdAndDelete(id).session(session);
 
     if (!deleted) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: "Staff not found", success: false });
     }
 
+    await session.commitTransaction();
+    session.endSession();
+
     return res.status(200).json({ message: "Staff deleted", success: true });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.error("Delete staff error:", error);
     return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+

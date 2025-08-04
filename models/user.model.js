@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-
-
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -35,7 +33,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    
+
     stripeToken: {
       type: String,
       default: null,
@@ -132,6 +130,15 @@ const userSchema = new mongoose.Schema(
       default: [],
     },
 
+    token: {
+      type: String,
+      default: null,
+    },
+
+    bookMarkRemedies:{
+      type : [String],
+      default : []
+    },
     cards: [
       {
         cardName: String,
@@ -140,24 +147,39 @@ const userSchema = new mongoose.Schema(
         createdAt: { type: Date, default: Date.now },
       },
     ],
-    invoices: [
-  {
-    invoiceid: {
-      type: String,
-      default: () =>
-        "inv_" + Date.now().toString(36) + Math.random().toString(36).slice(3, 6),
-    },
-    planName: String,
-    subscriptionType: String,
-    isActive: { type: Boolean },
-    price: Number,
-    discount: { type: Number, default: 0 },
-    startDate: { type: Date, default: Date.now },
-    endDate: Date,
-    createdAt: { type: Date, default: Date.now },
-  },
-],
 
+  invoices: {
+  type: [
+    {
+      invoiceid: {
+        type: String,
+        default: () =>
+          "inv_" +
+          Date.now().toString(36) +
+          Math.random().toString(36).slice(3, 6),
+      },
+      planName: {
+        type: String,
+        default: "Free",
+      },
+      subscriptionType: String,
+      isActive: { type: Boolean, default: true },
+      price: Number,
+      discount: { type: Number, default: 0 },
+      startDate: { type: Date, default: Date.now },
+      endDate: Date,
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  default: [
+    {
+      planName: "Free",
+      subscriptionType: "Free",
+      isActive: true,
+      price: 0,
+    },
+  ],
+},
 
   },
   {
