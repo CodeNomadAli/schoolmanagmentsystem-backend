@@ -12,13 +12,16 @@ import express from "express";
 const RemedyRouter = express.Router();
 
 
+RemedyRouter.get("/", getAllRemedies);
 
 RemedyRouter.put("/mark", toggleBookmark);
+
 RemedyRouter.get("/bookmark", getBookmarkedRemedies);
 
-// 🧪 Remedy general routes
 
-RemedyRouter.get("/", getAllRemedies);
+
+
+
 RemedyRouter.get("/:id", getRemedyById);
 
 

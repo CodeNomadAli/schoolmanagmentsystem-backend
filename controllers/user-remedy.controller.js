@@ -5,10 +5,13 @@ import Plan from "../models/plan.model.js";
 import mongoose from "mongoose";
 
 
+
 export const getAllRemedies = async (req, res) => {
   try {
     const userId = req.user?.id;
 
+    console.log(req,"heloooooooooooo")
+    
     if (!userId) {
       return res
         .status(401)

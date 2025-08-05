@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const token = process.env.GITHUB_TOKEN;
+const token = process.env.OPENAI_TOKEN;
 const endpoint = "https://models.github.ai/inference";
 const model = "openai/gpt-4.1";
 

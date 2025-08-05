@@ -1,12 +1,16 @@
-
 import mongoose from "mongoose";
-
+import slugify from "../utils/slugify.js";
 const RemedySchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
+    },
+    slug: {
+      type: String,
+      require: true,
+
     },
     description: {
       type: String,
@@ -45,9 +49,11 @@ const RemedySchema = new mongoose.Schema(
         required: false,
       },
     },
-    sideEffects: [{
-      type: String,
-    }],
+    sideEffects: [
+      {
+        type: String,
+      },
+    ],
     preparationTime: {
       type: String,
     },
@@ -61,7 +67,7 @@ const RemedySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    
+
     usageInstructions: {
       type: String,
       required: true,
@@ -71,17 +77,17 @@ const RemedySchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-    
+
     scientificReferences: {
       type: [String],
       default: [],
     },
-    
+
     geographicRestrictions: {
       type: [String],
       default: [],
     },
-    
+
     isPublic: {
       type: Boolean,
       default: false,
@@ -97,30 +103,30 @@ const RemedySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    
+
     equipments: {
       type: String,
     },
-    
+
     howToTakeIt: {
       type: String,
     },
-    
+
     dosageAndUsage: {
       type: String,
     },
-    
+
     storageInstructions: {
       type: String,
     },
-    
+
     averageRating: {
       type: Number,
       default: 0,
       min: 0,
       max: 5,
     },
-    
+
     isActive: {
       type: Boolean,
       default: false,
@@ -138,7 +144,7 @@ const RemedySchema = new mongoose.Schema(
     },
 
     ailments: [
-    {
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Ailment",
       },
@@ -148,11 +154,17 @@ const RemedySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
   },
 
   { timestamps: true }
 );
+
+RemedySchema.pre("save", function (next) {
+  if (this.isModified("name")) {
+    this.slug = slugify(this.name, { lower: true, strict: true });
+  }
+  next();
+});
 
 const Remedy = mongoose.model("Remedy", RemedySchema);
 
