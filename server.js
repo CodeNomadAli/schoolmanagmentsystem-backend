@@ -34,7 +34,7 @@ import invoiceRoutes from "./routes/invoice.routes.js";
 import profileQuestions from "./routes/profile-questions.route.js"
 import userRemedyRoutes from "./routes/user-remedy.route.js"
 import  askAI  from "./routes/askai.route.js";
-import reviewRemedyRoutes  from "./routes/for-review-remedy.route.js";
+import publicRemedyRoutes  from "./routes/public-remedy.route.js";
 const app = express();
 
 const PORTAL_ROUTE_PREFIX = '/api/v1/portal';
@@ -55,7 +55,7 @@ connectDB();
 app.use("/api/v1/auth", authRouter);
 
 app.use("/api/v1/users", auth, userRouter);
-app.use("/api/v1/user-remedy",userRemedyRoutes);
+app.use("/api/v1/user-remedy",auth,userRemedyRoutes);
 
 app.use("/api/v1/plan", auth, stripeSubcription);
 
@@ -64,7 +64,7 @@ app.use("/api/v1/user-plan",planRoutes);
 app.use("/api/v1/stripe", webHookRoute);
 
 app.use("/api/v1/card", cardRoutes);
-app.use("/api/v1/view/remedy", reviewRemedyRoutes);
+app.use("/api/v1/view/remedy", publicRemedyRoutes);
 
 //todo
 

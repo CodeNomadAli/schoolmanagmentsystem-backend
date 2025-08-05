@@ -6,7 +6,8 @@ import { apiResponse } from "../../helper.js";
 export const createRemedyCategory = async (req, res) => {
   const session = await mongoose.startSession();
   try {
-    session.startTransaction();
+   session.startTransaction(); 
+
 
     const { name, description, relatedQuestions } = req.body;
 
