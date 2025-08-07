@@ -34,7 +34,7 @@ import invoiceRoutes from "./routes/invoice.routes.js";
 import profileQuestions from "./routes/profile-questions.route.js";
 import userRemedyRoutes from "./routes/user-remedy.route.js";
 import askAI from "./routes/askai.route.js";
-import publicRemedyRoutes from "./routes/public-remedy.route.js";
+import publicRemedyRoutes from "./routes/remedy.route.js";
 import AilmentRouter from "./routes/ailment.route.js";
 import remedyCategoryRouter from "./routes/remedy-category.route.js";
 const app = express();

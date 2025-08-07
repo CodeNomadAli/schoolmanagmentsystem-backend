@@ -10,6 +10,7 @@ const optionalAuth = async (req, res, next) => {
       return next(); // Guest user → no blocking
     }
 
+
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
