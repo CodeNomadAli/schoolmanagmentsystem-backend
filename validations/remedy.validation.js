@@ -1,14 +1,6 @@
   import Joi from "joi";
 
   const remedyValidation = Joi.object({
-  name: Joi.string().trim().min(2).max(100).required().messages({
-    "any.required": "Name is required",
-    "string.empty": "Name cannot be empty",
-    "string.min": "Name too short",
-    "string.max": "Name too long",
-    "string.base": "Name must be text",
-  }),
-
   description: Joi.string().trim().min(10).required().messages({
     "any.required": "Description is required",
     "string.empty": "Description cannot be empty",

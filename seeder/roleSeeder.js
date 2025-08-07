@@ -76,6 +76,7 @@ async function seedRole() {
         await staffPermission.findOne({ slug: "update-article-category" }),
         await staffPermission.findOne({ slug: "delete-article-category" }),
         await staffPermission.findOne({ slug: "approve-remedy" }),
+        await staffPermission.findOne({ slug: "approve-review" }),
       
       ],
     },

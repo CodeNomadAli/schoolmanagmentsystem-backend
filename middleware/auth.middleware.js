@@ -1,23 +1,22 @@
-// middleware/auth.js
+// middleware/optionalAuth.js
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
-const auth = async (req, res, next) => {
+const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.header("Authorization");
-    
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Access denied. No token provided." });
+      return next(); // Guest user → no blocking
     }
-     
+
+
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    
-
     const user = await User.findById(decoded.userId);
     if (!user) {
-      return res .status(401).json({ message: "Access denied. user not found." });
+      return next(); // Treat as guest if user not found
     }
 
     req.user = {
@@ -26,10 +25,12 @@ const auth = async (req, res, next) => {
       role: user.accessLevel,
     };
     req.token = token;
+
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token." });
+    // Invalid token? Ignore and continue as guest
+    return next();
   }
 };
 
-export default auth;
+export default optionalAuth;

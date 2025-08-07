@@ -10,7 +10,7 @@ const endpoint = "https://models.github.ai/inference";
 const model = "openai/gpt-4.1";
 
 if (!token) {
-  throw new Error("❌ GITHUB_TOKEN is missing in .env");
+  throw new Error("❌ OPENAI_TOKEN is missing in .env");
 }
 
 const client = createClient(endpoint, new AzureKeyCredential(token));

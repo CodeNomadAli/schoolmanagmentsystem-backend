@@ -42,6 +42,7 @@ const permissions = [
   { name: "Update Remedy", slug: "update-remedy", description: "Can update remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
   { name: "Delete Remedy", slug: "delete-remedy", description: "Can delete remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
   { name: "Approve Remedy", slug: "approve-remedy", description: "Can approve remedy data", groupId: groupIds.remedy, groupName: "Remedy" },
+  { name: "Approve review", slug: "approve-review", description: "Can approve review data", groupId: groupIds.remedy, groupName: "Remedy" },
 
   // Category CRUD
   { name: "Create Category", slug: "create-category", description: "Can create category data", groupId: groupIds.category, groupName: "Category" },
