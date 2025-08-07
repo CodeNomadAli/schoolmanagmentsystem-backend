@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "../utils/slugify.js";
-
+import { uuid } from "zod/v4";
 const RemedySchema = new mongoose.Schema(
   {
     name: {
@@ -195,7 +195,7 @@ const RemedySchema = new mongoose.Schema(
 
 RemedySchema.pre("save", function (next) {
   if (this.isModified("name")) {
-    this.slug = slugify(this.name, { lower: true, strict: true });
+    this.slug = slugify(`${this.name}-${uuid()}`, { lower: true, strict: true });
   }
   next();
 });
