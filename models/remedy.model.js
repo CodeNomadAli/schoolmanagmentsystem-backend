@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "../utils/slugify.js";
+
 const RemedySchema = new mongoose.Schema(
   {
     name: {
@@ -154,6 +155,41 @@ const RemedySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+reviews: [
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5
+    },
+    message: {
+      type: String,
+      trim: true
+    },
+     approved: {
+      type: Boolean,
+      default: false
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }
+],
+averageRating: {
+  type: Number,
+  default: 0,
+  min: 0,
+  max: 5
+}
+
+
   },
 
   { timestamps: true }

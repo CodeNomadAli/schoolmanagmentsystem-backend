@@ -2,6 +2,8 @@ import Remedy from "../models/remedy.model.js";
 import { apiResponse } from "../helper.js";
 import Ailment from "../models/ailment.model.js";
 import Category from "../models/remedy_categories.model.js";
+import Plan from "../models/plan.model.js";
+import User from "../models/user.model.js";
 
 export const getAllRemedies = async (req, res) => {
   try {
@@ -36,7 +38,6 @@ export const getAllRemedies = async (req, res) => {
       ]);
     }
 
-    
     if (categoryQueries.length > 0) {
       const matchingCategories = await Category.find(
         {
@@ -92,7 +93,7 @@ export const getAllRemedies = async (req, res) => {
 
     const [remedies, total] = await Promise.all([
       Remedy.find(searchQuery)
-      .select("name slug media description")
+        .select("name slug media description reviews averageRating")
         .populate([
           {
             path: "createdBy",
@@ -135,28 +136,108 @@ export const getAllRemedies = async (req, res) => {
   }
 };
 
-export const getAllCategoryAilments = async (req, res) => {
+
+
+
+
+
+export const getViewDetailsRemdy = async (req, res) => {
   try {
-    const [categories, ailments] = await Promise.all([
-      Category.find({}, { _id: 1, name: 1 }).sort({ name: 1 }),
-      Ailment.find({}, { _id: 1, name: 1, slug: 1 }).sort({ name: 1 }),
+    const userId = req.user?.id || null; // user might not be logged in
+    const remedySlug = req.params.slug;
+
+    // Get remedy by slug (always)
+    let remedy = await Remedy.findOne({ slug: remedySlug }).populate([
+      { path: "category", select: "name" },
+      { path: "ailments", select: "name slug" },
     ]);
 
-    res
-      .status(200)
-      .json(
+    if (!remedy) {
+      return res.status(404).json(apiResponse(404, null, "Remedy not found"));
+    }
+
+    // Default: no access
+    let hasAccess = false;
+
+    if (userId) {
+      const user = await User.findById(userId);
+      if (user) {
+        // Check active plans
+        const activeInvoices = (user.invoices || []).filter(
+          (inv) => inv.isActive
+        );
+        const planSlugs = activeInvoices
+          .map((inv) => inv.planName?.toLowerCase().replace(/\s+/g, "-"))
+          .filter(Boolean);
+
+        const plans = await Plan.find({ slug: { $in: planSlugs } }).lean();
+
+        const isFullAccess = plans.some((plan) =>
+          ["monthly", "annually"].includes(plan.slug)
+        );
+
+        let allowedRemedyIds = [];
+
+        if (!isFullAccess) {
+          for (const plan of plans) {
+            const remedyIds = (plan.features || [])
+              .filter((f) => Array.isArray(f.remedies))
+              .flatMap((f) => f.remedies || []);
+            allowedRemedyIds.push(...remedyIds);
+          }
+          allowedRemedyIds = [
+            ...new Set(allowedRemedyIds.map((id) => id.toString())),
+          ];
+        }
+
+        hasAccess =
+          isFullAccess || allowedRemedyIds.includes(remedy._id.toString());
+      }
+    }
+
+    // If user has access or is logged in with access
+    if (hasAccess) {
+      return res.status(200).json(
         apiResponse(
           200,
-          { categories, ailments },
-          "Successfully fetched remedy categories and ailments"
+          {
+            remedy,
+            access: true,
+          },
+          "Full remedy access"
         )
       );
+    } else {
+      // Return limited info
+      const limitedRemedy = {
+        _id: remedy._id,
+        name: remedy.name,
+        slug: remedy.slug,
+        description: remedy.description,
+        media: remedy.media,
+        category: remedy.category ? { name: remedy.category.name } : null,
+        ailments: (remedy.ailments || []).map((a) => ({
+          name: a.name,
+          slug: a.slug,
+        })),
+        rating: remedy.rating,
+        averageRating: remedy.averageRating,
+      };
+
+      return res
+        .status(200)
+        .json(
+          apiResponse(
+            200,
+            { remedy: limitedRemedy, access: false },
+            "Limited remedy access"
+          )
+        );
+    }
   } catch (error) {
-    console.error("Error fetching categories and ailments:", error);
-    res
-      .status(500)
-      .json(
-        apiResponse(500, null, "Failed to fetch remedy categories and ailments")
-      );
+    console.error("Error viewing remedy details:", error);
+    return res.status(500).json(apiResponse(500, null, error.message));
   }
 };
+
+

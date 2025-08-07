@@ -1,3 +1,4 @@
+
 const validateEnv = () => {
     const errors = [];
   

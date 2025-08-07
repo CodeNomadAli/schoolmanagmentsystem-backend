@@ -7,6 +7,7 @@ import {
   getRemedyById,
   updateRemedy,
   createComment,
+  
 } from "../controllers/portal/remedy.controller.js";
 import auth from "../middleware/auth.middleware.js";
 import adminMiddleware from "../middleware/staff.middleware.js";
@@ -16,7 +17,11 @@ const RemedyRouter = express.Router();
 RemedyRouter.post("/create", auth, createRemedy);
 // get all remedy
 RemedyRouter.get("/", getAllRemedies);
-// get remedy by id
+
+// add comment or reply to remedy
+RemedyRouter.post("/comment", auth, createComment);
+
+
 RemedyRouter.get("/:id", getRemedyById);
 // remedy flag route
 RemedyRouter.post("/flag/:id", auth, flagRemedy);
@@ -24,7 +29,6 @@ RemedyRouter.post("/flag/:id", auth, flagRemedy);
 RemedyRouter.put("/:id", auth, updateRemedy);
 // delete remedy by id
 RemedyRouter.delete("/:id", auth, adminMiddleware, deleteRemedy);
-// add comment or reply to remedy
-RemedyRouter.post("/comment", auth, createComment);
+
 
 export default RemedyRouter;

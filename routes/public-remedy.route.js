@@ -1,9 +1,17 @@
-import { getAllRemedies,getAllCategoryAilments } from "../controllers/public-remedy.controller.js";
-import express from  "express"
+import {
+  getAllRemedies,
 
-const reviewRemedy= express.Router()
+  getViewDetailsRemdy,
+} from "../controllers/public-remedy.controller.js";
+import express from "express";
+import auth from "../middleware/auth.middleware.js";
 
-reviewRemedy.get("/ailments-categories", getAllCategoryAilments); // ✅ combined
-reviewRemedy.get("/",getAllRemedies)
+const Remedy = express.Router();
 
-export default reviewRemedy
+
+
+Remedy.get("/", getAllRemedies);
+
+Remedy.get("/:slug",auth,getViewDetailsRemdy);
+
+export default Remedy;

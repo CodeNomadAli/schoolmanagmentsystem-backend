@@ -9,14 +9,19 @@ import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
 import User from "../../models/user.model.js";
 import mongoose from "mongoose";
+import { generateTitle,GenerateAiImgs } from "../../utils/generateAiMetadata.js";
+import { uploadImageFromUrl } from "../../utils/uploadImageToCloudinary.js";
+
 const createRemedy = async (req, res) => {
+  
   const session = await mongoose.startSession();
   try {
+  
+
     session.startTransaction();
 
     const user = req.user;
     const {
-      name,
       description,
       category,
       remedyType,
@@ -26,6 +31,13 @@ const createRemedy = async (req, res) => {
       whyItWorks,
       ...rest
     } = req.body;
+
+ 
+    const  name  = await generateTitle(description);
+
+    // const uploaded = await uploadImageFromUrl(imagePrompt);
+
+
 
     const { error } = remedyValidation.validate(req.body, {
       abortEarly: false,
@@ -538,6 +550,36 @@ const updateStatus = async (req, res) => {
   }
 };
 
+const approveOrCancelReview = async (req, res) => {
+  try {
+    const { remedyId, reviewId } = req.params;
+    const { approved } = req.body; // true or false
+
+    // Check for remedy
+    const remedy = await Remedy.findById(remedyId);
+    if (!remedy) {
+      return res.status(404).json({ message: "Remedy not found" });
+    }
+
+    // Find the review
+    const review = remedy.reviews.id(reviewId);
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    review.approved = approved;
+    await remedy.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      message: `Review ${approved ? "approved" : "disapproved"}`,
+      review,
+    });
+  } catch (err) {
+    console.error("Approval error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export {
   flagRemedy,
   createRemedy,
@@ -547,4 +589,5 @@ export {
   updateRemedy,
   deleteRemedy,
   updateStatus,
+  approveOrCancelReview,
 };

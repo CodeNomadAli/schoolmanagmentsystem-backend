@@ -1,106 +1,68 @@
-import Review from "../models/review.model.js";
-import { reviewValidation } from "../validations/review.validation.js";
+import Remedy from "../models/remedy.model.js";
 
-const createReview = async (req, res) => {
+
+export const addOrUpdateReview = async (req, res) => {
   try {
-    const { error } = reviewValidation.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        message: "Validation error",
-        details: error.details.map((d) => d.message),
-        success: false,
-      });
+    const userId = req.user?.id;
+    const { Id } = req.params;
+    const { rating, message } = req.body;
+
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const remedy = await Remedy.findById(Id);
+      console.log  
+    if (!remedy) return res.status(404).json({ message: "Remedy not found" });
+     
+    const existingIndex = remedy.reviews.findIndex(
+      (r) => r.user.toString() === userId
+    );
+
+    if (existingIndex >= 0) {
+      // Update review
+      remedy.reviews[existingIndex].rating = rating;
+      remedy.reviews[existingIndex].message = message;
+      remedy.reviews[existingIndex].createdAt = new Date();
+    } else {
+      // Add new review
+      remedy.reviews.push({ user: userId, rating, message });
     }
-    const userId = req.user.id;
 
-    const reviewExist = await Review.find({
-      userId,
-      remedyId: req.body.remedyId,
-    });
+    // Recalculate average rating
+    const total = remedy.reviews.reduce((sum, r) => sum + r.rating, 0);
+  const   Rating = total / remedy.reviews.length;
+      remedy.averageRating=Rating.toFixed(1)
+await remedy.save({ validateBeforeSave: false });
 
-    if (reviewExist) {
-      return res
-        .status(400)
-        .json({ message: "Review already exist", success: false });
-    }
-    const newReview = await Review.create({
-      userId,
-      isAnonymous: userId ? false : true,
-      ...req.body,
-    });
-
-    res.status(201).json({
-      message: "Review successfully created",
-      review: newReview,
-      success: true,
+    return res.status(200).json({
+      message: "Review added/updated",
+      averageRating: remedy.averageRating.toFixed(1),
+      reviews: remedy.reviews
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-      success: false,
-    });
+    console.error("Review error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const getReviewRatingsByRemedyId = async (req, res) => {
+// GET - Fetch reviews for a remedy
+export const getRemedyReviews = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { remedyId } = req.params;
 
-    const reviews = await Review.find({ remedyId: id })
-      .sort({ createdAt: -1 })
-      .lean();
+    const remedy = await Remedy.findById(remedyId)
+      .populate("reviews.user", "name email");
 
-    if (reviews.length === 0) {
-      return res.status(200).json({
-        totalReviews: 0,
-        averageRatings: {
-          effectiveness: 0,
-          easeOfUse: 0,
-          sideEffects: 0,
-          overall: 0,
-        },
-        reviews: [],
-      });
-    }
-
-    // Calculate averages
-    const total = reviews.length;
-    const sum = {
-      effectiveness: 0,
-      easeOfUse: 0,
-      sideEffects: 0,
-      overall: 0,
-    };
-
-    reviews.forEach((review) => {
-      sum.effectiveness += review.effectivenessRating;
-      sum.easeOfUse += review.easeOfUseRating;
-      sum.sideEffects += review.sideEffectsRating;
-      sum.overall += review.overallRating;
-    });
-
-    const averageRatings = {
-      effectiveness: parseFloat((sum.effectiveness / total).toFixed(1)),
-      easeOfUse: parseFloat((sum.easeOfUse / total).toFixed(1)),
-      sideEffects: parseFloat((sum.sideEffects / total).toFixed(1)),
-      overall: parseFloat((sum.overall / total).toFixed(1)),
-    };
+    if (!remedy) return res.status(404).json({ message: "Remedy not found" });
 
     res.status(200).json({
-      success: true,
-      message: "Successfully fetched review ratings",
-      totalReviews: total,
-      averageRatings,
-      reviews,
+      reviews: remedy.reviews,
+      averageRating: remedy.averageRating
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch reviews",
-      error: error.message,
-      success: false,
-    });
+    console.error("Fetch reviews error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-export { createReview, getReviewRatingsByRemedyId };
+
+
