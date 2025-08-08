@@ -10,7 +10,7 @@ import slugify from "../../utils/slugify.js";
 import User from "../../models/user.model.js";
 import mongoose from "mongoose";
 import {
-  GenerateAiImgs,
+  generateAiImgs,
   generateTitle,
 } from "../../utils/generateAiMetadata.js";
 import { uploadImageFromUrl } from "../../utils/uploadImageToCloudinary.js";
@@ -47,7 +47,7 @@ const createRemedy = async (req, res) => {
     const name = await generateTitle(description);
 
     // Step 2: Generate and upload image in parallel
-    const { filePath } = await GenerateAiImgs(description);
+    const { filePath } = await generateAiImgs(description);
     const [media] = await Promise.all([uploadImageFromUrl(filePath)]);
 
     // Step 3: Ensure ailments are created/found

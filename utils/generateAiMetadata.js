@@ -35,7 +35,7 @@ export const generateTitle = async (description) => {
   return title;
 };
 
-export const GenerateAiImgs = async (description) => {
+export const generateAiImgs = async (description) => {
   if (!description || description.length < 10) {
     throw new Error("Description must be at least 10 characters.");
   }

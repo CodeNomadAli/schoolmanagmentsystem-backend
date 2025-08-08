@@ -33,8 +33,7 @@ await remedy.save({ validateBeforeSave: false });
 
     return res.status(200).json(apiResponse({
       message: "Review added/updated",
-      averageRating: remedy.averageRating.toFixed(1),
-      reviews: remedy.reviews
+     reviews: remedy.reviews
     },"Review add successfully"));
   } catch (error) {
     console.error("Review error:", error);
