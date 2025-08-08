@@ -51,25 +51,8 @@ export const generateAiImgs = async (description) => {
       size: "1024x1024",
     });
 
-    const imageUrl = imageResponse.data[0].url;
-    if (!imageUrl) throw new Error("Image URL not found");
-
-    // 2. Download image and save
-    const res = await fetch(imageUrl);
-    const imageBuffer = await res.arrayBuffer();
-    const fileName = `remedy-${Date.now()}.png`;
-    const folderPath = path.resolve("images");
-    const filePath = path.join(folderPath, fileName);
-
-    await fs.mkdir(folderPath, { recursive: true });
-    await fs.writeFile(filePath, Buffer.from(imageBuffer));
-    console.log("✅ Image Saved:", filePath);
-
-    return {
-      status: 200,
-      message: "Image and title generated successfully.",
-      filePath,
-    };
+    return imageResponse.data[0].url;
+    
   } catch (err) {
     console.error("❌ Generation failed:", err.message);
     throw new Error("AI metadata generation failed.");
