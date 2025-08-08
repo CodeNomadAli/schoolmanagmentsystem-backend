@@ -1,38 +1,19 @@
-import { openai } from "../config/openai.img.js";
-import fs from "fs/promises";
-import path from "path";
-import { endpoint, token, model } from "../config/ask.ai.js";
+import { openai } from "../config/openai.js";
+
 
 export const generateTitle = async (description) => {
-  const response = await fetch(`${endpoint}/v1/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: "user",
-          content: `Write a short and catchy remedy title only 3 to 4 words  for this: ${description}`,
-        },
-      ],
-      temperature: 0.7,
-      top_p: 1,
-    }),
+  
+  const response = await openai.responses.create({
+    model: "gpt-5",
+    input:  `Write a short and catchy remedy title only 3 to 4 words  for this: ${description}`
   });
 
-  const data = await response.json();
-
-  const title = data?.choices?.[0]?.message?.content?.trim();
-
-  if (!title) {
+  if (!response.output_text) {
     console.error("⚠️ AI returned no title:", JSON.stringify(data, null, 2));
     throw new Error("Failed to generate remedy title.");
   }
 
-  return title;
+  return response.output_text;
 };
 
 export const generateAiImgs = async (description) => {

@@ -139,7 +139,5 @@ const PORT = process.env.PORT || 3000;
   console.log(`Server running on port ${PORT}`);
 });
 
-server.setTimeout(60000); // ⏱ 60 seconds
-
 
 

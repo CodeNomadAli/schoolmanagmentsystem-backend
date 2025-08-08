@@ -14,10 +14,13 @@ import {
   generateTitle,
 } from "../../utils/generateAiMetadata.js";
 import { uploadImageFromUrl } from "../../utils/uploadImageToCloudinary.js";
+import RemedyImageJob from "../../jobs/RemedyImageJob.js";
 
 const createRemedy = async (req, res) => {
   const session = await mongoose.startSession();
+
   try {
+
     session.startTransaction();
 
     const user = req.user;
@@ -44,11 +47,8 @@ const createRemedy = async (req, res) => {
       });
     }
 
-    const name = await generateTitle(description);
+    // const name = await generateTitle(description);
 
-    // Step 2: Generate and upload image in parallel
-    const filePath = await generateAiImgs(description);
-    const [media] = await Promise.all([uploadImageFromUrl(filePath)]);
 
     // Step 3: Ensure ailments are created/found
     const ailmentIds = [];
@@ -69,10 +69,14 @@ const createRemedy = async (req, res) => {
     const newRemedy = await Remedy.create(
       [
         {
-          name,
+          name: 'title oxxxf actiodfssnsssss d f df dsdddddff ddf generation data dd go ga fdf',
           description,
           category,
-          media: media.data,
+          media: {
+            type : 'image/png',
+            source: 'tehll.png',
+            originalName: 'hello.png'
+          },
           createdBy: user.id,
           ailments: ailmentIds,
           answeredQuestions,
@@ -83,6 +87,12 @@ const createRemedy = async (req, res) => {
       ],
       { session }
     );
+
+    await RemedyImageJob.dispatch({
+      remedySlug: newRemedy.slug,
+      description: description
+    });
+
 
     await session.commitTransaction();
     return res
