@@ -47,7 +47,7 @@ const createRemedy = async (req, res) => {
     const name = await generateTitle(description);
 
     // Step 2: Generate and upload image in parallel
-    const { filePath } = await generateAiImgs(description);
+    const filePath = await generateAiImgs(description);
     const [media] = await Promise.all([uploadImageFromUrl(filePath)]);
 
     // Step 3: Ensure ailments are created/found
