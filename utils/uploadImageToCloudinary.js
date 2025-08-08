@@ -29,17 +29,18 @@ export const uploadImageFromUrl = async (imageUrl) => {
       unique_filename: false,
       overwrite: true,
     });
- console.log(result)
-    return apiResponse(200, "Image uploaded successfully", {
+
+    const media = {
+      type: `image/${result.format}`,
       source: result.secure_url,
-      type: result.format,
       originalName: result.original_filename,
-    });
+    };
+
+    return apiResponse(200,media,"Image uploaded successfully");
   } catch (error) {
     return apiResponse(500, `Cloudinary upload failed: ${error.message}`);
   }
 };
-
 
 // const test = async () => {
 //   const res = await uploadImageFromUrl("https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg");

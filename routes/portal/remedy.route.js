@@ -1,4 +1,6 @@
 import express from "express";
+import timeout from 'connect-timeout';
+
 import {
   createRemedy,
   deleteRemedy,
@@ -15,9 +17,10 @@ import {
 import checkPermission from "../../middleware/check_permission.middleware.js";
 
 
+
 const RemedyRouter = express.Router();
 // create remedy route
-RemedyRouter.post("/create",checkPermission("create-remedy"), createRemedy);
+RemedyRouter.post("/create",timeout('60s'),checkPermission("create-remedy"), createRemedy);
 // get all remedy
 RemedyRouter.get("/", checkPermission("read-remedy"), getAllRemedies);
 // get remedy by id

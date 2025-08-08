@@ -153,32 +153,6 @@
     "boolean.base": "Is Active must be true or false",
   }),
 
-  media: Joi.object({
-    type: Joi.string()
-      .valid("image/jpeg", "image/jpg", "image/png", "image/gif")
-      .optional()
-      .messages({
-        "any.only": "Media type must be jpeg, jpg, png, or gif",
-        "string.base": "Media type must be text",
-      }),
-
-    source: Joi.string().trim().required().messages({
-      "any.required": "Remedy image is required",
-      "string.empty": "Remedy image cannot be empty",
-      "string.base": "Remedy image must be text",
-    }),
-
-    originalName: Joi.string().trim().empty('').optional().messages({
-      "string.base": "Remedy image original name must be text",
-      "string.empty": "Remedy image original name cannot be empty",
-    }),
-  })
-    .required()
-    .messages({
-      "object.base": "Media must be an object",
-      "any.required": "Media is required",
-    }),
-
   relatedQuestions: Joi.array()
     .items(
       Joi.object({

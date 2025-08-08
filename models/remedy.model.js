@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "../utils/slugify.js";
-import { uuid } from "zod/v4";
+import { v4 as uuid } from "uuid"; // ✅ correct import
 const RemedySchema = new mongoose.Schema(
   {
     name: {
