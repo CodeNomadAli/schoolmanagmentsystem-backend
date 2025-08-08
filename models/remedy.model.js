@@ -168,6 +168,7 @@ const RemedySchema = new mongoose.Schema(
           min: 1,
           max: 5,
         },
+        
         message: {
           type: String,
           trim: true,
@@ -182,12 +183,7 @@ const RemedySchema = new mongoose.Schema(
         },
       },
     ],
-    averageRating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
+    
   },
 
   { timestamps: true }
