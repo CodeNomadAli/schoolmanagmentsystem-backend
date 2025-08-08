@@ -9,15 +9,15 @@ import { apiResponse } from "../../helper.js";
 import slugify from "../../utils/slugify.js";
 import User from "../../models/user.model.js";
 import mongoose from "mongoose";
-import { generateTitle,GenerateAiImgs } from "../../utils/generateAiMetadata.js";
+import {
+  generateAiImgs,
+  generateTitle,
+} from "../../utils/generateAiMetadata.js";
 import { uploadImageFromUrl } from "../../utils/uploadImageToCloudinary.js";
 
 const createRemedy = async (req, res) => {
-  
   const session = await mongoose.startSession();
   try {
-  
-
     session.startTransaction();
 
     const user = req.user;
@@ -32,17 +32,10 @@ const createRemedy = async (req, res) => {
       ...rest
     } = req.body;
 
- 
-    const  name  = await generateTitle(description);
-
-    // const uploaded = await uploadImageFromUrl(imagePrompt);
-
-
-
+    // Step 1: Validate input early before external API calls
     const { error } = remedyValidation.validate(req.body, {
       abortEarly: false,
     });
-
     if (error) {
       await session.abortTransaction();
       return res.status(422).json({
@@ -51,10 +44,16 @@ const createRemedy = async (req, res) => {
       });
     }
 
+    const name = await generateTitle(description);
+
+    // Step 2: Generate and upload image in parallel
+    const { filePath } = await generateAiImgs(description);
+    const [media] = await Promise.all([uploadImageFromUrl(filePath)]);
+
+    // Step 3: Ensure ailments are created/found
     const ailmentIds = [];
     for (const ailmentName of ailments) {
       let existing = await Ailment.findOne({ slug: slugify(ailmentName) });
-      [];
 
       if (!existing) {
         existing = await Ailment.create({
@@ -66,12 +65,14 @@ const createRemedy = async (req, res) => {
       ailmentIds.push(existing._id);
     }
 
+    // Step 4: Save remedy
     const newRemedy = await Remedy.create(
       [
         {
           name,
           description,
           category,
+          media: media.data,
           createdBy: user.id,
           ailments: ailmentIds,
           answeredQuestions,
@@ -80,15 +81,10 @@ const createRemedy = async (req, res) => {
           ...rest,
         },
       ],
-      {
-        session,
-      }
+      { session }
     );
 
     await session.commitTransaction();
-
-    session.endSession();
-
     return res
       .status(201)
       .json(apiResponse(201, newRemedy, "Remedy successfully created"));

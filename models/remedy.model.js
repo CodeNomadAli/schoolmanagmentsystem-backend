@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 import slugify from "../utils/slugify.js";
-import { uuid } from "zod/v4";
+
 const RemedySchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
+      unique: true, // ✅ Enforce uniqueness in DB
     },
     slug: {
       type: String,
@@ -168,6 +169,7 @@ const RemedySchema = new mongoose.Schema(
           min: 1,
           max: 5,
         },
+
         message: {
           type: String,
           trim: true,
@@ -182,12 +184,6 @@ const RemedySchema = new mongoose.Schema(
         },
       },
     ],
-    averageRating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
   },
 
   { timestamps: true }
@@ -195,7 +191,10 @@ const RemedySchema = new mongoose.Schema(
 
 RemedySchema.pre("save", function (next) {
   if (this.isModified("name")) {
-    this.slug = slugify(`${this.name}-${uuid()}`, { lower: true, strict: true });
+    this.slug = slugify(`${this.name}`, {
+      lower: true,
+      strict: true,
+    });
   }
   next();
 });

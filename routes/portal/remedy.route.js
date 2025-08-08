@@ -1,4 +1,4 @@
-import express from "express";
+import express from "express"
 import {
   createRemedy,
   deleteRemedy,
@@ -13,6 +13,7 @@ import {
 } from "../../controllers/portal/remedy.controller.js";
 
 import checkPermission from "../../middleware/check_permission.middleware.js";
+
 
 
 const RemedyRouter = express.Router();

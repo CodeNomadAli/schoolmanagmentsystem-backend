@@ -4,6 +4,7 @@ import Ailment from "../models/ailment.model.js";
 import Category from "../models/remedy_categories.model.js";
 import Plan from "../models/plan.model.js";
 import User from "../models/user.model.js";
+import { getTotalReview, getTotalRating } from "./review.controller.js";
 
 export const getAllRemedies = async (req, res) => {
   try {
@@ -195,14 +196,18 @@ export const getViewDetailsRemdy = async (req, res) => {
       }
     }
 
+    const totalRating = await getTotalRating(remedy._id)
+    const totalReview = await getTotalReview(remedy._id)
+    const averageRating = totalRating / totalReview
+
     // If user has access or is logged in with access
     if (hasAccess) {
       return res.status(200).json(
         apiResponse(
           200,
           {
-            remedy,
-            access: true,
+            remedy: {remedy, total_review: totalReview, total_rating: totalRating, average_rating: averageRating },
+            premium_access: true,
           },
           "Full remedy access"
         )
@@ -220,16 +225,19 @@ export const getViewDetailsRemdy = async (req, res) => {
           name: a.name,
           slug: a.slug,
         })),
-        rating: remedy.rating,
-        averageRating: remedy.averageRating,
+        total_reviews: totalReview,
+        total_rating: totalRating,
+        averageRating: averageRating,
       };
+
+
 
       return res
         .status(200)
         .json(
           apiResponse(
             200,
-            { remedy: limitedRemedy, access: false },
+            { remedy: limitedRemedy, premium_access: false },
             "Limited remedy access"
           )
         );

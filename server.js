@@ -135,6 +135,11 @@ app.use(PORTAL_ROUTE_PREFIX + "/remedy-types", remedyTypeRoutes);
 app.use(PORTAL_ROUTE_PREFIX + "/remedy-categories", remedyCategoryRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+ const server= app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+server.setTimeout(60000); // ⏱ 60 seconds
+
+
+

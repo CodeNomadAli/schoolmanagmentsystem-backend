@@ -1,14 +1,9 @@
 import { openai } from "../config/openai.img.js";
 import fs from "fs/promises";
 import path from "path";
-import {
-  endpoint,
-  token,
-  model,
-} from "../config/ask.ai.js";
+import { endpoint, token, model } from "../config/ask.ai.js";
 
 export const generateTitle = async (description) => {
-
   const response = await fetch(`${endpoint}/v1/chat/completions`, {
     method: "POST",
     headers: {
@@ -31,7 +26,7 @@ export const generateTitle = async (description) => {
   const data = await response.json();
 
   const title = data?.choices?.[0]?.message?.content?.trim();
-   
+
   if (!title) {
     console.error("⚠️ AI returned no title:", JSON.stringify(data, null, 2));
     throw new Error("Failed to generate remedy title.");
@@ -40,14 +35,12 @@ export const generateTitle = async (description) => {
   return title;
 };
 
-export const GenerateAiImgs = async (description) => {
+export const generateAiImgs = async (description) => {
   if (!description || description.length < 10) {
     throw new Error("Description must be at least 10 characters.");
   }
 
-  const title = await generateTitle(description);
-
-  const prompt = `high quality illustration of a natural remedy: ${description}`;
+  const prompt = `Ultra-detailed, high-resolution illustration of a natural remedy. Description: "${description}". Show the remedy in an interactive, visually appealing style — realistic textures, soft natural lighting, botanical ingredients, minimal background. Suitable for health and wellness apps.`;
 
   try {
     // 1. Generate image
@@ -72,15 +65,9 @@ export const GenerateAiImgs = async (description) => {
     await fs.writeFile(filePath, Buffer.from(imageBuffer));
     console.log("✅ Image Saved:", filePath);
 
-    // 3. Generate title
-    
-    console.log("✅ Title Generated:", title);
-
     return {
       status: 200,
       message: "Image and title generated successfully.",
-      title,
-      description,
       filePath,
     };
   } catch (err) {
@@ -88,4 +75,3 @@ export const GenerateAiImgs = async (description) => {
     throw new Error("AI metadata generation failed.");
   }
 };
-
