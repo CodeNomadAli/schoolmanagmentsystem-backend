@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 
 
 import RemedyImageJob from "../../jobs/RemedyImageJob.js";
+import RemedyTitleJob from "../../jobs/RemedyTitleJob.js";
 
 const createRemedy = async (req, res) => {
   const session = await mongoose.startSession();
@@ -63,17 +64,19 @@ const createRemedy = async (req, res) => {
       ailmentIds.push(existing._id);
     }
 
+    const title = '[ai_title] Title Is Getting Generated.' + Math.random()
+
     // Step 4: Save remedy
     const newRemedy = await Remedy.create(
       [
         {
-          name: 'title oxxxf actiodfssnsssss d f df dsdddddff ddf generation data dd go ga fdf',
+          name: title,
           description,
           category,
           media: {
-            type : 'image/png',
-            source: 'tehll.png',
-            originalName: 'hello.png'
+            type : 'image/jpg',
+            source: 'https://res.cloudinary.com/dmchk6xsw/image/upload/v1754912744/istockphoto-2173059563-612x612_uyftxd.jpg',
+            originalName: 'wait_ai.png'
           },
           createdBy: user.id,
           ailments: ailmentIds,
@@ -86,8 +89,15 @@ const createRemedy = async (req, res) => {
       { session }
     );
 
+    console.log(slugify(title))
+
     await RemedyImageJob.dispatch({
-      remedySlug: newRemedy.slug,
+      remedySlug: slugify(title),
+      description: description
+    });
+
+    await RemedyTitleJob.dispatch({
+      remedySlug: slugify(title),
       description: description
     });
 

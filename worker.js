@@ -1,5 +1,6 @@
 import RemedyImageJob from './jobs/RemedyImageJob.js'; // Import image job class
 import RemedyTitleJob from './jobs/RemedyTitleJob.js'; // Import title job class
+import connectDB from "./config/db.config.js";
 
 console.log('Worker started, listening for jobs...');
 
@@ -11,6 +12,8 @@ const jobConfigurations = [
 
 async function startWorker() {
     // Iterate over all job configurations to initialize and set up processing
+    await connectDB();
+
     for (const { name, jobClass, queue } of jobConfigurations) {
         // Check if the queue is initialized
         if (!queue.clientInitialized) {

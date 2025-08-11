@@ -19,7 +19,6 @@ cloudinary.config({
 export const uploadImageFromUrl = async (fileUrl) => {
   if (!fileUrl) return apiResponse(400, "Image URL is required");
 
-  console.log(fileUrl, "img");
   try {
     const response = await fetch(fileUrl);
     if (!response.ok) {
@@ -43,10 +42,12 @@ export const uploadImageFromUrl = async (fileUrl) => {
       pipeline(response.body, uploadStream).catch(reject);
     });
 
-    return apiResponse(200, "Image uploaded successfully", {
-      url: uploadResult.secure_url,
-      public_id: uploadResult.public_id,
-    });
+
+    return {
+      type:uploadResult.format,
+      source: uploadResult.secure_url,
+      originalName: uploadResult.public_id,
+    };
   } catch (error) {
     console.error("Error uploading image:", error);
     return apiResponse(500, `Failed to upload image: ${error.message}`);
