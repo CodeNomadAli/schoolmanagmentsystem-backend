@@ -2,8 +2,8 @@
 import transporter from "../config/mailer.config.js";
 
 export const sendMail = async ({ to, subject, html }) => {
-  const mailOptions = {
-    from: `"Remloy" <${process.env.EMAIL_USER}>`,
+ const mailOptions = {
+    from: process.env.EMAIL_FROM || process.env.SMTP_USER, 
     to,
     subject,
     html,
