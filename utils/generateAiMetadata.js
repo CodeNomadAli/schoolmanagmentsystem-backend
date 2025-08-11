@@ -1,12 +1,24 @@
 import { openai } from "../config/openai.js";
+import slugify from "./slugify.js";
+import Remedy from '../models/remedy.model.js';
 
 
 export const generateTitle = async (description) => {
   
   const response = await openai.responses.create({
     model: "gpt-5",
-    input:  `Write a short and catchy remedy title only 3 to 4 words  for this: ${description}`
+    input:  `Write a short and catchy remedy title only 4 to 6 words  for this: ${description}`
   });
+
+  const slug = slugify(response.output_text)
+
+  const remedy = await Remedy.findOne({ slug });
+  if (remedy) {
+    return generateTitle(description)
+  }
+
+
+
 
   if (!response.output_text) {
     console.error("⚠️ AI returned no title:", JSON.stringify(data, null, 2));

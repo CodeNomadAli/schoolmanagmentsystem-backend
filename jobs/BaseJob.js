@@ -9,6 +9,8 @@ export default class BaseJob {
         // Only bind process handler if running as a worker
         if (isWorker) {
             this.queue.process(async (job) => {
+                console.log(`✅ [${name}] Job Started:`, job.data);
+
                 if (typeof this.handle !== 'function') {
                     throw new Error(`Job ${name} is missing a handle() method`);
                 }
