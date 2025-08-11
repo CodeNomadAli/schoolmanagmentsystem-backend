@@ -10,8 +10,8 @@ const router = express.Router();
 // Change POST to PUT since we’re modifying the User document
 router.put("/add", addCard);
 
-router.get("/:userId", getUserCards);
+router.get("/", getUserCards);
 
-router.delete("/:userId/:token", deleteCard);
+router.delete("/:cardId", deleteCard);
 
 export default router;

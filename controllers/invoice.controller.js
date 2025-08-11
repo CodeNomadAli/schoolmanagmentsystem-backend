@@ -65,7 +65,7 @@ export const createInvoice = async (req, res) => {
 
 export const getInvoices = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  = req.user.id;
 
     if (!userId) {
       return res
@@ -96,8 +96,9 @@ export const deleteInvoice = async (req, res) => {
   const session = await User.startSession();
   session.startTransaction();
   try {
-    const { userId, invoiceId } = req.params;
-
+    const { invoiceId } = req.params;
+         const userId =req.user.id
+         
     if (!userId || !invoiceId) {
       await session.abortTransaction();
       session.endSession();

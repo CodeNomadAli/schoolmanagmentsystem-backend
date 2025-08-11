@@ -10,7 +10,6 @@ import slugify from "../../utils/slugify.js";
 import User from "../../models/user.model.js";
 import mongoose from "mongoose";
 
-
 import RemedyImageJob from "../../jobs/RemedyImageJob.js";
 import RemedyTitleJob from "../../jobs/RemedyTitleJob.js";
 
@@ -18,7 +17,6 @@ const createRemedy = async (req, res) => {
   const session = await mongoose.startSession();
 
   try {
-
     session.startTransaction();
 
     const user = req.user;
@@ -47,8 +45,6 @@ const createRemedy = async (req, res) => {
 
     // const name = await generateTitle(description);
 
-
-     
     // Step 3: Ensure ailments are created/found
     const ailmentIds = [];
     for (const ailmentName of ailments) {
@@ -64,19 +60,21 @@ const createRemedy = async (req, res) => {
       ailmentIds.push(existing._id);
     }
 
-    const title = '[ai_title] Title Is Getting Generated.' + Math.random()
+    const title = "[ai_title] Title Is Getting Generated." + Math.random();
 
     // Step 4: Save remedy
     const newRemedy = await Remedy.create(
       [
         {
           name: title,
+
           description,
           category,
           media: {
-            type : 'image/jpg',
-            source: 'https://res.cloudinary.com/dmchk6xsw/image/upload/v1754912744/istockphoto-2173059563-612x612_uyftxd.jpg',
-            originalName: 'wait_ai.png'
+            type: "image/jpg",
+            source:
+              "https://res.cloudinary.com/dmchk6xsw/image/upload/v1754912744/istockphoto-2173059563-612x612_uyftxd.jpg",
+            originalName: "wait_ai.png",
           },
           createdBy: user.id,
           ailments: ailmentIds,
@@ -89,18 +87,16 @@ const createRemedy = async (req, res) => {
       { session }
     );
 
-    console.log(slugify(title))
-
     await RemedyImageJob.dispatch({
       remedySlug: slugify(title),
-      description: description
+      description: description,
     });
 
     await RemedyTitleJob.dispatch({
       remedySlug: slugify(title),
-      description: description
-    });
 
+      description: description,
+    });
 
     await session.commitTransaction();
     return res

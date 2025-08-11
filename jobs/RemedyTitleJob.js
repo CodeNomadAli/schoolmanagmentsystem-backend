@@ -12,7 +12,10 @@ export default class RemedyTitleJob extends BaseJob {
        async handle(data) {
         const session = await mongoose.startSession();
         try {
+
             session.startTransaction();
+
+
 
 
             // Check MongoDB connection state
@@ -21,6 +24,7 @@ export default class RemedyTitleJob extends BaseJob {
             }
 
             let remedy;
+
 
                 // Fetch the remedy document within the transaction
                 remedy = await Remedy.findOne({ slug: data.remedySlug });

@@ -54,7 +54,7 @@ export const addCard = async (req, res) => {
 // Get all cards from user's embedded array
 export const getUserCards = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  =  req.user.id;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -72,21 +72,26 @@ export const getUserCards = async (req, res) => {
 // DELETE /api/cards/:userId/:token
 export const deleteCard = async (req, res) => {
   try {
-    const { userId, token } = req.params;
-
+    const { cardId } = req.params;
+    
+     const userId = req.user.id;
+  
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
 
     
-    const card = user.cards.find((c) => c.token === token);
+    const card = user.cards.find((c) => c.cardId === cardId);
     if (!card) {
       return res.status(404).json({ error: "Card not found." });
     }
 
+    const token= card.token
+     
+    console.log(token,"token")
     // Detach from Stripe
-    const paymentMethod = await stripe.paymentMethods.retrieve(token);
+    const paymentMethod = await stripe.paymentMethods.retrieve(cardId);
     if (paymentMethod.customer) {
       await stripe.paymentMethods.detach(token);
     }
