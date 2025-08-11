@@ -68,6 +68,7 @@ app.use("/api/v1/remedy-categories",  remedyCategoryRouter);
 app.use("/api/v1/auth", authRouter);
 
 app.use("/api/v1/users", auth, userRouter);
+
 app.use("/api/v1/user-remedies", auth, userRemedyRoutes);
 
 app.use("/api/v1/subscribe-plan", auth, subscriptionRoutes);
@@ -76,7 +77,9 @@ app.use("/api/v1/user-plans", planRoutes);
 
 app.use("/api/v1/stripe", webHookRoute);
 
-app.use("/api/v1/user-cards",auth,cardRoutes);
+
+app.use("/api/v1/user-cards", auth, cardRoutes);
+
 
 app.use("/api/v1/remedies", publicRemedyRoutes);
 
@@ -84,7 +87,7 @@ app.use("/api/v1/user", profileQuestions);
 
 app.use("/api/v1/reviews", reviewsRouter);
 
-app.use("/api/v1/user/invoices", invoiceRoutes);
+app.use("/api/v1/user/invoices", auth, invoiceRoutes);
 
 app.use("/api/v1/ai", auth, askAI);
 
