@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.put("/create", createInvoice);
 
-router.get("/:userId", getInvoices);
+router.get("/", getInvoices);
 
-router.delete("/:userId/:invoiceId", deleteInvoice);
+router.delete("/:invoiceId", deleteInvoice);
 
 export default router;
