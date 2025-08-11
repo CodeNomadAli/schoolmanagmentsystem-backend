@@ -67,7 +67,7 @@ const createRemedy = async (req, res) => {
     const newRemedy = await Remedy.create(
       [
         {
-          name: 'title oxxxf actiodfssnsssss d f df dsdddddff ddf generation data dd go ga fdf',
+          name: 'title oxxxf actiodfssnssssxsdf d f df dsdddddff ddf generation data dd go ga fdf',
           description,
           category,
           media: {
@@ -86,10 +86,12 @@ const createRemedy = async (req, res) => {
       { session }
     );
 
-    await RemedyImageJob.dispatch({
+    const job= await RemedyImageJob.dispatch({
       remedySlug: newRemedy.slug,
       description: description
     });
+
+    console.log(job)
 
 
     await session.commitTransaction();

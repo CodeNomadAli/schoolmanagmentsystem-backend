@@ -10,17 +10,19 @@ export default class RemedyImageJob extends BaseJob {
 
     async handle(data) {
         try {
-            // console.log('🖼 Generating image for remedy:', data);
+            console.log('🖼 Generating image for remedy:', data);
 
             // Extract needed fields
             const { remedyId, description } = data;
 
             // Step 1: Generate image URL/path from AI
             const imageUrl = await generateAiImgs(description);
-          
+          console.log(imageUrl,"imgjo")
             // Step 2: Upload image to Cloudinary
             const media = await uploadImageFromUrl(imageUrl);
-
+          
+            console.log(media,"media")
+            
             // Step 3: Update the remedy record in DB
             await Remedy.updateOne(
                 { id: remedyId }, // Ensure this matches your schema's ID field
