@@ -8,7 +8,7 @@ import auth from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 // PUT - Add or update review
-router.put("/:Id", auth, addOrUpdateReview);
+router.put("/:Id",auth, addOrUpdateReview);
 
 // GET - Get all reviews
 router.get("/:remedyId/reviews", getRemedyReviews);

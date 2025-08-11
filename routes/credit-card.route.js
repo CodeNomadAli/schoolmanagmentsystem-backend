@@ -7,10 +7,12 @@ import {
 
 const router = express.Router();
 
+
+router.get("/", getUserCards);
 // Change POST to PUT since we’re modifying the User document
 router.put("/add", addCard);
 
-router.get("/", getUserCards);
+
 
 router.delete("/:cardId", deleteCard);
 

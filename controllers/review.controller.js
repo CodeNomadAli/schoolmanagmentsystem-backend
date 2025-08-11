@@ -5,13 +5,14 @@ import Remedy from "../models/remedy.model.js";
 export const addOrUpdateReview = async (req, res) => {
   try {
     const userId = req.user?.id;
+    console.log(userId,"userid")
     const { Id } = req.params;
     const { rating, message } = req.body;
 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const remedy = await Remedy.findById(Id);
-      console.log  
+     
     if (!remedy) return res.status(404).json({ message: "Remedy not found" });
      
     const existingIndex = remedy.reviews.findIndex(

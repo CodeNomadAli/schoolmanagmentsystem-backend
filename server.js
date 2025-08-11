@@ -76,7 +76,7 @@ app.use("/api/v1/user-plans", planRoutes);
 
 app.use("/api/v1/stripe", webHookRoute);
 
-app.use("/api/v1/user-cards", cardRoutes);
+app.use("/api/v1/user-cards",auth,cardRoutes);
 
 app.use("/api/v1/remedies", publicRemedyRoutes);
 
