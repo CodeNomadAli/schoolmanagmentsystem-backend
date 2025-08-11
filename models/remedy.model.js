@@ -25,17 +25,21 @@ const RemedySchema = new mongoose.Schema(
       required: true,
     },
 
-    ingredients: {
+    ingredients: [{
       type: String,
-    },
+      default:[]
+    }],
     preparationMethod: {
       type: String,
+      default:null
     },
     brandName: {
       type: String,
+      default:null
     },
     content: {
       type: String,
+      default:null
     },
     media: {
       type: {
@@ -54,10 +58,12 @@ const RemedySchema = new mongoose.Schema(
     sideEffects: [
       {
         type: String,
+        default:null
       },
     ],
     preparationTime: {
       type: String,
+      default:null
     },
     aiConfidenceScore: {
       type: Number,
@@ -73,6 +79,7 @@ const RemedySchema = new mongoose.Schema(
     usageInstructions: {
       type: String,
       required: true,
+      default:null
     },
     moderationStatus: {
       type: String,
