@@ -25,9 +25,10 @@ const RemedySchema = new mongoose.Schema(
       required: true,
     },
 
-    ingredients: {
+    ingredients: [{
       type: String,
-    },
+      default:[]
+    }],
     preparationMethod: {
       type: String,
     },

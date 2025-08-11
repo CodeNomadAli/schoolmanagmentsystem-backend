@@ -32,10 +32,14 @@
       "array.includesRequiredUnknowns": "Each ailment must be a valid string",
     }),
 
-  ingredients: Joi.string().trim().empty('').optional().messages({
-    "string.base": "Ingredients must be text",
-    "string.empty": "Ingredients cannot be empty",
-  }),
+ingredients: Joi.array()
+    .items(
+      Joi.string().trim().messages({
+        "string.base": "Each ingredient must be text",
+        "string.empty": "Ingredient cannot be empty",
+      })
+    ),
+
 
   usageInstructions: Joi.string().trim().required().messages({
     "any.required": "Usage Instructions are required",

@@ -11,7 +11,7 @@ export const addOrUpdateReview = async (req, res) => {
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const remedy = await Remedy.findById(Id);
-      console.log  
+      
     if (!remedy) return res.status(404).json({ message: "Remedy not found" });
      
     const existingIndex = remedy.reviews.findIndex(
@@ -31,7 +31,7 @@ export const addOrUpdateReview = async (req, res) => {
      
 await remedy.save({ validateBeforeSave: false });
 
-    return res.status(200).json(apiResponse({
+    return res.status(200).json(apiResponse(200,{
       message: "Review added/updated",
      reviews: remedy.reviews
     },"Review add successfully"));
