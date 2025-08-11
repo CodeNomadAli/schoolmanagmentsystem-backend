@@ -18,7 +18,7 @@ const createUserSchema = Joi.object({
   geographicRegion: Joi.string().default("global"),
   lastLogin: Joi.date().optional(),
   isActive: Joi.boolean().default(false),
-  emailVerified: Joi.boolean().default(true),
+  emailVerified: Joi.boolean().default(false),
   twoFactorStatus: Joi.string().valid("disabled", "pending", "enabled").default("disabled"),
   profileImage: Joi.string().optional().default("/user/default.png"),
 
