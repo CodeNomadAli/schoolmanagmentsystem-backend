@@ -18,19 +18,6 @@ export default class RemedyTitleJob extends BaseJob {
 
 
 
-            // Step 1: Generate image URL/path from AI
-            const imageUrl = await generateAiImgs(description);
-             // Step 2: Upload image to Cloudinary
-            const media = await uploadImageFromUrl(imageUrl);
-          
-            console.log(media,"media")
-            
-            // Step 3: Update the remedy record in DB
-            await Remedy.updateOne(
-                { id: remedyId }, // Ensure this matches your schema's ID field
-                { $set: { media } }
-            );
-
             // Check MongoDB connection state
             if (mongoose.connection.readyState !== 1) {
                 throw new Error('MongoDB connection not ready');

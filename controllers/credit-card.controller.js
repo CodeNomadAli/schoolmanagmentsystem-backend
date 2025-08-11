@@ -54,7 +54,7 @@ export const addCard = async (req, res) => {
 // Get all cards from user's embedded array
 export const getUserCards = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  =  req.user.id;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -72,8 +72,9 @@ export const getUserCards = async (req, res) => {
 // DELETE /api/cards/:userId/:token
 export const deleteCard = async (req, res) => {
   try {
-    const { userId, token } = req.params;
-
+    const { token } = req.params;
+     const userId = req.user.id;
+  
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
