@@ -206,7 +206,11 @@ export const getViewDetailsRemdy = async (req, res) => {
         apiResponse(
           200,
           {
-            remedy: {remedy, total_review: totalReview, total_rating: totalRating, average_rating: averageRating },
+            remedy, 
+            total_review: 
+            totalReview, 
+            total_rating: totalRating, 
+            average_rating: averageRating,
             premium_access: true,
           },
           "Full remedy access"

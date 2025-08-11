@@ -1,5 +1,6 @@
 import stripe from "../utils/stripe.js";
 import User from "../models/user.model.js";
+import { apiResponse } from "../helper.js";
 
 
 export const addCard = async (req, res) => {
@@ -61,7 +62,7 @@ export const getUserCards = async (req, res) => {
       return res.status(404).json({ error: "User not found." });
     }
 
-    res.status(200).json(user.cards);
+    res.status(200).json(apiResponse(200,user.cards, 'Data fetched successfully'));
   } catch (err) {
     console.error("Fetch cards error:", err.message);
     res.status(500).json({ error: "Internal server error" });
@@ -89,7 +90,6 @@ export const deleteCard = async (req, res) => {
 
     const token= card.token
      
-    console.log(token,"token")
     // Detach from Stripe
     const paymentMethod = await stripe.paymentMethods.retrieve(cardId);
     if (paymentMethod.customer) {
@@ -100,7 +100,7 @@ export const deleteCard = async (req, res) => {
     user.cards = user.cards.filter((c) => c.token !== token);
     await user.save();
 
-    res.status(200).json({ message: "Card detached and removed successfully." });
+    res.status(200).json(apiResponse( 200, [], "Card detached and removed successfully."));
   } catch (err) {
     console.error("Delete card error:", err.message);
     res.status(500).json({ error: "Internal server error." });

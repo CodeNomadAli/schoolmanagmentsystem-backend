@@ -65,7 +65,7 @@ export const createInvoice = async (req, res) => {
 
 export const getInvoices = async (req, res) => {
   try {
-    const  userId  = req.user.id;
+    const  userId  = req?.user?.id;
 
     if (!userId) {
       return res
