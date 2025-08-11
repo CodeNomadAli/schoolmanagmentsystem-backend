@@ -50,6 +50,7 @@ const createRemedy = async (req, res) => {
     const filePath = await generateAiImgs(description);
     const [media] = await Promise.all([uploadImageFromUrl(filePath)]);
 
+     console.log(media,'ffffffffffffile',filePath)
     // Step 3: Ensure ailments are created/found
     const ailmentIds = [];
     for (const ailmentName of ailments) {
