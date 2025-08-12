@@ -284,7 +284,8 @@ const updateRemedy = async (req, res) => {
     }
 
     Object.assign(remedy, req.body);
-    await remedy.save({ session });
+    
+await remedy.save({ session, validateModifiedOnly: true });
 
     await session.commitTransaction();
     session.endSession();
