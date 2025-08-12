@@ -37,7 +37,10 @@ import askAI from "./routes/askai.route.js";
 import publicRemedyRoutes from "./routes/remedy.route.js";
 import AilmentRouter from "./routes/ailment.route.js";
 import remedyCategoryRouter from "./routes/remedy-category.route.js";
+import remedyCommentsRouter from "./routes/remedy-comment.route.js";
+
 const app = express();
+
 
 const PORTAL_ROUTE_PREFIX = "/api/v1/portal";
 
@@ -66,6 +69,8 @@ app.use("/api/v1/remedy-ailments", AilmentRouter);
 app.use("/api/v1/remedy-categories",  remedyCategoryRouter);
 
 app.use("/api/v1/auth", authRouter);
+
+app.use("/api/v1/remedy-comments", remedyCommentsRouter);
 
 app.use("/api/v1/users", auth, userRouter);
 
@@ -97,8 +102,7 @@ app.use("/api/v1/remedy", auth, remedyRouter);
 // admin Routes
 app.use("/api/v1/admin", auth, adminMiddleware, adminRouter);
 // upload files (images,etc)
-// moderator routes
-app.use("/api/v1/moderator", auth, ModeratorRoute);
+
 // writer routes
 
 // articles route

@@ -94,7 +94,7 @@ export const getAllRemedies = async (req, res) => {
 
     const [remedies, total] = await Promise.all([
       Remedy.find(searchQuery)
-        .select("name slug media description reviews averageRating")
+        .select("name slug media description reviews averageRating comments")
         .populate([
           {
             path: "createdBy",
@@ -136,11 +136,6 @@ export const getAllRemedies = async (req, res) => {
     res.status(500).json(apiResponse(500, null, error.message));
   }
 };
-
-
-
-
-
 
 export const getViewDetailsRemdy = async (req, res) => {
   try {
@@ -196,9 +191,9 @@ export const getViewDetailsRemdy = async (req, res) => {
       }
     }
 
-    const totalRating = await getTotalRating(remedy._id)
-    const totalReview = await getTotalReview(remedy._id)
-    const averageRating = totalRating / totalReview
+    const totalRating = await getTotalRating(remedy._id);
+    const totalReview = await getTotalReview(remedy._id);
+    const averageRating = totalRating / totalReview;
 
     // If user has access or is logged in with access
     if (hasAccess) {
@@ -206,10 +201,9 @@ export const getViewDetailsRemdy = async (req, res) => {
         apiResponse(
           200,
           {
-            remedy, 
-            total_review: 
-            totalReview, 
-            total_rating: totalRating, 
+            remedy,
+            total_review: totalReview,
+            total_rating: totalRating,
             average_rating: averageRating,
             premium_access: true,
           },
@@ -229,12 +223,12 @@ export const getViewDetailsRemdy = async (req, res) => {
           name: a.name,
           slug: a.slug,
         })),
+        comments: remedy.comments,
+
         total_reviews: totalReview,
         total_rating: totalRating,
         averageRating: averageRating,
       };
-
-
 
       return res
         .status(200)
@@ -251,5 +245,3 @@ export const getViewDetailsRemdy = async (req, res) => {
     return res.status(500).json(apiResponse(500, null, error.message));
   }
 };
-
-
