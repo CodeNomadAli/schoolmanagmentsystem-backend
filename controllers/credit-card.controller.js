@@ -55,7 +55,7 @@ export const addCard = async (req, res) => {
 // Get all cards from user's embedded array
 export const getUserCards = async (req, res) => {
   try {
-    console.log(req,"req")
+    
     const  userId  =  req.user?.id;
     const user = await User.findById(userId);
 
