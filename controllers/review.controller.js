@@ -5,7 +5,7 @@ import Remedy from "../models/remedy.model.js";
 export const addOrUpdateReview = async (req, res) => {
   try {
     const userId = req.user?.id;
-    console.log(userId,"userid")
+   
     const { Id } = req.params;
     const { rating, message } = req.body;
 
