@@ -6,12 +6,12 @@ export const addOrUpdateReview = async (req, res) => {
   try {
     const userId = req.user?.id;
    
-    const { Id } = req.params;
+    const { id } = req.params;
     const { rating, message } = req.body;
 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-    const remedy = await Remedy.findById(Id);
+    const remedy = await Remedy.findById(id);
      
     if (!remedy) return res.status(404).json({ message: "Remedy not found" });
      
