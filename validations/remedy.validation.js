@@ -32,12 +32,15 @@ const remedyValidation = Joi.object({
       "array.includesRequiredUnknowns": "Each ailment must be a valid string",
     }),
 
-  ingredients: Joi.array()
+
+ingredients: Joi.array()
+
     .items(
       Joi.string().trim().messages({
         "string.base": "Each ingredient must be text",
         "string.empty": "Ingredient cannot be empty",
       })
+
     )
     .optional()
     .messages({
