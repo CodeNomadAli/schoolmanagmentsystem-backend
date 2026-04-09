@@ -11,7 +11,7 @@ import Session from "../models/session.model.js";
 import crypto from "crypto";
 import { sendMail } from "../services/sendMail.service.js";
 import UserProfile from "../models/user_profile.model.js";
-import admin from "../config/firebase.config.js";
+
 import hashPassword from "../utils/hashPassword.js";
 import Staff from "../models/staff.model.js"
 import Stripe from "stripe";
