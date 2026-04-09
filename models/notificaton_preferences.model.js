@@ -1,41 +1,22 @@
 import mongoose from "mongoose";
 
-const NotificationPreferencesSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const notificationSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true }, // e.g., "Fee Payment Reminder – Term 2"
+    shortCode: { type: String, trim: true }, // e.g., "AC" for Accounts, "PR" for Principal
+    postedBy: { type: String, trim: true }, // e.g., "Accounts Dept", "Principal"
+    department: { type: String, trim: true }, // e.g., "Finance", "Administration"
+    message: { type: String, required: true, trim: true }, // full notification text
+    type: { type: String, enum: ["info", "urgent", "reminder", "event"], default: "info" },
+    targetAudience: { type: String, enum: ["All", "Students", "Teachers", "Parents"], default: "All" }, // optional
+    school_id: { type: String, required: true }, // for multi-school setup
+    readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // track who read it
   },
-  newRemedyAlerts: {
-    type: Boolean,
-    default: false,
-  },
-  allRecommendations: {
-    type: Boolean,
-    default: false,
-  },
-  ratingUpdates: {
-    type: Boolean,
-    default: false,
-  },
-  subscriptionAlerts: {
-    type: Boolean,
-    default: false,
-  },
-  customAlerts: {
-    type: [String],
-    default: [],
-  },
-  emailFrequency: {
-    type: String,
-    enum: ["daily", "weekly", "monthly"],// maybe update this in future
-    default: "weekly",
-  },
-  pushEnabled: {
-    type: Boolean,
-    default: true,
-  },
-}, { timestamps: true });
+  { timestamps: true } // automatically adds createdAt and updatedAt
+);
 
-const NotificationPreferences = mongoose.model("NotificationPreferences", NotificationPreferencesSchema);
-export default NotificationPreferences;
+// Optional: index by school_id and createdAt for quick retrieval
+
+
+const Notification = mongoose.model("Notification", notificationSchema);
+export default Notification;

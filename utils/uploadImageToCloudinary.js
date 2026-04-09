@@ -1,7 +1,6 @@
 import { apiResponse } from "../helper.js";
 import { v2 as cloudinary } from "cloudinary";
-import { pipeline } from "stream/promises"; // Import pipeline
-import slugify from "./slugify.js";
+import streamifier from "streamifier";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,20 +11,14 @@ cloudinary.config({
 });
 
 /**
- * Upload image from external URL to Cloudinary
- * @param {string} fileUrl - The URL of the image to upload
+ * Upload image from a local file buffer to Cloudinary
+ * @param {Buffer} fileBuffer - The buffer of the uploaded file (from multer)
  * @returns {Promise<object>} apiResponse object with upload result
  */
-export const uploadImageFromUrl = async (fileUrl) => {
-  if (!fileUrl) return apiResponse(400, "Image URL is required");
+export const uploadImageFromBuffer = async (fileBuffer) => {
+  if (!fileBuffer) return apiResponse(400, "File buffer is required");
 
   try {
-    const response = await fetch(fileUrl);
-    if (!response.ok) {
-      throw new Error(`Fetch failed: ${response.statusText}`);
-    }
-
-    // Create a promise to handle Cloudinary upload result
     const uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: "remedy_uploads" },
@@ -38,13 +31,12 @@ export const uploadImageFromUrl = async (fileUrl) => {
         }
       );
 
-      // Pipe fetch response to Cloudinary upload stream
-      pipeline(response.body, uploadStream).catch(reject);
+      // Pipe the file buffer to Cloudinary
+      streamifier.createReadStream(fileBuffer).pipe(uploadStream);
     });
 
-
     return {
-      type:uploadResult.format,
+      type: uploadResult.format,
       source: uploadResult.secure_url,
       originalName: uploadResult.public_id,
     };
@@ -53,4 +45,3 @@ export const uploadImageFromUrl = async (fileUrl) => {
     return apiResponse(500, `Failed to upload image: ${error.message}`);
   }
 };
-

@@ -7,7 +7,7 @@ import User from '../models/user.model.js';
 
 async function connectToDatabase() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/remedy', {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

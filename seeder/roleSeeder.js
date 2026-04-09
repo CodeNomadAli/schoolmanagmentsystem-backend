@@ -1,12 +1,12 @@
-// File: seeders/role-seeder.js
+
 import mongoose from "mongoose";
 import StaffRole from "../models/staff_role.model.js";
 import staffPermission from "../models/staff_permission.model.js";
 
-// Define the connectToDatabase function (or import it if defined elsewhere)
+
 async function connectToDatabase() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/remedy", {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

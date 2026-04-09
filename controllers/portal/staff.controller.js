@@ -5,7 +5,7 @@ import { getClientInfo } from "../../utils/clientInfo.js";
 import Session from "../../models/session.model.js";
 import { apiResponse } from "../../helper.js";
 import companyNotify from "../../helper/emailLogger.js";
-
+import mongoose from "mongoose";
 export const staffLogin = async (req, res) => {
   try {
     const { email, password } = req.body;

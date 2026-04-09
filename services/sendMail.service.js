@@ -13,6 +13,6 @@ export const sendMail = async ({ to, subject, html }) => {
     const info = await transporter.sendMail(mailOptions);
     return info;
   } catch (error) {
-   console.log(error.message)
+   console.log(error.message,"helo email erro")
   }
 };

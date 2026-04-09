@@ -3,55 +3,60 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.config.js";
 import authRouter from "./routes/auth.route.js";
-import remedyRouter from "./routes/remedy.route.js";
+
 import validateEnv from "./validations/env.validation.js";
 import userRouter from "./routes/user.route.js";
 import userPortalRoute from "./routes/portal/user-portal.route.js";
 import auth from "./middleware/auth.middleware.js";
-import reviewsRouter from "./routes/review.route.js";
-import adminMiddleware from "./middleware/staff.middleware.js";
-import adminRouter from "./routes/portal/admin.route.js";
-import ModeratorRoute from "./routes/moderator.route.js";
-import ArticleRoute from "./routes/article.route.js";
+
+
+
 import staffRoutes from "./routes/portal/staff.route.js";
-import userPorfileRoute from "./routes/userProfile.route.js";
+
 import staffAuth from "./middleware/staff.middleware.js";
 import staffRolesRoutes from "./routes/portal/staff-role.route.js";
 import staffPermissionRoutes from "./routes/portal/staff-permission.route.js";
-import remedyRoutes from "./routes/portal/remedy.route.js";
-import remedyCategoryRoutes from "./routes/portal/remedy-category.routes.js";
-import remedyTypeRoutes from "./routes/portal/remedy-type.routes.js";
-import ArticleRouter from "./routes/portal/article.route.js";
-import ArticleCategoryRouter from "./routes/portal/article-category.routes.js";
-import ailmentsRoutes from "./routes/portal/ailment.route.js";
-import privacyRouter from "./routes/portal/Web-Policy.route.js";
 import uploadFileRoutes from "./routes/file.routes.js";
-import webHookRoute from "./routes/webhook.route.js";
-import subscriptionRoutes from "./routes/subscription.routes.js";
-import cardRoutes from "./routes/credit-card.route.js";
-import planRoutes from "./routes/plan.route.js";
-import invoiceRoutes from "./routes/invoice.routes.js";
-import profileQuestions from "./routes/profile-questions.route.js";
-import userRemedyRoutes from "./routes/user-remedy.route.js";
+
 import askAI from "./routes/askai.route.js";
-import publicRemedyRoutes from "./routes/remedy.route.js";
-import AilmentRouter from "./routes/ailment.route.js";
-import remedyCategoryRouter from "./routes/remedy-category.route.js";
-import remedyCommentsRouter from "./routes/remedy-comment.route.js";
+import teacherRouter from "./routes/teacher.routes.js"
+import studentRouter from "./routes/student.routes.js"
+import parantRouter from "./routes/parent.routes.js"
+import classRouter from "./routes/class.routes.js"
+import subjectRouter from "./routes/subject.routes.js"
+import homeWorkRouter from "./routes/homework.routes.js"
+import examRouter from "./routes/exam.routes.js"
+import gradeRouter from "./routes/grade.routes.js"
+import attendanceRouter from "./routes/attendance.routes.js"
+import feeRouter from "./routes/fee.routes.js"
+import bookRouter from "./routes/book.routes.js"
+import roomRouter from "./routes/room.routes.js"
+import transportRouter from "./routes/transport.routes.js"
+import userProfileRouter from "./routes/user.profile.route.js"
+import timeTableRouter from "./routes/timetable.routes.js"
+import notificationRouter from "./routes/notification.router.js"
+
+
+
+
+
+
+
+
+
 
 const app = express();
-
 
 const PORTAL_ROUTE_PREFIX = "/api/v1/portal";
 
 dotenv.config();
-app.use(express.json());
+// parse JSON only for requests that are not file uploads
+app.use(express.json({ limit: "10mb" })); // optional: increase limit if needed
 
 app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "https://admin.thenaturalsociety.com",
       "http://localhost:5173",
       "http://localhost:3000",
     ], // Allow requests from these origins
@@ -63,60 +68,43 @@ app.use(
 validateEnv();
 connectDB();
 
-
-app.use("/api/v1/remedy-ailments", AilmentRouter);
-
-app.use("/api/v1/remedy-categories",  remedyCategoryRouter);
-
 app.use("/api/v1/auth", authRouter);
-
-app.use("/api/v1/remedy-comments", remedyCommentsRouter);
 
 app.use("/api/v1/users", auth, userRouter);
 
-app.use("/api/v1/user-remedies", auth, userRemedyRoutes);
-
-app.use("/api/v1/subscribe-plan", auth, subscriptionRoutes);
-
-app.use("/api/v1/user-plans", planRoutes);
-
-app.use("/api/v1/stripe", webHookRoute);
-
-
-app.use("/api/v1/user-cards", auth, cardRoutes);
-
-
-app.use("/api/v1/remedies", publicRemedyRoutes);
-
-app.use("/api/v1/user", profileQuestions);
-
-app.use("/api/v1/reviews", reviewsRouter);
-
-app.use("/api/v1/user/invoices", auth, invoiceRoutes);
-
 app.use("/api/v1/ai", auth, askAI);
 
-app.use("/api/v1/user", auth, userPorfileRoute);
-// remedy routes
-app.use("/api/v1/remedy", auth, remedyRouter);
-// admin Routes
-app.use("/api/v1/admin", auth, adminMiddleware, adminRouter);
-// upload files (images,etc)
+app.use("/api/v1/teacher", auth, teacherRouter);
+app.use("/api/v1/student", auth, studentRouter);
+app.use("/api/v1/parant", auth, parantRouter);
+app.use("/api/v1/class", auth, classRouter);
+app.use("/api/v1/subject", auth, subjectRouter);
+app.use("/api/v1/homework", auth, homeWorkRouter);
+app.use("/api/v1/exam", auth, examRouter);
+app.use("/api/v1/grade", auth, gradeRouter);
+app.use("/api/v1/attendance", auth, attendanceRouter);
+app.use("/api/v1/fee", auth, feeRouter);
+app.use("/api/v1/book", auth, bookRouter);
+app.use("/api/v1/hostel", auth, roomRouter);
+app.use("/api/v1/transport", auth, transportRouter);
+app.use("/api/v1/user-profile", auth, userProfileRouter);
+app.use("/api/v1/notification", auth, notificationRouter);
+app.use("/api/v1/timetable", auth, timeTableRouter);
 
-// writer routes
 
-// articles route
-app.use("/api/v1/articles", ArticleRoute);
 
-// staff routes
+
+
+
+
+
+
+
+
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff", staffAuth, staffRoutes);
 
 app.use(PORTAL_ROUTE_PREFIX + "/files", uploadFileRoutes);
-
-app.use(PORTAL_ROUTE_PREFIX + "/ailments", auth, ailmentsRoutes);
-
-app.use(PORTAL_ROUTE_PREFIX + "/web-policy", staffAuth, privacyRouter);
 
 app.use(PORTAL_ROUTE_PREFIX + "/staff-roles", staffAuth, staffRolesRoutes);
 
@@ -131,20 +119,9 @@ app.use(PORTAL_ROUTE_PREFIX + "/users", staffAuth, userPortalRoute);
 app.use(
   PORTAL_ROUTE_PREFIX + "/article-categories",
   staffAuth,
-  ArticleCategoryRouter
 );
 
-app.use(PORTAL_ROUTE_PREFIX + "/articles", staffAuth, ArticleRouter);
-
-app.use(PORTAL_ROUTE_PREFIX + "/remedy", remedyRoutes);
-
-app.use(PORTAL_ROUTE_PREFIX + "/remedy-types", remedyTypeRoutes);
-app.use(PORTAL_ROUTE_PREFIX + "/remedy-categories", remedyCategoryRoutes);
-
 const PORT = process.env.PORT || 3000;
- const server= app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-

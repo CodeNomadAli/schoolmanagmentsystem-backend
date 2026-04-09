@@ -15,6 +15,17 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    school_id: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    school_name: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     password: {
       type: String,
       required: true,
@@ -22,8 +33,8 @@ const userSchema = new mongoose.Schema(
     },
     accessLevel: {
       type: String,
-      enum: ["user", "admin", "prouser"],
-      default: "user",
+      enum: ["student", "admin", "teacher","parent"],
+      default: "student",
     },
     subscriptionStatus: {
       type: String,
@@ -120,25 +131,13 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
-    answeredQuestions: {
-      type: [
-        {
-          question: { type: String, required: false },
-          answer: { type: String, required: false },
-        },
-      ],
-      default: [],
-    },
+    
 
     token: {
       type: String,
       default: null,
     },
 
-    bookMarkRemedies:{
-      type : [String],
-      default : []
-    },
     cards: [
       {
         cardName: String,

@@ -115,8 +115,11 @@ const staffLogin = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    
-    const { error } = registerValidation.validate(req.body);
+    const { error } = registerValidation.validate(req.body, {
+      abortEarly: false,
+      allowUnknown: true,
+    });
+
     if (error) {
       return res.status(400).json({
         success: false,
@@ -124,9 +127,13 @@ const register = async (req, res) => {
       });
     }
 
-    const { email, password, username } = req.body;
+    let { email, password, username, school_name, school_id } = req.body;
 
-    
+    // Generate school_id if not provided
+    if (!school_id) {
+      school_id = `online@${school_name}.com`;
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
@@ -134,36 +141,22 @@ const register = async (req, res) => {
         message: "Email already in use. Try a different one.",
       });
     }
-
-    
+const accessLevel = "admin"
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    
-   
-    const stripeCustomer = await stripe.customers.create({
-      email,
-      name: username,
-     
-    });
-
-    if (!stripeCustomer?.id) {
-      throw new Error("Stripe customer creation failed");
-    }
-     
-
     const newUser = await User.create({
-      ...req.body,
+      email,
       password: hashedPassword,
-      stripeCustomerId: stripeCustomer.id,
-      
+      username,
+      school_name,
+      school_id,
+      accessLevel
     });
-
-   
 
     return res.status(201).json({
       success: true,
       message: "Registration successful. Please verify your email.",
-    });              
+    });
   } catch (err) {
     console.error("Register error:", err);
     return res.status(500).json({

@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 
 const userProfileSchema = new mongoose.Schema({
@@ -15,68 +16,39 @@ const userProfileSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  age: {
-    type: Number,
-    min: 0,
-  },
-  sex: {
+  phone : {
     type: String,
-    enum: ['male', 'female', 'other',"nonbinary"],// maybe update this in future
+    trim: true,
   },
-  weight: {
-    type: Number,// in kg
-    min: 0,
-  },
-  height: {
-    type: Number,// in cm 
-    min: 0,
-  },
-  bloodType: {
+  profileImage: {
+  type: {
     type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'Unknown'],// maybe update this in future
-    default: 'Unknown',
   },
- 
-  allergies: {
-    type: [String],
-    default: [],
-  },
-  chronicConditions: {
-    type: [String],
-    default: [],
-  },
-  medications: {
-    type: [String],
-    default: [],
-  },
-  familyHistory: {
-    type: [String],
-    default: [],
-  },
-  dataShareConsent: {
-    type: Boolean,
-    default: false,
-  },
-  preferredLanguage: {
+  source: {
     type: String,
-    default: 'en',
   },
+  originalName: {
+    type: String,
+  },
+},
+  
+  
   lastUpdated: {
     type: Date,
     default: Date.now,
   },
   // for extra fields base on frontend fields
-  located:{
+  address:{
     type:String,
   },
-  ethnicity:{
-    type:String
-  },
-  birthplace:{
-    type:String,
-  },
-  diet:{
-    type:String,
+   isNotification: { type: Boolean, default: true }, // general notifications
+  isEmail: { type: Boolean, default: true },
+  isGrade: { type: Boolean, default: true },
+  homeworkReminders: { type: Boolean, default: true }, // new
+  reportNotifications: { type: Boolean, default: true }, // new
+    security: {
+    twoFactorAuth: { type: Boolean, default: false },
+    sessionTimeout: { type: String, default: "60" }, // in minutes
   },
 
 });

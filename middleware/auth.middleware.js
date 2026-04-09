@@ -7,12 +7,15 @@ const optionalAuth = async (req, res, next) => {
     const authHeader = req.header("Authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      
       return next(); // Guest user → no blocking
     }
 
 
     const token = authHeader.split(" ")[1];
+    // console.log(token,"toekn")
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
 
     const user = await User.findById(decoded.userId);
     if (!user) {
@@ -23,6 +26,8 @@ const optionalAuth = async (req, res, next) => {
       id: user._id,
       email: user.email,
       role: user.accessLevel,
+      school_id:user.school_id,
+      school_name: user.school_name
     };
     req.token = token;
 
